@@ -6,24 +6,27 @@ use crate::{
     },
     application::{
         mappers::api_mapper::ApiMapper,
-        usecases::{get_all_spin_prizes_usecase::GetAllSpinPrizesUseCase,interfaces::AbstractUseCase,spin_prizes::find_by_id_usecase::GetOneSpinPrizesByIdUseCase}
+        usecases::{get_all_spin_prizes_usecase::GetAllSpinPrizesUseCase,interfaces::AbstractUseCase,spin_prizes::find_by_id_usecase::GetOneSpinPrizesByIdUseCase,spin_prizes::post_one_spin_prize::PostSpinPrizesUseCase}
         
     },
     domain::{spin_prizes_entity::SpinPrizesEntity,error::ApiError},
 
 
 };
-use actix_web::{get, web, HttpResponse, post};
+use actix_web::{get, web::{self, Json}, HttpResponse,post};
 // use mockall::predicate::path;
 use log::{warn};
 
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
-    cfg.service(get_all_spin_prizes).service(get_one_spin_prize_by_id);
+    cfg.service(get_all_spin_prizes).service(get_one_spin_prize_by_id).service(post_one_spin_prize);
 }
 
 #[get("/list")]
 async fn get_all_spin_prizes(data: web::Data<AppState>) -> Result<HttpResponse, ErrorReponse> {
+    let warn_description = "Invalid Input";
+
+    warn!("Warning! {}!", warn_description);
     let get_all_spin_prizes_usecase: GetAllSpinPrizesUseCase = GetAllSpinPrizesUseCase::new(&data.spin_prize_repository);
     let spin_prizes: Result<Vec<SpinPrizesEntity>, ApiError> = get_all_spin_prizes_usecase.execute().await;
 
@@ -44,14 +47,16 @@ async fn get_one_spin_prize_by_id(data: web::Data<AppState>,path:web::Path<(i32,
 }
 
 
-#[get("/list/cibay")]
-async fn index(info: web::Json<SpinPrizesPayload>) ->   String {
-    let warn_description = "Invalid Input";
+#[post("/create")]
+async fn post_one_spin_prize(data: web::Data<AppState>,post:Json<SpinPrizesPayload>) -> Result<HttpResponse, ErrorReponse> {
+    let post_one_spin_prize = PostSpinPrizesUseCase::new(&post, &data.spin_prize_repository);
+    let spin_prizes: Result<Vec<SpinPrizesEntity>, ApiError> = post_one_spin_prize.execute().await;
 
-    warn!("Warning! {}!", warn_description);
-    println!("Hidden output");
-    format!("Welcome {}!", info.prize_category)
+    spin_prizes
+        .map_err(ErrorReponse::map_io_error)
+        .map(|facts| HttpResponse::Ok().json(facts.into_iter().map(SpinPrizesPresenterMapper::to_api).collect::<Vec<SpinPrizesPresenter>>()))
 }
+
 
 // #[post("/{name}")]
 // async fn post_one_spin_prize(data: web::Data<AppState>,path:web::Json<SpinPrizesPayload>) ->Result<HttpResponse,ErrorReponse>{
