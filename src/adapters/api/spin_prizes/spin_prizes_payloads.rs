@@ -1,9 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug,Clone)]
 pub struct SpinPrizesPayload {
     // implement for POST/UPDATE requests
-    pub id : i32,
     pub prize_weight: i32,
     pub prize_name: String,
     pub prize_note: String,
