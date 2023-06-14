@@ -11,7 +11,8 @@ pub struct GetOneSpinPrizesByIdUseCase<'a>{
 }
 
 impl <'a>GetOneSpinPrizesByIdUseCase<'a> {
-    pub fn new(prizes_id: &'a i32,
+    pub fn new(
+            prizes_id: &'a i32,
             repository: &'a dyn SpinPrizesEntityAbstract)->Self{
                 GetOneSpinPrizesByIdUseCase{prizes_id,repository}
             }

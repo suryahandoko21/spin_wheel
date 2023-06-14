@@ -1,7 +1,8 @@
 
 use diesel::prelude::*;
+use serde::Deserialize;
 
-#[derive(Queryable, Selectable,Insertable,Identifiable)]
+#[derive(Queryable, Selectable,Insertable,Identifiable,AsChangeset,Debug,Deserialize)]
 #[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_prizes)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct SpinPrizes {
@@ -15,7 +16,7 @@ pub struct SpinPrizes {
 
 
 
-#[derive(Queryable,Insertable,Debug)]
+#[derive(Queryable,Insertable,Debug,AsChangeset)]
 #[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_prizes)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct SpinPrizesToDB {

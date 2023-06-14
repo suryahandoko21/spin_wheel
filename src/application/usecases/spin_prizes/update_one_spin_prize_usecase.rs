@@ -5,23 +5,25 @@ use crate::{
     domain::{ error::ApiError}, adapters::api::{spin_prizes::spin_prizes_payloads::SpinPrizesPayload, shared::response::GenericResponse},
 };
 
-pub struct PostSpinPrizesUseCase<'a>{
+pub struct UpdateSpinPrizesUseCase<'a>{
+    prizes_id: &'a i32,
     post: &'a SpinPrizesPayload,
     repository: &'a dyn SpinPrizesEntityAbstract
 }
 
-impl <'a>PostSpinPrizesUseCase<'a> {
+impl <'a>UpdateSpinPrizesUseCase<'a> {
     pub fn new(
+            prizes_id: &'a i32,
             post: &'a SpinPrizesPayload,
             repository: &'a dyn SpinPrizesEntityAbstract)->Self{
-                PostSpinPrizesUseCase{post,repository}
+                UpdateSpinPrizesUseCase{prizes_id,post,repository}
             }
 }
 
 #[async_trait(?Send)]
-impl<'a> AbstractUseCase<GenericResponse> for PostSpinPrizesUseCase<'a>{
+impl<'a> AbstractUseCase<GenericResponse> for UpdateSpinPrizesUseCase<'a>{
     async fn execute(&self) -> Result<GenericResponse, ApiError> {
-        let spin_prizes = self.repository.post_one_spin_prize(self.post).await;
+        let spin_prizes = self.repository.updated_one_spin_prize(*self.prizes_id,self.post).await;
         match spin_prizes {
             Ok(facts) => Ok(facts),
             Err(e) => Err(ErrorHandlingUtils::application_error("Found Error", Some(e))),
