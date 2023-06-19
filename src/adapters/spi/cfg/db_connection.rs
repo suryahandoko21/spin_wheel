@@ -5,6 +5,9 @@ type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 pub struct DbConnection {
     pub db_name: String,
 }
+pub struct ConnectionRepository {
+    pub db_connection: DbConnection,
+}
 
 impl DbConnection {
     pub fn get_pool(&self) -> DbPool {
@@ -12,10 +15,11 @@ impl DbConnection {
         let database = format!("{}/{}", database_url, &self.db_name);
 
         let manager = ConnectionManager::<PgConnection>::new(&database);
-
+        
         r2d2::Pool::new(manager).unwrap()
     }
 }
+
 
 
 // JQL 

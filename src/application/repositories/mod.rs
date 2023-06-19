@@ -1,1 +1,2 @@
 pub mod spin_prizes_repository_abstract;
+pub mod spin_lists_repository_abstract;

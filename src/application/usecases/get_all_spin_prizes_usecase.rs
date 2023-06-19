@@ -19,7 +19,6 @@ impl<'a> GetAllSpinPrizesUseCase<'a> {
 impl<'a> AbstractUseCase<Vec<SpinPrizesEntity>> for GetAllSpinPrizesUseCase<'a> {
     async fn execute(&self) -> Result<Vec<SpinPrizesEntity>, ApiError> {
         let spin_prizes = self.repository.get_all_spin_prizes().await;
-
         match spin_prizes {
             Ok(facts) => Ok(facts),
             Err(e) => Err(ErrorHandlingUtils::application_error("Cannot get all DATA", Some(e))),

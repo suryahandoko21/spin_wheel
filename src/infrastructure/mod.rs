@@ -1,11 +1,16 @@
 use std::{env, net::TcpListener};
+use std::rc::Rc;
+use std::sync::Arc;
 use env_logger::Env;
+use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::{
     self,
     api::shared::app_state::AppState,
     spi::{
         cfg::{db_connection::DbConnection},
-        prizes::{repository::SpinPrizesRepository},
+        // prizes::{repository::SpinPrizesRepository},
+        // spinlist::{repository::SpinListsRepository},
+
         // db::{db_connection::DbConnection, db_dog_facts_repository::DogFactsRepository},
         // http::{http_cat_facts_repository::CatFactsRepository, http_connection::HttpConnection},
     },
@@ -19,7 +24,9 @@ pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::E
     env_logger::init_from_env(Env::default().default_filter_or("info"));
     // env_logger::try_init();
 
-    let db_connection = DbConnection { db_name: db_name.to_string() };
+    // let c = DbConnection { db_name: db_name.to_string() };
+
+    let db_connection =   DbConnection { db_name: db_name.to_string() };
     // let http_connection = HttpConnection {};
 
     let data = web::Data::new(AppState {
@@ -28,7 +35,8 @@ pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::E
         //     http_connection,
         //     source: dotenv::var("CATS_SOURCE").expect("CATS_SOURCE must be set"),
         // },
-        spin_prize_repository: SpinPrizesRepository { db_connection }
+        connection_repository: ConnectionRepository { db_connection },
+        // spin_list_repository: SpinListsRepository {  db_connection }
     });
 
     let port = listener.local_addr().unwrap().port();
