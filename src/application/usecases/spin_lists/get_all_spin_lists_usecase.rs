@@ -2,7 +2,7 @@ use async_trait::async_trait;
 
 use crate::{
     application::{repositories::spin_lists_repository_abstract::SpinListsEntityAbstract, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
-    domain::{spin_prizes_entity::SpinPrizesEntity, error::ApiError, spin_lists_entity::SpinListsEntity},
+    domain::{spin_prizes_entity::SpinPrizesEntity, error::ApiError, spin_lists_entity::{SpinListsEntity, SpinListsPrizesEntity}},
 };
 
 
@@ -17,8 +17,8 @@ impl<'a> GetAllSpinListsUseCase<'a> {
 }
 
 #[async_trait(?Send)]
-impl<'a> AbstractUseCase<Vec<SpinListsEntity>> for GetAllSpinListsUseCase<'a> {
-    async fn execute(&self) -> Result<Vec<SpinListsEntity>, ApiError> {
+impl<'a> AbstractUseCase<Vec<SpinListsPrizesEntity>> for GetAllSpinListsUseCase<'a> {
+    async fn execute(&self) -> Result<Vec<SpinListsPrizesEntity>, ApiError> {
         let spin_prizes = self.repository.get_all_spin_lists().await;
         match spin_prizes {
             Ok(facts) => Ok(facts),

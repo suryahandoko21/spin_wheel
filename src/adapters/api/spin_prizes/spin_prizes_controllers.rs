@@ -21,19 +21,15 @@ use log::{warn};
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(get_all_spin_prizes)
     .service(get_one_spin_prize_by_id)
-    .service(post_one_spin_prizea)
+    .service(post_one_spin_prizes)
     .service(delete_one_spin_prize_by_id)
     .service(updated_one_spin_prize);
 }
 
 #[get("/list")]
 async fn get_all_spin_prizes(data: web::Data<AppState>) -> Result<HttpResponse, ErrorReponse> {
-    let warn_description = "Invalid Input";
-
-    warn!("Warning! {}!", warn_description);
     let get_all_spin_prizes_usecase: GetAllSpinPrizesUseCase = GetAllSpinPrizesUseCase::new(&data.connection_repository);
     let spin_prizes: Result<Vec<SpinPrizesEntity>, ApiError> = get_all_spin_prizes_usecase.execute().await;
-
     spin_prizes
         .map_err(ErrorReponse::map_io_error)
         .map(|facts| HttpResponse::Ok().json(facts.into_iter().map(SpinPrizesPresenterMapper::to_api).collect::<Vec<SpinPrizesPresenter>>()))
@@ -52,7 +48,7 @@ async fn get_one_spin_prize_by_id(data: web::Data<AppState>,path:web::Path<(i32,
 
 
 #[post("/create")]
-async fn post_one_spin_prizea(data: web::Data<AppState>,post:Json<SpinPrizesPayload>) ->Result<HttpResponse,ErrorReponse> {
+async fn post_one_spin_prizes(data: web::Data<AppState>,post:Json<SpinPrizesPayload>) ->Result<HttpResponse,ErrorReponse> {
  
     let post_one_spin_prize = PostSpinPrizesUseCase::new(&post, &data.connection_repository);
     let spin_prizes: Result<GenericResponse, ApiError> = post_one_spin_prize.execute().await;

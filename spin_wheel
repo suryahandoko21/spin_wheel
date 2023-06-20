@@ -8,10 +8,10 @@
 - echo DATABASE_URL=postgres://postgres:adminpostgres@localhost/spin_wheel > .env
 - diesel setup
 #### Migration Table #####
-- diesel migration generate create_spin_referals
-- diesel migration generate create_spin_promos
 - diesel migration generate create_spin_prizes
 - diesel migration generate create_spin_lists
+- diesel migration generate create_spin_referals
+- diesel migration generate create_spin_promos
 - diesel migration generate create_spin_transactions
 - diesel migration generate create_spin_histories
 - diesel migration generate create_spin_logs

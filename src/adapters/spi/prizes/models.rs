@@ -1,8 +1,8 @@
 
 use diesel::prelude::*;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Selectable,Insertable,Identifiable,AsChangeset,Debug,Deserialize)]
+#[derive(Queryable, Selectable,Insertable,Identifiable,AsChangeset,Debug,Deserialize,QueryableByName,Serialize)]
 #[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_prizes)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct SpinPrizes {
@@ -26,7 +26,3 @@ pub struct SpinPrizesToDB {
     pub prize_amount :i32
 }
 
-
-pub struct TestData{
-    pub prize_category :String,
-}

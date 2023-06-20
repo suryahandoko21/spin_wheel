@@ -3,13 +3,7 @@ name = "spin-wheel"
 version = "0.1.0"
 edition = "2021"
 
-[profile.release]
-opt-level = 'z'     # Optimize for size
-lto = true          # Enable link-time optimization
-codegen-units = 1   # Reduce number of codegen units to increase optimizations
-panic = 'abort'     # Abort on panic
-strip = true        # Strip symbols from binary*
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
 
 [dev-dependencies]
 cargo-tarpaulin = "~0.20"
@@ -23,7 +17,7 @@ actix-web = "4.3.1"
 async-trait = "0.1.58"
 console_log = "1.0.0"
 derive_more = "0.99.17"
-diesel = { version = "2.0.2", features = ["postgres","r2d2"] }
+diesel = { version = "2.1.0", features = ["postgres","r2d2","serde_json"] }
 diesel_migrations = "2.1.0"
 dotenv = "0.15.0"
 env_logger = "0.10.0"

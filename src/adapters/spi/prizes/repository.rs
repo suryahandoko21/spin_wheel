@@ -15,21 +15,6 @@ use crate::domain::spin_lists_entity::SpinListsEntity;
 use crate::domain::spin_prizes_entity::SpinPrizesEntity;
 use crate::application::{mappers::db_mapper::DBMapper,repositories::spin_prizes_repository_abstract::SpinPrizesEntityAbstract};
 
-// pub struct SpinPrizesRepository {
-//     pub db_connection: DbConnection,
-// }
-// #[async_trait(?Send)]
-// impl SpinListsEntityAbstract for ConnectionRepository{
-//     async fn get_all_spin_lists(&self) -> Result<Vec<SpinListsEntity>, Box<dyn Error>>{
-//         let result = tb_spin_prizes.filter(id.eq(prizes_id)).get_result::<SpinPrizes>(&mut conn);
-//         match  result
-//          {
-//             Ok(models) => Ok(SpinPrizesDbMapper::to_entity(models)),
-//             Err(e) => Err(Box::new(e)),
-//         }
-//     }
-// }
-
 #[async_trait(?Send)]
 impl SpinPrizesEntityAbstract for ConnectionRepository {
     async fn get_one_spin_prize_by_id(&self,prizes_id:i32)->Result<SpinPrizesEntity,Box<dyn Error>>{
