@@ -12,7 +12,7 @@ pub enum Option {
 impl fmt::Display for Option  {
     fn fmt(&self,f:&mut fmt::Formatter)->fmt::Result{
         match self{
-            Option::Add=>write!(f, "Data Added"),
+            Option::Add=>write!(f, "Data Aded"),
             Option::Update=>write!(f, "Data Updated"),
             Option::Delete=>write!(f, "Data Deleted"),
             Option::NotFound=>write!(f, "Data Not Found"),

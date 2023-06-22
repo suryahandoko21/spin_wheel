@@ -19,6 +19,23 @@ pub struct SpinLists {
     pub spin_prizes_id:i32
 }
 
+
+#[derive(Queryable, Selectable, Associations, Debug, PartialEq,Serialize,Deserialize,Insertable,AsChangeset)]
+#[diesel(belongs_to(SpinPrizes))]
+#[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_lists)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+pub struct SpinListsToDb {
+    pub company_code : String,
+    pub list_status : String,
+    pub quantity: i32,
+    pub created_at : SystemTime, 
+    pub updated_at : SystemTime,
+    pub created_by : String,
+    pub updated_by : String,
+    pub spin_prizes_id:i32
+}
+
+
 #[derive(Debug, QueryableByName)]
 // #[diesel(belongs_to(SpinPrizes))]
 #[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_lists)]

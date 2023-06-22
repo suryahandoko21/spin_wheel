@@ -19,7 +19,3 @@ impl DbConnection {
         r2d2::Pool::new(manager).unwrap()
     }
 }
-
-
-
-// JQL 

@@ -1,6 +1,4 @@
 use std::{env, net::TcpListener};
-use std::rc::Rc;
-use std::sync::Arc;
 use env_logger::Env;
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::{

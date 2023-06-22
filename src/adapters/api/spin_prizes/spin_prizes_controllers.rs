@@ -14,10 +14,8 @@ use crate::{
 
 };
 use actix_web::{get, web::{self, Json}, HttpResponse,post, delete,patch};
-use log::{warn};
 
-
-// collection route for spin_prizes
+/*  collection route for spin_prizes */
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(get_all_spin_prizes)
     .service(get_one_spin_prize_by_id)
@@ -72,7 +70,6 @@ async fn post_one_spin_prizes(data: web::Data<AppState>,post:Json<SpinPrizesPayl
 
  #[patch("/update/{prize_id}")]
   async fn updated_one_spin_prize(data: web::Data<AppState>,post:Json<SpinPrizesPayload> ,path:web::Path<(i32,)>)->Result<HttpResponse,ErrorReponse>{
-
     let prize_id = path.into_inner().0;
     let update_one_spin_prize_by_id_usecase = UpdateSpinPrizesUseCase::new(&prize_id,&post ,&data.connection_repository);
 

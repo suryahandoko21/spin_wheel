@@ -9,3 +9,4 @@ pub trait DBMapperDb<Entity,DbModel>{
 
     fn to_entity(model:DbModel)->Entity;
 }
+

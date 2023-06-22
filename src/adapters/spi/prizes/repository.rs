@@ -7,11 +7,9 @@ use crate::adapters::api::shared::enum_response::Status;
 use crate::adapters::api::shared::enum_response::Option;
 use crate::adapters::api::spin_prizes::spin_prizes_payloads::SpinPrizesPayload;
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
-use crate::adapters::spi::cfg::{db_connection::DbConnection,schema::tb_spin_prizes::dsl::*};
+use crate::adapters::spi::cfg::{schema::tb_spin_prizes::dsl::*};
 use crate::adapters::spi::prizes::models::SpinPrizesToDB;
 use crate::adapters::spi::prizes::{mappers::SpinPrizesDbMapper,models::SpinPrizes};
-use crate::application::repositories::spin_lists_repository_abstract::SpinListsEntityAbstract;
-use crate::domain::spin_lists_entity::SpinListsEntity;
 use crate::domain::spin_prizes_entity::SpinPrizesEntity;
 use crate::application::{mappers::db_mapper::DBMapper,repositories::spin_prizes_repository_abstract::SpinPrizesEntityAbstract};
 
@@ -76,7 +74,7 @@ impl SpinPrizesEntityAbstract for ConnectionRepository {
                                     prize_amount:  mem::take(&mut data.prize_amount)
     }).execute(&mut conn);
         match update {
-        Ok(_res) => Ok(GenericResponse { status: Status::Success.to_string(),message:Option::Add.to_string()}),
+        Ok(_res) => Ok(GenericResponse { status: Status::Success.to_string(),message:Option::Update.to_string()}),
         Err(e) => Err(Box::new(e)),   
         }
         } 

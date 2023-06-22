@@ -38,13 +38,17 @@ ask ?
 	- company_code:
 	- referal_status:(when first created default is active )
 
-- table spin_promo
+- table  
  - id :ai , pk
- - amount_spin : (ask from BE amount only one every transaction or can be more than one every created)
+ - current_point : (ask from BE amount only one every transaction or can be more than one every created)
  - created_at
- - updated_at
  - user_id
  - company_code
+ - username
+ - expire -> waiting from PO
+ - point_currention_time(timestamp(string)) jika sama jangan ditambah 
+
+ 
 
 
 - table spin_lists
@@ -110,6 +114,8 @@ create table tb_spin_promos(
      promo_amount int,
      code_user varchar not null,
      company_code varchar not null,
+     expired_at Timestamp,
+     point_currention_time Timestamp,
      created_at Timestamp,
      update_at Timestamp,
      created_by varchar,
