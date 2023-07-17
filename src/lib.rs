@@ -5,6 +5,7 @@ pub mod adapters;
 pub mod application;
 pub mod domain;
 pub mod infrastructure;
+pub mod helpers;
 
 extern crate dotenv;
 // extern crate log;

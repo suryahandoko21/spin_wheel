@@ -26,11 +26,11 @@ diesel::table! {
 
     tb_spin_prizes (id) {
         id -> Int4,
-        prize_weight -> Int4,
         prize_name -> Varchar,
         prize_note -> Varchar,
         prize_category -> Varchar,
-        prize_amount -> Int4
+        prize_amount -> Int4,
+        companies_id -> Int4
     }
 }
 diesel::table! {
@@ -49,14 +49,50 @@ diesel::table! {
 }
 
 
+diesel::table! {
+    use diesel::sql_types::*;
+    tb_companies (id) {
+        id -> Int4,
+        uuid -> Varchar,
+        companies_code -> Varchar,
+        companies_name -> Varchar,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+        created_by -> Varchar,
+        updated_by -> Varchar,
+    }
+}
+
+
+diesel::table! {
+    use diesel::sql_types::*;
+    tb_spin_tickets(id){
+        id -> Int4,
+        user_uuid -> Varchar,
+        ruleid -> Varchar,
+        userid -> Varchar,
+        username -> Varchar,
+        ticket_id -> Int4,
+        ticket_uuid -> Varchar,
+        status -> Varchar,
+        pointrule_id ->Int4,
+        expired_date->VarChar
+    }
+}
+
 
 
 diesel::joinable!(tb_spin_lists -> tb_spin_prizes (spin_prizes_id));
 
+
+diesel::joinable!(tb_spin_prizes -> tb_companies (companies_id));
+
 diesel::allow_tables_to_appear_in_same_query!(
     tb_spin_prizes,
     tb_spin_lists,
-    tb_spin_promos
+    tb_spin_promos,
+    tb_companies,
+    tb_spin_tickets
 
 );
 

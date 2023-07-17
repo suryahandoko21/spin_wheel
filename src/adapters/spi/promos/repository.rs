@@ -1,28 +1,21 @@
+use actix_web::Result;
 use async_trait::async_trait;
-use diesel::{prelude::*};
+use diesel::dsl::exists;
+use diesel::{prelude::*, select};
+
 use std::error::Error;
-use std::mem;
 use crate::adapters::api::shared::enum_response::Status;
 use crate::adapters::api::shared::response::GenericResponse;
-use crate::adapters::api::spin_promos::spin_promos_payloads::SpinPromosPayload;
-// use std::mem;
+
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
-use crate::adapters::spi::cfg::schema::{tb_spin_promos};
 use crate::adapters::spi::cfg::{schema::tb_spin_promos::dsl::*};
-use std::time::SystemTime;
 use crate::adapters::api::shared::enum_response::Option;
-
 use crate::application::repositories::spin_promos_repository_abstract::SpinPromosEntityAbstract;
-
 use crate::application::{mappers::db_mapper::DBMapper};
 use crate::domain::spin_promos_entity::SpinPromosEntity;
-
-use super::mappers::SpinPromosDbMapper;
-use super::models::{SpinPromos, SpinPromosToDb};
-
-use chrono::{DateTime, NaiveDate, NaiveDateTime, NaiveTime, Local};
-use chrono::format::ParseError;
-
+use crate::helpers::fn_global::{convert_str_to_timestamp,some_error};
+use super::mappers::{SpinPromosDbMapper, SpinPromosApiMapper};
+use super::models::{SpinPromos};
 
 #[async_trait(?Send)]
 impl SpinPromosEntityAbstract for ConnectionRepository {
@@ -30,30 +23,39 @@ impl SpinPromosEntityAbstract for ConnectionRepository {
         let mut conn = self.db_connection.get_pool().get().expect("couldn't get db connection from pool");
         let results = tb_spin_promos.load::<SpinPromos>(&mut conn);
         match results {
-            Ok(models) => Ok(models.into_iter().map(SpinPromosDbMapper::to_entity).collect::<Vec<SpinPromosEntity>>()),
+            Ok(models) => Ok(models.into_iter().map(SpinPromosApiMapper::to_entity).collect::<Vec<SpinPromosEntity>>()),
             Err(e) => Err(Box::new(e)),
         }
     }
-    async fn post_one_spin_promos(&self, post: &SpinPromosPayload) ->  Result<GenericResponse, Box<dyn Error>>{
-        let mut data =  post.clone();
+    async fn post_one_spin_promos(&self, post: &SpinPromosEntity) ->  Result<GenericResponse, Box<dyn Error>>{
+        let entity_data =  post.clone();
         let mut conn = self.db_connection.get_pool().get().expect("couldn't get db connection from pool");
-        let  prepare_data = SpinPromosToDb{
-            promo_amount : mem::take(&mut data.promo_amount),
-            promo_status: "not_used".to_string(),
-            user_id : mem::take(&mut data.user_id),
-            username: mem::take(&mut data.username),
-            expired_at : Local::now().naive_local() ,
-            point_currention_time :  Local::now().naive_local(),
-            // NaiveTime::parse_from_str("23:56:04", "%H:%M:%S"),
-            created_at :  Local::now().naive_local(), 
-            updated_at :  Local::now().naive_local(),
-            created_by : "System".to_string(),
-            updated_by : "System".to_string(),
-             
-            };
-            // println!()
-        let to_vector = vec![prepare_data];
-        let insert =   diesel::insert_into(tb_spin_promos).values(&to_vector).execute(&mut conn);
+
+        // let rs= Err("hello");
+        // let c = entity_data.point_currention_time;
+        // let to_vector = vec![SpinPromosDbMapper::to_db(entity_data)];
+        let  point_exist = select(exists(tb_spin_promos.filter(point_currention_time.eq(convert_str_to_timestamp(entity_data.point_currention_time.to_string())))))
+        .get_result::<bool>(&mut conn);
+   
+    // if point_exist.unwrap() {
+    //     match r {
+    //         Ok(x) => x,
+    //         Err(e) => some_error(e),
+    //     };
+    // }
+    //     match point_exist {
+    //         Ok(_my_string) =>true,
+    //         Err(some_error) => println!("{}", some_error),
+    //         Ok(_my_string) =>true,
+    //         Err(some_error) => println!("{}", some_error),
+    //     }
+    // }
+    // else{
+    //     println!("no oke cok");
+    // }
+        // Result
+
+        let insert =   diesel::insert_into(tb_spin_promos).values(vec![SpinPromosDbMapper::to_db(entity_data)]).execute(&mut conn);
         match insert {
         Ok(_) => Ok(GenericResponse { status: Status::Success.to_string(),message:Option::Add.to_string()}),
         Err(e) => Err(Box::new(e)),   

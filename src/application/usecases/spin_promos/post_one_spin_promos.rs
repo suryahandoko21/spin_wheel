@@ -2,17 +2,17 @@ use async_trait::async_trait;
 
 use crate::{
     application::{repositories::spin_promos_repository_abstract::SpinPromosEntityAbstract, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
-    domain::{ error::ApiError}, adapters::api::{spin_promos::spin_promos_payloads::SpinPromosPayload, shared::response::GenericResponse},
+    domain::{ error::ApiError, spin_promos_entity::SpinPromosEntity}, adapters::api::{spin_promos::spin_promos_payloads::SpinPromosPayload, shared::response::GenericResponse},
 };
 
 pub struct PostSpinPromosUseCase<'a>{
-    post: &'a SpinPromosPayload,
+    post: &'a SpinPromosEntity,
     repository: &'a dyn SpinPromosEntityAbstract
 }
 
 impl <'a>PostSpinPromosUseCase<'a> {
     pub fn new(
-            post: &'a SpinPromosPayload,
+            post: &'a SpinPromosEntity,
             repository: &'a dyn SpinPromosEntityAbstract)->Self{
                 PostSpinPromosUseCase{post,repository}
             }

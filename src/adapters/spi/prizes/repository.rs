@@ -37,7 +37,6 @@ impl SpinPrizesEntityAbstract for ConnectionRepository {
         let mut data =  post.clone();
         let mut conn = self.db_connection.get_pool().get().expect("couldn't get db connection from pool");
         let  prepare_data = SpinPrizesToDB{
-                prize_weight: post.prize_weight,
                 prize_name:mem::take(&mut data.prize_name),
                 prize_note:mem::take(&mut data.prize_note),
                 prize_category: mem::take(&mut data.prize_category),
@@ -67,7 +66,6 @@ impl SpinPrizesEntityAbstract for ConnectionRepository {
         let mut data =  post.clone();
         let mut conn = self.db_connection.get_pool().get().expect("couldn't get db connection from pool");
         let update = diesel::update(tb_spin_prizes.find(prize_id)).set(&SpinPrizesToDB{
-                                    prize_weight: post.prize_weight,
                                     prize_name:mem::take(&mut data.prize_name),
                                     prize_note:mem::take(&mut data.prize_note),
                                     prize_category: mem::take(&mut data.prize_category),

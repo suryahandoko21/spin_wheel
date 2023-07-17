@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Serialize, Deserialize};
 
 
@@ -7,6 +9,7 @@ pub struct GenericResponse {
     pub message : String
   
 }
+
 
 impl GenericResponse {
     pub fn new(
@@ -22,4 +25,38 @@ impl GenericResponse {
 
     }
 }
+
+
+
+
+#[derive(Serialize,Deserialize)]
+pub struct TicketResponse {
+    pub status: String,
+    pub message : String,
+    pub data :  HashMap<String,String>
+  
+}
+
+
+impl TicketResponse {
+    pub fn new(
+        status: String,
+        message : String,
+        data :  HashMap<String,String>
+      
+    )->Self{
+        TicketResponse{
+            status,
+            message,
+            data
+            
+        }
+
+    }
+}
+
+
+
+
+
 

@@ -9,6 +9,7 @@ use crate::{
         
     },
     domain::{error::ApiError, spin_promos_entity::SpinPromosEntity},
+    helpers::fn_global
 
 
 };
@@ -23,8 +24,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 }
 
 #[get("/list")]
-async fn get_all_promos_prizes(data: web::Data<AppState>) -> 
-Result<HttpResponse, ErrorReponse> {
+async fn get_all_promos_prizes(data: web::Data<AppState>)->Result<HttpResponse, ErrorReponse> {
     let get_all_spin_promos_usecase: GetAllSpinPromosUseCase = GetAllSpinPromosUseCase::new(&data.connection_repository);
     let spin_prizes: Result<Vec<SpinPromosEntity>, ApiError> = get_all_spin_promos_usecase.execute().await;
     spin_prizes
@@ -38,8 +38,8 @@ Result<HttpResponse, ErrorReponse> {
 #[post("/store")]
 async fn post_one_spin_promos(data: web::Data<AppState>,post:Json<SpinPromosPayload>) ->
 Result<HttpResponse,ErrorReponse> {
- 
-        let post_one_spin_promos = PostSpinPromosUseCase::new(&post, &data.connection_repository);
+        let request = SpinPromosPresenterMapper::to_entity(post.to_owned());
+        let post_one_spin_promos = PostSpinPromosUseCase::new(&request, &data.connection_repository);
         let spin_prizes: Result<GenericResponse, ApiError> = post_one_spin_promos.execute().await;
         spin_prizes
         .map_err(ErrorReponse::map_io_error)

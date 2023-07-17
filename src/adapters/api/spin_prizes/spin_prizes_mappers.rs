@@ -12,7 +12,6 @@ impl ApiMapper<SpinPrizesEntity, SpinPrizesPresenter, SpinPrizesPayload> for Spi
             prize_category:entity.prize_category,
             prize_name:entity.prize_name,
             prize_note:entity.prize_note,
-            prize_weight:entity.prize_weight
         }
     }
 

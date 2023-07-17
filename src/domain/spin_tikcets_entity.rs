@@ -1,6 +1,6 @@
 use chrono::NaiveDateTime;
 #[derive(Debug, Clone)]
-pub struct SpinPromosEntity {
+pub struct SpinTicketsEntity {
     // pub promo_id: i32,
     pub promo_amount: i32,
     pub promo_status: String,
@@ -15,7 +15,7 @@ pub struct SpinPromosEntity {
 }
 
 
-impl SpinPromosEntity {
+impl SpinTicketsEntity {
     pub fn new(
         // promo_id: i32,
         promo_amount: i32,
@@ -29,8 +29,7 @@ impl SpinPromosEntity {
         created_by : String,
         updated_by : String,
     )->Self{
-        SpinPromosEntity{
-            // promo_id,
+        SpinTicketsEntity{
             promo_amount,
             promo_status,
             user_id,

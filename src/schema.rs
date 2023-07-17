@@ -26,7 +26,6 @@ diesel::table! {
 
     tb_spin_prizes (id) {
         id -> Int4,
-        prize_weight -> Int4,
         prize_name -> Varchar,
         prize_note -> Nullable<Varchar>,
         prize_category -> Nullable<PrizesCategories>,

@@ -1,9 +1,10 @@
 use crate::adapters::{api::spin_promos::spin_promos_presenters::SpinPromosPresenter};
 use crate::application::mappers::api_mapper::ApiMapper;
 use crate::domain::spin_promos_entity::SpinPromosEntity;
+use crate::helpers::fn_global::convert_str_to_timestamp;
 
 use super::spin_promos_payloads::SpinPromosPayload;
-
+use chrono::Local;
 pub struct SpinPromosPresenterMapper {}
 impl ApiMapper<SpinPromosEntity, SpinPromosPresenter, SpinPromosPayload> for SpinPromosPresenterMapper {
     fn to_api(entity: SpinPromosEntity) -> SpinPromosPresenter {
@@ -21,15 +22,19 @@ impl ApiMapper<SpinPromosEntity, SpinPromosPresenter, SpinPromosPayload> for Spi
         }
     }
 
-    fn to_entity(_payload: SpinPromosPayload) -> SpinPromosEntity {
-        // SpinPrizesEntity { 
-        //     // prize_id: (), 
-        //     // prize_weight: (),
-        //     // prize_name: (), 
-        //     // prize_note: (),
-        //     // prize_category: (), 
-        //     // prize_amount: () 
-        // }
-        panic!("not implemented");
+    fn to_entity(payload: SpinPromosPayload) -> SpinPromosEntity {
+        SpinPromosEntity{
+            promo_amount: payload.promo_amount,
+            promo_status: "unused".to_string(),
+            user_id: payload.user_id,
+            username: payload.username,
+            point_currention_time: convert_str_to_timestamp(payload.point_currention_time.to_string()),
+            expired_at: convert_str_to_timestamp(payload.expired_at.to_string()),
+            created_at: Local::now().naive_local(),
+            updated_at: Local::now().naive_local(),
+            created_by: "system".to_string(),
+            updated_by: "system".to_string(),
+        }
+      
     }
 }

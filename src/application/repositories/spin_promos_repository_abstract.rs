@@ -7,6 +7,6 @@ use std::error::Error;
 #[async_trait(?Send)]
 pub trait SpinPromosEntityAbstract {
     async fn get_all_spin_promos(&self) -> Result<Vec<SpinPromosEntity>, Box<dyn Error>>;
-    async fn post_one_spin_promos(&self, post: &SpinPromosPayload) ->  Result<GenericResponse, Box<dyn Error>>;
+    async fn post_one_spin_promos(&self, post: &SpinPromosEntity) ->  Result<GenericResponse, Box<dyn Error>>;
   
 }

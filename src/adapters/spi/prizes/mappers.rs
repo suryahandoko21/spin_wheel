@@ -1,9 +1,26 @@
 use crate::adapters::spi::prizes::models::SpinPrizes;
 use crate::application::mappers::db_mapper::DBMapper;
-use crate::domain::spin_prizes_entity::SpinPrizesEntity;
+use crate::domain::spin_prizes_entity::{SpinPrizesEntity, SpinPrizesCompaniesEntity};
+
+use super::models::SpinPrizesCompanies;
 
 pub struct SpinPrizesDbMapper {}
+pub struct SpinPrizesCompaniesDbMapper {}
+impl DBMapper<SpinPrizesCompaniesEntity, SpinPrizesCompanies> for SpinPrizesCompaniesDbMapper {
+    fn to_db(_entity:SpinPrizesCompaniesEntity)->SpinPrizesCompanies {
+        todo!()
+    }
 
+    fn to_entity(model:SpinPrizesCompanies)->SpinPrizesCompaniesEntity {
+        SpinPrizesCompaniesEntity{
+            prize_name: model.prize_name,
+            prize_note: model.prize_note,
+            prize_category: model.prize_category,
+            prize_amount: model.prize_amount,
+            companies: model.companies,
+        }
+    }
+}
 impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
     fn to_db(entity: SpinPrizesEntity) -> SpinPrizes {
         SpinPrizes {
@@ -12,7 +29,8 @@ impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
             prize_category:entity.prize_category,
             prize_name:entity.prize_name,
             prize_note:entity.prize_note,
-            prize_weight:entity.prize_weight
+            companies_id: entity.companies_id
+          
           
         }
     }
@@ -24,7 +42,7 @@ impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
             prize_category:model.prize_category,
             prize_name:model.prize_name,
             prize_note:model.prize_note,
-            prize_weight:model.prize_weight
+            companies_id: model.companies_id
         }
     }
 }
