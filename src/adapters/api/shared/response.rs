@@ -29,11 +29,11 @@ impl GenericResponse {
 
 
 
-#[derive(Serialize,Deserialize)]
+#[derive(Serialize,Deserialize,Debug)]
 pub struct TicketResponse {
     pub status: String,
     pub message : String,
-    pub data :  HashMap<String,String>
+    pub data :  Vec<HashMap<String,String>>
   
 }
 
@@ -42,7 +42,7 @@ impl TicketResponse {
     pub fn new(
         status: String,
         message : String,
-        data :  HashMap<String,String>
+        data :  Vec<HashMap<String,String>>
       
     )->Self{
         TicketResponse{

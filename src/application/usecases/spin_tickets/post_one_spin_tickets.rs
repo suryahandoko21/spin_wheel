@@ -2,7 +2,7 @@ use async_trait::async_trait;
 
 use crate::{
     application::{repositories::{spin_prizes_repository_abstract::SpinPrizesEntityAbstract, spin_ticket_repository_abstract::SpinTicketEntityAbstract}, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
-    domain::{ error::ApiError}, adapters::api::{ shared::response::GenericResponse, spin_tickets::spin_tickets_payloads::SpinTicketPayload},
+    domain::{ error::ApiError}, adapters::api::{ shared::response::{GenericResponse, TicketResponse}, spin_tickets::spin_tickets_payloads::SpinTicketPayload},
 };
 
 pub struct PostSpinTicketUseCase<'a>{
@@ -19,8 +19,8 @@ impl <'a>PostSpinTicketUseCase<'a> {
 }
 
 #[async_trait(?Send)]
-impl<'a> AbstractUseCase<GenericResponse> for PostSpinTicketUseCase<'a>{
-    async fn execute(&self) -> Result<GenericResponse, ApiError> {
+impl<'a> AbstractUseCase<TicketResponse> for PostSpinTicketUseCase<'a>{
+    async fn execute(&self) -> Result<TicketResponse, ApiError> {
         let spin_prizes = self.repository.post_one_spin_tickets(self.post).await;
         match spin_prizes {
             Ok(facts) => Ok(facts),
