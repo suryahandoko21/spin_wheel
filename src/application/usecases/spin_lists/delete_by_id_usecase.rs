@@ -1,8 +1,6 @@
-use async_trait::async_trait;
-
 use crate::{
     application::{repositories::spin_lists_repository_abstract::SpinListsEntityAbstract, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
-    domain::{error::ApiError}, adapters::api::shared::response::GenericResponse,
+
 };
 
 pub struct DeleteOneSpinListsByIdUseCase<'a>{
@@ -19,16 +17,16 @@ impl <'a>DeleteOneSpinListsByIdUseCase<'a> {
 }
 
 
-#[async_trait(?Send)]
-impl<'a> AbstractUseCase<GenericResponse> for DeleteOneSpinListsByIdUseCase<'a>{
-    async fn execute(&self) -> Result<GenericResponse, ApiError> {
-        let spin_lists = self.repository.delete_one_spin_list_by_id(*self.list_id).await;
-        match spin_lists {
-            Ok(facts) => Ok(facts),
-            Err(e) => Err(ErrorHandlingUtils::application_error("Found Error", Some(e))),
-        }
-    } 
-}
+// #[async_trait(?Send)]
+// impl<'a> AbstractUseCase<GenericResponse> for DeleteOneSpinListsByIdUseCase<'a>{
+//     async fn execute(&self) -> Result<GenericResponse, ApiError> {
+//         let spin_lists = self.repository.delete_one_spin_list_by_id(*self.list_id).await;
+//         match spin_lists {
+//             Ok(facts) => Ok(facts),
+//             Err(e) => Err(ErrorHandlingUtils::application_error("Found Error", Some(e))),
+//         }
+//     } 
+// }
 
 
 

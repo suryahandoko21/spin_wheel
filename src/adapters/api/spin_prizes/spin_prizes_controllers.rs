@@ -24,9 +24,10 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
     .service(updated_one_spin_prize);
 }
 
-#[get("/list")]
-async fn get_all_spin_prizes(data: web::Data<AppState>) -> Result<HttpResponse, ErrorReponse> {
-    let get_all_spin_prizes_usecase: GetAllSpinPrizesUseCase = GetAllSpinPrizesUseCase::new(&data.connection_repository);
+#[get("/list/company/{company_uuid}")]
+async fn get_all_spin_prizes(data: web::Data<AppState>,path:web::Path<(String,)>) -> Result<HttpResponse, ErrorReponse> {
+    let company_uuid = path.into_inner().0.to_string();
+    let get_all_spin_prizes_usecase: GetAllSpinPrizesUseCase = GetAllSpinPrizesUseCase::new(&company_uuid,&data.connection_repository);
     let spin_prizes: Result<Vec<SpinPrizesEntity>, ApiError> = get_all_spin_prizes_usecase.execute().await;
     spin_prizes
         .map_err(ErrorReponse::map_io_error)

@@ -18,6 +18,7 @@ impl DBMapper<SpinPrizesCompaniesEntity, SpinPrizesCompanies> for SpinPrizesComp
             prize_category: model.prize_category,
             prize_amount: model.prize_amount,
             companies: model.companies,
+            percentage:model.percentage
         }
     }
 }
@@ -29,7 +30,8 @@ impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
             prize_category:entity.prize_category,
             prize_name:entity.prize_name,
             prize_note:entity.prize_note,
-            companies_id: entity.companies_id
+            companies_id: entity.companies_id,
+            percentage:entity.percentage
           
           
         }
@@ -42,7 +44,8 @@ impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
             prize_category:model.prize_category,
             prize_name:model.prize_name,
             prize_note:model.prize_note,
-            companies_id: model.companies_id
+            companies_id: model.companies_id,
+            percentage:model.percentage
         }
     }
 }

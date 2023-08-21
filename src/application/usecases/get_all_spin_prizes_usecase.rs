@@ -6,19 +6,22 @@ use crate::{
 };
 
 pub struct GetAllSpinPrizesUseCase<'a> {
+    company_uuid: &'a String,
     repository: &'a dyn SpinPrizesEntityAbstract,
 }
 
 impl<'a> GetAllSpinPrizesUseCase<'a> {
-    pub fn new(repository: &'a dyn SpinPrizesEntityAbstract) -> Self {
-        GetAllSpinPrizesUseCase { repository }
+    pub fn new(company_uuid: &'a String,
+    repository: &'a dyn SpinPrizesEntityAbstract) -> Self {    
+        GetAllSpinPrizesUseCase { repository, company_uuid }
     }
 }
 
 #[async_trait(?Send)]
 impl<'a> AbstractUseCase<Vec<SpinPrizesEntity>> for GetAllSpinPrizesUseCase<'a> {
     async fn execute(&self) -> Result<Vec<SpinPrizesEntity>, ApiError> {
-        let spin_prizes = self.repository.get_all_spin_prizes().await;
+        let company_uuid = self.company_uuid.clone();
+        let spin_prizes = self.repository.get_all_spin_prizes_by_company_uuid(company_uuid).await;
         match spin_prizes {
             Ok(facts) => Ok(facts),
             Err(e) => Err(ErrorHandlingUtils::application_error("Cannot get all DATA", Some(e))),

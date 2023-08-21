@@ -16,7 +16,8 @@ use crate::adapters::{
 use actix_web::{dev::Server, middleware::Logger};
 use actix_web::{web, App, HttpServer};
 
-pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
+pub fn server(mut listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
+    println!("{:?}",&listener.local_addr());
     env::set_var("RUST_BACKTRACE", "1");
     env::set_var("RUST_LOG", "actix_web=debug");
     env_logger::init_from_env(Env::default().default_filter_or("info"));
@@ -42,7 +43,7 @@ pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::E
     let server = HttpServer::new(move || App::new().app_data(data.clone()).wrap(Logger::default()).configure(adapters::api::shared::routes::routes))
         .listen(listener)?
         .run();
-
+    
     println!("Server running on port {}, db_name {}", port, db_name);
 
     Ok(server)

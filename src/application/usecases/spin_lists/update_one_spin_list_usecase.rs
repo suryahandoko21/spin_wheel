@@ -20,13 +20,13 @@ impl <'a>UpdateSpinListsUseCase<'a> {
             }
 }
 
-#[async_trait(?Send)]
-impl<'a> AbstractUseCase<GenericResponse> for UpdateSpinListsUseCase<'a>{
-    async fn execute(&self) -> Result<GenericResponse, ApiError> {
-        let spin_prizes = self.repository.updated_one_spin_list(*self.list_id,self.post).await;
-        match spin_prizes {
-            Ok(facts) => Ok(facts),
-            Err(e) => Err(ErrorHandlingUtils::application_error("Found Error", Some(e))),
-        }
-    } 
-}
+// #[async_trait(?Send)]
+// impl<'a> AbstractUseCase<GenericResponse> for UpdateSpinListsUseCase<'a>{
+//     async fn execute(&self) -> Result<GenericResponse, ApiError> {
+//         let spin_prizes = self.repository.updated_one_spin_list(*self.list_id,self.post).await;
+//         match spin_prizes {
+//             Ok(facts) => Ok(facts),
+//             Err(e) => Err(ErrorHandlingUtils::application_error("Found Error", Some(e))),
+//         }
+//     } 
+// }

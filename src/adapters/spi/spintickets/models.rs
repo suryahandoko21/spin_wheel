@@ -2,7 +2,7 @@ use diesel::{prelude::*};
 use serde::{Serialize, Deserialize};
 use std::time::SystemTime;
 
-#[derive(Queryable, Selectable, Identifiable, Debug, PartialEq,Serialize,Deserialize,Insertable)]
+#[derive(Queryable, Selectable,Insertable,Identifiable,AsChangeset,Debug,Deserialize,QueryableByName,Serialize)]
 
 #[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_tickets)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
@@ -19,7 +19,7 @@ pub struct SpinTickets {
     pub expired_date: String
 }
 
-#[derive(Queryable, Selectable, Debug, PartialEq,Serialize,Deserialize,Insertable)]
+#[derive(Queryable, Selectable, Debug, PartialEq,Serialize,Deserialize,Insertable,QueryableByName)]
 #[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_tickets)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct SpinTicketsToDb {

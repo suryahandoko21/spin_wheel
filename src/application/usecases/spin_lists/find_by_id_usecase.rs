@@ -18,13 +18,13 @@ impl <'a>GetOneSpinListsByIdUseCase<'a> {
             }
 }
 
-#[async_trait(?Send)]
-impl<'a>AbstractUseCase<SpinListsPrizesEntity> for GetOneSpinListsByIdUseCase<'a>{
-    async fn execute(&self)->Result<SpinListsPrizesEntity,ApiError>{
-        let spin_list_single = self.repository.get_one_spin_list_by_id(*self.list_id).await;
-        match spin_list_single {
-            Ok(facts) => Ok(facts),
-            Err(e) => Err(ErrorHandlingUtils::application_error("Cannot get all DATA", Some(e))),
-        }
-    } 
-}
+// #[async_trait(?Send)]
+// impl<'a>AbstractUseCase<SpinListsPrizesEntity> for GetOneSpinListsByIdUseCase<'a>{
+//     async fn execute(&self)->Result<SpinListsPrizesEntity,ApiError>{
+//         let spin_list_single = self.repository.get_one_spin_list_by_id(*self.list_id).await;
+//         match spin_list_single {
+//             Ok(facts) => Ok(facts),
+//             Err(e) => Err(ErrorHandlingUtils::application_error("Cannot get all DATA", Some(e))),
+//         }
+//     } 
+// }

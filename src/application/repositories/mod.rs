@@ -2,3 +2,5 @@ pub mod spin_prizes_repository_abstract;
 pub mod spin_lists_repository_abstract;
 pub mod spin_promos_repository_abstract;
 pub mod spin_ticket_repository_abstract;
+pub mod spin_useds_repository_abstract;
+pub mod spin_company_repository_abstract;

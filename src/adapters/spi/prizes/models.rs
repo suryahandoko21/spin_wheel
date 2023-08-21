@@ -12,7 +12,8 @@ pub struct SpinPrizes {
     pub prize_note : String,
     pub prize_category : String,
     pub prize_amount : i32,
-    pub companies_id:i32
+    pub companies_id:i32,
+    pub percentage:i32
 }
 
 
@@ -23,9 +24,9 @@ pub struct SpinPrizesToDB {
     pub prize_name : String,
     pub prize_note : String,
     pub prize_category :String,
-    pub prize_amount :i32
+    pub prize_amount :i32,
+    pub percentage:i32
 }
-
 
 
 #[derive(Debug, QueryableByName)]
@@ -38,5 +39,6 @@ pub struct SpinPrizesCompanies{
     pub prize_note : String,
     pub prize_category : String,
     pub prize_amount : i32,
+    pub percentage:i32
    
 }

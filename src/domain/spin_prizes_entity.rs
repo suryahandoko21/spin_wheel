@@ -7,7 +7,8 @@ pub struct SpinPrizesEntity {
     pub prize_note: String,
     pub prize_category: String,
     pub prize_amount: i32,
-    pub companies_id : i32
+    pub companies_id : i32,
+    pub percentage:i32
 }
 
 impl SpinPrizesEntity {
@@ -17,7 +18,8 @@ impl SpinPrizesEntity {
         prize_note: String,
         prize_category: String,
         prize_amount: i32,
-        companies_id: i32
+        companies_id: i32,
+        percentage:i32
     )->Self{
          SpinPrizesEntity{
             prize_id,
@@ -25,7 +27,8 @@ impl SpinPrizesEntity {
             prize_note,
             prize_category,
             prize_amount,
-            companies_id
+            companies_id,
+            percentage
         }
 
     }
@@ -39,6 +42,7 @@ pub struct SpinPrizesCompaniesEntity {
     pub prize_category: String,
     pub prize_amount: i32,
     pub companies : Companies,
+    pub percentage: i32,
 }
 
 impl SpinPrizesCompaniesEntity {
@@ -48,6 +52,7 @@ impl SpinPrizesCompaniesEntity {
         prize_category: String,
         prize_amount: i32,
         companies : Companies,
+        percentage:i32
         
 
     )->Self{
@@ -56,7 +61,8 @@ impl SpinPrizesCompaniesEntity {
             prize_note,
             prize_category,
             prize_amount,
-            companies
+            companies,
+            percentage
      
         }
 

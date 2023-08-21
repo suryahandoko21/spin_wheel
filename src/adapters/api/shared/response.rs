@@ -57,6 +57,33 @@ impl TicketResponse {
 
 
 
+#[derive(Serialize,Deserialize,Debug)]
+pub struct SpinAvailableResponse {
+    pub status: String,
+    pub message : String,
+    pub spin :  i64
+  
+}
+
+
+impl SpinAvailableResponse {
+    pub fn new(
+        status: String,
+        message : String,
+        spin :  i64
+      
+    )->Self{
+        SpinAvailableResponse{
+            status,
+            message,
+            spin
+            
+        }
+
+    }
+}
+
+
 
 
 

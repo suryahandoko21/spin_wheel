@@ -7,5 +7,6 @@ pub struct SpinPrizesPayload {
     pub prize_name: String,
     pub prize_note: String,
     pub prize_category: String,
-    pub prize_amount: i32
+    pub prize_amount: i32,
+    pub percentage:i32
 }
