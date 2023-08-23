@@ -8,7 +8,8 @@ impl ApiMapper<SpinPrizesEntity, SpinPrizesPresenter, SpinPrizesPayload> for Spi
     fn to_api(entity: SpinPrizesEntity) -> SpinPrizesPresenter {
         SpinPrizesPresenter {
             prize_id: entity.prize_id,
-            prize_amount:entity.prize_amount,    
+            prize_amount:entity.prize_amount, 
+            prize_money:entity.prize_money,   
             prize_category:entity.prize_category,
             prize_name:entity.prize_name,
             prize_note:entity.prize_note,

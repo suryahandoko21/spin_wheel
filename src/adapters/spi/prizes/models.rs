@@ -1,4 +1,5 @@
 
+use chrono::format::Numeric;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use crate::adapters::spi::companies::models::Companies; 
@@ -12,6 +13,7 @@ pub struct SpinPrizes {
     pub prize_note : String,
     pub prize_category : String,
     pub prize_amount : i32,
+    pub prize_money : i32,
     pub companies_id:i32,
     pub percentage:i32
 }
@@ -25,7 +27,9 @@ pub struct SpinPrizesToDB {
     pub prize_note : String,
     pub prize_category :String,
     pub prize_amount :i32,
-    pub percentage:i32
+    pub prize_money : i32,
+    pub percentage:i32,
+    pub companies_id:i32
 }
 
 
@@ -39,6 +43,7 @@ pub struct SpinPrizesCompanies{
     pub prize_note : String,
     pub prize_category : String,
     pub prize_amount : i32,
+    pub prize_money : i32,
     pub percentage:i32
    
 }

@@ -27,6 +27,7 @@ impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
         SpinPrizes {
             id:entity.prize_id,
             prize_amount:entity.prize_amount,
+            prize_money:entity.prize_money,
             prize_category:entity.prize_category,
             prize_name:entity.prize_name,
             prize_note:entity.prize_note,
@@ -41,6 +42,7 @@ impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
         SpinPrizesEntity {
             prize_id:model.id,
             prize_amount:model.prize_amount,
+            prize_money:model.prize_money,
             prize_category:model.prize_category,
             prize_name:model.prize_name,
             prize_note:model.prize_note,

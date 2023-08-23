@@ -29,6 +29,7 @@ diesel::table! {
         prize_note -> Varchar,
         prize_category -> Varchar,
         prize_amount -> Int4,
+        prize_money -> Int4,
         companies_id -> Int4,
         percentage ->Int4
     }

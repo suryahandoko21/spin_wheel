@@ -1,3 +1,5 @@
+use std::time::SystemTime;
+
 use chrono::NaiveDateTime;
 use diesel::{prelude::*};
 use serde::{Serialize, Deserialize};
@@ -10,6 +12,20 @@ pub struct SpinUseds {
     pub user_id : String, 
     pub created_at : NaiveDateTime, 
     pub updated_at : NaiveDateTime,
+    pub created_by : String,
+    pub updated_by : String,
+    pub used_status : String,
+    pub prize_id : i32,
+    pub company_id :i32
+}
+
+#[derive(Queryable, Selectable,Debug,Deserialize,QueryableByName,Serialize,Insertable)]
+#[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_used)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+pub struct SpinUsedsToDb {
+    pub user_id : String, 
+    pub created_at : SystemTime, 
+    pub updated_at : SystemTime,
     pub created_by : String,
     pub updated_by : String,
     pub used_status : String,

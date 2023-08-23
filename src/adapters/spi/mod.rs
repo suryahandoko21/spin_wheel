@@ -5,3 +5,4 @@ pub mod promos;
 pub mod companies;
 pub mod spintickets;
 pub mod used;
+pub mod cron;

@@ -10,4 +10,6 @@ use std::error::Error;
 pub trait SpinCompanyEntityAbstract {
     async fn get_spin_company_by_id(&self,company_id: i32) -> Result<SpinCompanyEntity, Box<dyn Error>>;
     async fn get_spin_company_by_uuid(&self,company_code: String) -> Result<SpinCompanyEntity, Box<dyn Error>>;
+    async fn get_spin_company_by_code(&self,company_code: String) -> Result<SpinCompanyEntity, Box<dyn Error>>;
+    
 }

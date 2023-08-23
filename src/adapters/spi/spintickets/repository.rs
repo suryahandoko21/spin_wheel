@@ -116,5 +116,10 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
        }
     }
    
-    
+    async fn used_single_spin_ticket_by_uuid(&self, uuid: String){
+        println!("masuk pak eoko{:?}",uuid);
+        let mut conn = self.db_connection.get_pool().get().expect("couldn't get db connection from pool");
+        let _update = diesel::update(tb_spin_tickets.filter(ticket_uuid.eq(uuid))).set(status.eq("TICKET USED")).execute(&mut conn);
+
+    }
 }
