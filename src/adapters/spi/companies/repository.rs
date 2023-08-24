@@ -37,5 +37,8 @@ impl SpinCompanyEntityAbstract for ConnectionRepository {
             Err(e) => Err(Box::new(e)),
         }
     }
-
+    async fn fetch_spin_company_from_url(&self) ->bool{
+        
+        return true;
+    }
      }

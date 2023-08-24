@@ -3,7 +3,7 @@ use async_trait::async_trait;
 use std::error::Error;
 use std::time::SystemTime;
 use crate::adapters::api::shared::enum_response::Status;
-use crate::adapters::api::shared::init_global::GLOBAL_MAP;
+use crate::adapters::api::shared::init_global::GLOBAL_INIT;
 use crate::adapters::api::shared::request_be::RequestBeResult;
 use crate::adapters::api::shared::response::GenericResponse;
 use crate::adapters::api::spin_useds::spin_tickets_payloads::SpinUsedPayload;
@@ -51,7 +51,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         /*
         TRY POST TO BE FOR UPDATE SPIN TICKET (IF ERROR THEN WILL PENDING AND RETRY USING CRON JOB)
         */    
-        let global_map =GLOBAL_MAP.get().unwrap();
+        let global_map =GLOBAL_INIT.get().unwrap();
         let webhook_be = &global_map["webhook_be"];
 
         let mut status = "failed".to_string();

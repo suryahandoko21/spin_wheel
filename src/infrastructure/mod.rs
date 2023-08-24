@@ -27,6 +27,7 @@ pub fn server(mut listener: TcpListener, db_name: &str) -> Result<Server, std::i
 
     let db_connection =   DbConnection { db_name: db_name.to_string() };
     // let http_connection = HttpConnection {};
+    // println!("sdasda{:?}",db_connection.get_pool());
 
     let data = web::Data::new(AppState {
         app_name: String::from("Spin WHeel Facts API"),

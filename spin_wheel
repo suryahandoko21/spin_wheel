@@ -160,3 +160,17 @@ create table tb_spin_transactions(
     update_by varchar
     
 );
+
+
+
+
+- spin wheel
+ - add kolom deskripsi (di endpoint)
+ - tambah order di spin
+ - tidak ada delete reward (hanya status active/inactive)
+ - total persen harus 100 
+ - add reward atau update harus berbarengan
+ - tambah image di spin_prize(hanya path nya)
+ - type zonk,product,cash
+
+
