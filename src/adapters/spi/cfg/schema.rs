@@ -57,7 +57,6 @@ diesel::table! {
 
 diesel::table! {
     use diesel::sql_types::*;
-    use super::sql_types::PrizesCategories;
     tb_spin_used (id) {
         id -> Int4,
         user_id -> Varchar,
@@ -67,7 +66,7 @@ diesel::table! {
         updated_by -> Varchar,
         used_status -> Varchar,
         prize_id -> Int4,
-        company_id ->Int4,
+        companies_code ->Varchar,
         ticket_uuid ->Varchar
     }
 }
@@ -129,7 +128,6 @@ diesel::joinable!(tb_spin_lists -> tb_spin_prizes (spin_prizes_id));
 
 
 diesel::joinable!(tb_spin_used -> tb_spin_prizes (prize_id));
-diesel::joinable!(tb_spin_used -> tb_companies (company_id));
 diesel::joinable!(tb_spin_prizes -> tb_companies (companies_id));
 
 diesel::allow_tables_to_appear_in_same_query!(

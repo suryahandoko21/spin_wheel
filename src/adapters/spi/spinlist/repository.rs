@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::fs::File;
-use std::mem;
+
 use std::time::SystemTime;
 
 use async_trait::async_trait;
@@ -11,24 +11,20 @@ use crate::adapters::api::shared::enum_response::Status;
 use crate::adapters::api::shared::response::GenericResponse;
 use crate::adapters::api::spin_lists::spin_list_payloads::{SpinListPayload, SpinPostPayload};
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
-use crate::adapters::spi::cfg::{schema::tb_spin_lists::dsl::*};
+use crate::adapters::spi::cfg::schema::tb_spin_lists::dsl::*;
 use crate::adapters::spi::spinlist::mappers::SpinListsPrizesDBMapper;
 use crate::adapters::spi::spinlist::models::SpinListsPrizes;
 use crate::application::{mappers::db_mapper::DBMapper,repositories::spin_lists_repository_abstract::SpinListsEntityAbstract};
-use crate::domain::spin_lists_entity::{SpinListsPrizesEntity};
+use crate::domain::spin_lists_entity::SpinListsPrizesEntity;
 use super::models::SpinListsToDb;
 
 
 #[async_trait(?Send)]
 impl SpinListsEntityAbstract for ConnectionRepository {
-    async fn post_spin_by_uuid(&self, post: &SpinPostPayload) ->  Result<GenericResponse, Box<dyn Error>>{
+    async fn post_spin_by_uuid(&self, _post: &SpinPostPayload) ->  Result<GenericResponse, Box<dyn Error>>{
         let mut conn = self.db_connection.get_pool().get().expect("couldn't get db connection from pool");
-        let list_spins = sql_query("SELECT tb_spin_prizes.*, company_code,list_status ,prize_name,percentage,roleid,created_at,created_by,updated_at,updated_by FROM tb_spin_lists  inner join tb_spin_prizes on tb_spin_lists.spin_prizes_id  =  tb_spin_prizes.id").load::<SpinListsPrizes>(&mut conn);
-        // let x = list_spins.unwrap();
-        // println!("aaa{:?}",x);
-        // for i in list_spins?.map(_){
-        //     println!("sds");
-        // }
+        let _list_spins = sql_query("SELECT tb_spin_prizes.*, company_code,list_status ,prize_name,percentage,roleid,created_at,created_by,updated_at,updated_by FROM tb_spin_lists  inner join tb_spin_prizes on tb_spin_lists.spin_prizes_id  =  tb_spin_prizes.id").load::<SpinListsPrizes>(&mut conn);
+      
         let f = File::open("/");
         match f {
         Ok(_) => Ok(GenericResponse { status: Status::Success.to_string(),message:Option::Add.to_string()}),
@@ -56,7 +52,7 @@ impl SpinListsEntityAbstract for ConnectionRepository {
     // }
 
     async fn post_one_spin_list(&self, post: &SpinListPayload) ->  Result<GenericResponse, Box<dyn Error>>{
-        let mut data =  post.clone();
+        let data =  post.clone();
         let mut conn = self.db_connection.get_pool().get().expect("couldn't get db connection from pool");
         let  _result = diesel::delete(tb_spin_lists.filter(company_code.eq(data.company_code.to_string()))).execute(&mut conn);     
         for spin in data.rule{
@@ -73,7 +69,7 @@ impl SpinListsEntityAbstract for ConnectionRepository {
                 spin_prizes_id: 1,     
                 };
             let to_vector = vec![prepare_data];
-            let insert =   diesel::insert_into(tb_spin_lists).values(&to_vector).execute(&mut conn);
+            let _insert =   diesel::insert_into(tb_spin_lists).values(&to_vector).execute(&mut conn);
         }
 
         let f = File::open("/");

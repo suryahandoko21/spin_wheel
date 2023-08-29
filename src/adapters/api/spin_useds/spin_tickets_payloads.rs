@@ -4,5 +4,5 @@ use serde::{Deserialize, Serialize};
 pub struct SpinUsedPayload {
     // implement for POST/UPDATE requests
     pub user_uuid: String,
-    pub company_uuid :String
+    pub company_code :String
 }

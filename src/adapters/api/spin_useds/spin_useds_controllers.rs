@@ -1,6 +1,6 @@
-use actix_web::{web::{self, Json}, HttpResponse, post, get, http::header::ContentType};
+use actix_web::{web::{self, Json}, HttpResponse, post};
 
-use crate::{adapters::api::{spin_tickets::spin_tickets_payloads::SpinTicketPayload, shared::{app_state::AppState, response::{GenericResponse, TicketResponse, SpinAvailableResponse}, error_presenter::ErrorReponse}, spin_useds::spin_tickets_payloads::SpinUsedPayload}, application::usecases::{spin_tickets::{post_one_spin_tickets::PostSpinTicketUseCase, find_by_uuid_usecase::GetSpinTicketByUuidUseCase}, interfaces::AbstractUseCase, spin_useds::post_one_spin_useds::PostSpinUsedUseCase}, domain::error::ApiError};
+use crate::{adapters::api::{shared::{app_state::AppState, response::GenericResponse, error_presenter::ErrorReponse}, spin_useds::spin_tickets_payloads::SpinUsedPayload}, application::usecases::{interfaces::AbstractUseCase, spin_useds::post_one_spin_useds::PostSpinUsedUseCase}, domain::error::ApiError};
 
 /*  collection route for spin_tickets */
 pub fn routes(cfg: &mut web::ServiceConfig) {

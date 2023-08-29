@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug,Clone)]
+#[allow(non_snake_case)]
 pub struct SpinTicketPayload {
     // implement for POST/UPDATE requests
     pub userUuId: String,
@@ -9,6 +10,7 @@ pub struct SpinTicketPayload {
 
 }
 #[derive(Serialize, Deserialize, Debug,Clone)]
+#[allow(non_snake_case)]
 pub  struct SpinTickets {
    pub id:i32,
    pub uuid:String,

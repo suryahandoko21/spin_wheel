@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 
 use crate::{
-    application::{repositories::{spin_ticket_repository_abstract::SpinTicketEntityAbstract, spin_useds_repository_abstract::SpinUsedEntityAbstract}, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
-    domain::{ error::ApiError}, adapters::api::{ shared::response::{GenericResponse, TicketResponse}, spin_tickets::spin_tickets_payloads::SpinTicketPayload, spin_useds::spin_tickets_payloads::SpinUsedPayload},
+    application::{repositories::spin_useds_repository_abstract::SpinUsedEntityAbstract, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
+    domain::error::ApiError, adapters::api::{ shared::response::GenericResponse, spin_useds::spin_tickets_payloads::SpinUsedPayload},
 };
 
 pub struct PostSpinUsedUseCase<'a>{

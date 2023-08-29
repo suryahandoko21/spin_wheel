@@ -1,4 +1,4 @@
-use diesel::{prelude::*};
+use diesel::prelude::*;
 use serde::{Serialize, Deserialize};
 use std::time::SystemTime;
 

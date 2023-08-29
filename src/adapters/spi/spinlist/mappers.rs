@@ -9,7 +9,7 @@ pub struct SpinListDbMapper {}
 pub struct SpinListsPrizesDBMapper {}
 
 impl DBMapper<SpinListsPrizesEntity,SpinListsPrizes> for SpinListsPrizesDBMapper {
-    fn to_db(entity:SpinListsPrizesEntity)->SpinListsPrizes {
+    fn to_db(_entity:SpinListsPrizesEntity)->SpinListsPrizes {
         todo!()
     }
 

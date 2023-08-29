@@ -13,7 +13,7 @@ use crate::adapters::api::shared::enum_response::Option;
 use crate::application::repositories::spin_promos_repository_abstract::SpinPromosEntityAbstract;
 use crate::application::{mappers::db_mapper::DBMapper};
 use crate::domain::spin_promos_entity::SpinPromosEntity;
-use crate::helpers::fn_global::{convert_str_to_timestamp,some_error};
+use crate::helpers::fn_global::convert_str_to_timestamp;
 use super::mappers::{SpinPromosDbMapper, SpinPromosApiMapper};
 use super::models::{SpinPromos};
 
@@ -34,7 +34,7 @@ impl SpinPromosEntityAbstract for ConnectionRepository {
         // let rs= Err("hello");
         // let c = entity_data.point_currention_time;
         // let to_vector = vec![SpinPromosDbMapper::to_db(entity_data)];
-        let  point_exist = select(exists(tb_spin_promos.filter(point_currention_time.eq(convert_str_to_timestamp(entity_data.point_currention_time.to_string())))))
+        let  _point_exist = select(exists(tb_spin_promos.filter(point_currention_time.eq(convert_str_to_timestamp(entity_data.point_currention_time.to_string())))))
         .get_result::<bool>(&mut conn);
    
     // if point_exist.unwrap() {

@@ -1,19 +1,19 @@
 use crate::{
-    adapters::{api::{    
+    adapters::api::{    
         shared::{app_state::AppState,error_presenter::ErrorReponse, response::GenericResponse}, spin_lists::{spin_list_mappers::SpinListPrizesPresenterMapper, spin_list_presenters::SpinListsPrizesPresenter, spin_list_payloads::{SpinListPayload, SpinPostPayload}}
-    }},
+    },
     application::{
         mappers::api_mapper::ApiMapper,
-        usecases::{interfaces::AbstractUseCase, spin_lists::{get_all_spin_lists_usecase::GetAllSpinListsUseCase, find_by_id_usecase::GetOneSpinListsByIdUseCase, post_one_spin_list_usecase::PostSpinListsUseCase,delete_by_id_usecase::DeleteOneSpinListsByIdUseCase,update_one_spin_list_usecase::UpdateSpinListsUseCase, post_spin_by_uuid::PostSpinByUuidUseCase}}
+        usecases::{interfaces::AbstractUseCase, spin_lists::{get_all_spin_lists_usecase::GetAllSpinListsUseCase, post_one_spin_list_usecase::PostSpinListsUseCase, post_spin_by_uuid::PostSpinByUuidUseCase}}
         
     },
-    domain::{error::ApiError, spin_lists_entity::{ SpinListsPrizesEntity}},
+    domain::{error::ApiError, spin_lists_entity::SpinListsPrizesEntity},
 
 
 };
 
-use actix_http::ContentEncoding;
-use actix_web::{get, web::{self, Json}, HttpResponse,post, delete,patch};
+
+use actix_web::{get, web::{self, Json}, HttpResponse,post};
 
 
 /*  collection route for spin_lists */
@@ -52,7 +52,7 @@ async fn get_all_spin_lists(data: web::Data<AppState>) ->  Result<HttpResponse, 
 #[post("/spin")]
 async fn post_spins(data: web::Data<AppState>,post:Json<SpinPostPayload>)-> HttpResponse {
     let post_spin =  PostSpinByUuidUseCase::new(&post, &data.connection_repository);
-    let res: Result<GenericResponse, ApiError> = post_spin.execute().await;
+    let _res: Result<GenericResponse, ApiError> = post_spin.execute().await;
     HttpResponse::Ok().body("data")
 }
 

@@ -1,19 +1,18 @@
 use crate::{
-    adapters::{api::{
+    adapters::api::{
         
         shared::{app_state::AppState,error_presenter::ErrorReponse, response::GenericResponse}, spin_promos::{spin_promos_presenters::SpinPromosPresenter, spin_promos_payloads::SpinPromosPayload}
-    }},
+    },
     application::{
         mappers::api_mapper::ApiMapper,
-        usecases::{ spin_promos::{get_all_spin_promos_usecase::{ GetAllSpinPromosUseCase}, post_one_spin_promos::PostSpinPromosUseCase}, interfaces::AbstractUseCase}
+        usecases::{ spin_promos::{get_all_spin_promos_usecase::GetAllSpinPromosUseCase, post_one_spin_promos::PostSpinPromosUseCase}, interfaces::AbstractUseCase}
         
     },
-    domain::{error::ApiError, spin_promos_entity::SpinPromosEntity},
-    helpers::fn_global
+    domain::{error::ApiError, spin_promos_entity::SpinPromosEntity}
 
 
 };
-use actix_web::{get, web::{self, Json}, HttpResponse,post, delete,patch};
+use actix_web::{get, web::{self, Json}, HttpResponse,post};
 
 use super::spin_promos_mappers::SpinPromosPresenterMapper;
 

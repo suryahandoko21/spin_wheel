@@ -16,7 +16,7 @@ pub struct SpinUseds {
     pub updated_by : String,
     pub used_status : String,
     pub prize_id : i32,
-    pub company_id :i32,
+    pub companies_code :String,
     pub ticket_uuid : String
 }
 
@@ -31,6 +31,6 @@ pub struct SpinUsedsToDb {
     pub updated_by : String,
     pub used_status : String,
     pub prize_id : i32,
-    pub company_id :i32,
+    pub companies_code :String,
     pub ticket_uuid :String
 }

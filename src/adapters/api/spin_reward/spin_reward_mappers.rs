@@ -1,4 +1,4 @@
-use crate::adapters::api::spin_prizes::spin_prizes_presenters::SpinPrizesPresenter;
+
 use crate::application::mappers::api_mapper::ApiMapper;
 use crate::domain::spin_reward_entity::SpinRewardEntity;
 use super::spin_reward_payload::SpinRewardPayload;

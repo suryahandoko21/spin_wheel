@@ -1,6 +1,7 @@
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize,Deserialize,Debug)]
+#[allow(non_snake_case)]
 pub struct RequestBeResult {
     pub ticketUuid : String,
     pub userId : String,

@@ -1,9 +1,4 @@
-use async_trait::async_trait;
-
-use crate::{
-    application::{repositories::spin_lists_repository_abstract::SpinListsEntityAbstract, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
-    domain::{ error::ApiError, spin_lists_entity::SpinListsPrizesEntity},
-};
+use crate::application::repositories::spin_lists_repository_abstract::SpinListsEntityAbstract;
 
 pub struct GetOneSpinListsByIdUseCase<'a>{
     list_id: &'a i32,

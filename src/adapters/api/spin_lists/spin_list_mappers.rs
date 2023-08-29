@@ -21,7 +21,7 @@ impl ApiMapper<SpinListsPrizesEntity, SpinListsPrizesPresenter, SpinListPayload>
     }
     }
 
-    fn to_entity(payload:SpinListPayload)->SpinListsPrizesEntity {
+    fn to_entity(_payload:SpinListPayload)->SpinListsPrizesEntity {
         todo!()
     }
     

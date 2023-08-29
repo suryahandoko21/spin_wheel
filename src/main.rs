@@ -1,18 +1,19 @@
-use std::{env, collections::HashMap};
+use std::env;
 use std::net::TcpListener;
 use awc::Client;
 use spin_wheel::adapters::api::shared::init_global::set_global_init;
-use std::str;
 
 use spin_wheel::adapters::spi::cfg::pg_connection::check_connection;
 // use spin_wheel::adapters::spi::cron::crons::cron_all;
 use spin_wheel::run;
 use std::thread;
-use serde_json::{Result, Value};
+// use serde_json::{Result, Value};
 
 // use my_crate::MY_VAR;
 #[actix_web::main]
+
 async fn main() -> std::io::Result<()> {
+    #[allow(non_snake_case)]
     let client = Client::default();
 
     let res = client.get("https://query.lidoapi.com/companies/all")

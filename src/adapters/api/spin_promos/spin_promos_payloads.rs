@@ -1,6 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::time::SystemTime;
-
 #[derive(Serialize, Deserialize, Debug,Clone)]
 pub struct SpinPromosPayload {
     // implement for POST/UPDATE requests

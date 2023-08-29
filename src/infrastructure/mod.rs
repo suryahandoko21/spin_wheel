@@ -5,7 +5,7 @@ use crate::adapters::{
     self,
     api::shared::app_state::AppState,
     spi::{
-        cfg::{db_connection::DbConnection},
+        cfg::db_connection::DbConnection,
         // prizes::{repository::SpinPrizesRepository},
         // spinlist::{repository::SpinListsRepository},
 
@@ -16,7 +16,7 @@ use crate::adapters::{
 use actix_web::{dev::Server, middleware::Logger};
 use actix_web::{web, App, HttpServer};
 
-pub fn server(mut listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
+pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
     println!("{:?}",&listener.local_addr());
     env::set_var("RUST_BACKTRACE", "1");
     env::set_var("RUST_LOG", "actix_web=debug");
