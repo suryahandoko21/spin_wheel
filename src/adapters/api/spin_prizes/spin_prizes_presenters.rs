@@ -8,5 +8,6 @@ pub struct SpinPrizesPresenter {
     pub prize_category: String,
     pub prize_amount: i32,
     pub prize_money: i32,
-    pub percentage:i32
+    pub percentage:i32,
+    pub image:String
 }

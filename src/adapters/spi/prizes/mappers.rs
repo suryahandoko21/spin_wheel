@@ -22,6 +22,15 @@ impl DBMapper<SpinPrizesCompaniesEntity, SpinPrizesCompanies> for SpinPrizesComp
         }
     }
 }
+
+
+
+
+
+
+
+
+
 impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
     fn to_db(entity: SpinPrizesEntity) -> SpinPrizes {
         SpinPrizes {
@@ -31,8 +40,9 @@ impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
             prize_category:entity.prize_category,
             prize_name:entity.prize_name,
             prize_note:entity.prize_note,
-            companies_id: entity.companies_id,
-            percentage:entity.percentage
+            companies_id: entity.companies_id.parse().unwrap(),
+            percentage:entity.percentage,
+            prize_image :entity.prize_image
           
           
         }
@@ -46,8 +56,9 @@ impl DBMapper<SpinPrizesEntity, SpinPrizes> for SpinPrizesDbMapper {
             prize_category:model.prize_category,
             prize_name:model.prize_name,
             prize_note:model.prize_note,
-            companies_id: model.companies_id,
-            percentage:model.percentage
+            companies_id: model.companies_id.to_string(),
+            percentage:model.percentage,
+            prize_image:model.prize_image
         }
     }
 }

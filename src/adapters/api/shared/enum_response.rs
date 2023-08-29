@@ -14,7 +14,7 @@ pub enum Option {
 impl fmt::Display for Option  {
     fn fmt(&self,f:&mut fmt::Formatter)->fmt::Result{
         match self{
-            Option::Add=>write!(f, "Data Aded"),
+            Option::Add=>write!(f, "Data Added"),
             Option::Update=>write!(f, "Data Updated"),
             Option::Delete=>write!(f, "Data Deleted"),
             Option::NotFound=>write!(f, "Data Not Found"),
@@ -28,7 +28,8 @@ pub enum Status {
     Success,
     Fail,
     Successall,
-    Partial
+    Partial,
+    Failall
 }
 
 
@@ -38,7 +39,8 @@ impl fmt::Display for Status {
             Status::Success => write!(f, "Success"),
             Status::Fail => write!(f, "Failed"),
             Status::Successall =>write!(f,"Success All"),
-            Status::Partial =>write!(f,"Partial")
+            Status::Partial =>write!(f,"Partial"),
+            Status::Failall =>write!(f,"Failed All")
         }
     }
 }

@@ -31,7 +31,27 @@ diesel::table! {
         prize_amount -> Int4,
         prize_money -> Int4,
         companies_id -> Int4,
-        percentage ->Int4
+        percentage ->Int4,
+        prize_image -> Varchar
+    }
+}
+
+
+diesel::table! {
+    use diesel::sql_types::*;
+    tb_spin_rewards (id) {
+        id -> Int4,
+        reward_name -> Varchar,
+        reward_note -> Varchar,
+        reward_category -> Varchar,
+        reward_amount -> Int4,
+        reward_money -> Int4,
+        reward_status ->Varchar,
+        companies_code ->Varchar,
+        percentage ->Int4,
+        reward_image -> Varchar,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
     }
 }
 
@@ -47,7 +67,8 @@ diesel::table! {
         updated_by -> Varchar,
         used_status -> Varchar,
         prize_id -> Int4,
-        company_id ->Int4
+        company_id ->Int4,
+        ticket_uuid ->Varchar
     }
 }
 diesel::table! {
@@ -87,15 +108,19 @@ diesel::table! {
     tb_spin_tickets(id){
         id -> Int4,
         user_uuid -> Varchar,
-        ruleid -> Varchar,
         userid -> Varchar,
         username -> Varchar,
         ticket_id -> Int4,
         ticket_uuid -> Varchar,
         status -> Varchar,
         pointrule_id ->Int4,
-        expired_date->VarChar
-    }
+        expired_date->VarChar,
+        pointrule_name->VarChar,
+        ticket_number ->Varchar,
+        expired_type->Varchar,
+        expired_value->Int4,
+        created_date->Varchar
+        }
 }
 
 
@@ -113,7 +138,8 @@ diesel::allow_tables_to_appear_in_same_query!(
     tb_spin_promos,
     tb_companies,
     tb_spin_tickets,
-    tb_spin_used
+    tb_spin_used,
+    tb_spin_rewards
 
 );
 

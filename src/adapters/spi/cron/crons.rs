@@ -46,8 +46,8 @@ impl Job for QueueJob {
 
         let mut con =CONN.get().unwrap().get().expect("cant connect");
         // println!("dsdsasda{:?}",con.get());
-        let query = tb_spin_tickets.filter(user_uuid.eq("14f17f89-ec80-4911-98a1-628ae2ca3e87")).select(count(id)).get_result::<i64>(&mut con);
-        println!("query{:?}",query);
+        // let query = tb_spin_tickets.filter(user_uuid.eq("14f17f89-ec80-4911-98a1-628ae2ca3e87")).select(count(id)).get_result::<i64>(&mut con);
+        // println!("query{:?}",query);
         // CONN
         // let _f = <ConnectionRepository as CronEntityAbstract>::check_pending_post_be();
         // let c= CronEntityAbstract::check_pending_post_be(&self);

@@ -1,14 +1,7 @@
-
-use crate::adapters::spi::spinlist::models::SpinLists;
 use crate::application::mappers::db_mapper::DBMapper;
-use crate::domain::spin_lists_entity::{SpinListsEntity, SpinListsPrizesEntity};
 use crate::domain::spin_tickets_entity::SpinTicketsEntity;
-
 use super::models::SpinTickets;
-
-
- pub struct SpinTicketDBMapper {}
-
+pub struct SpinTicketDBMapper {}
 impl DBMapper<SpinTicketsEntity,SpinTickets> for SpinTicketDBMapper {
     fn to_db(_entity:SpinTicketsEntity)->SpinTickets {
         todo!()
@@ -18,7 +11,6 @@ impl DBMapper<SpinTicketsEntity,SpinTickets> for SpinTicketDBMapper {
         SpinTicketsEntity{
             id: model.id,
             user_uuid: model.user_uuid,
-            ruleid: model.ruleid,
             userid: model.userid,
             username: model.username,
             ticket_id: model.ticket_id,

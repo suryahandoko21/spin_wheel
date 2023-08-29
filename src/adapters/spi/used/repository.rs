@@ -3,7 +3,6 @@ use async_trait::async_trait;
 use std::error::Error;
 use std::time::SystemTime;
 use crate::adapters::api::shared::enum_response::Status;
-use crate::adapters::api::shared::init_global::GLOBAL_INIT;
 use crate::adapters::api::shared::request_be::RequestBeResult;
 use crate::adapters::api::shared::response::GenericResponse;
 use crate::adapters::api::spin_useds::spin_tickets_payloads::SpinUsedPayload;
@@ -51,8 +50,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         /*
         TRY POST TO BE FOR UPDATE SPIN TICKET (IF ERROR THEN WILL PENDING AND RETRY USING CRON JOB)
         */    
-        let global_map =GLOBAL_INIT.get().unwrap();
-        let webhook_be = &global_map["webhook_be"];
+      
 
         let mut status = "failed".to_string();
         let  choosed = spin_choosed.get(0).unwrap();
@@ -61,10 +59,16 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         let data_prizes =  Arc::new(prizes_choosed.ok().unwrap());
         let prizes_id = data_prizes.prize_id;
         let prize_name = &data_prizes.prize_name;
-        let ticket_uuid = Arc::new(spin_available_uuid.ok().unwrap().ticket_uuid);
+        let ticket_id = Arc::new(spin_available_uuid.ok().unwrap().ticket_uuid);
         let request_be = RequestBeResult{
-            prize: prize_name.to_string(),
-            ticket_uuid: ticket_uuid.to_string()
+            ticketUuid : "String".to_string(),
+            userId : "String".to_string(),
+            rewardName :  "String".to_string(),
+            status :"String".to_string(),
+            rewardType: "String".to_string(),
+            money :1
+            // prize: prize_name.to_string(),
+            // ticket_uuid: ticket_id.to_string()
         };
 
         /* update ticked to status */
@@ -73,7 +77,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         let _= SpinPrizesEntityAbstract::used_one_spin_by_prize_id(self, prizes_id).await;
        
         /* POST REQUEST TO BE */
-        let post_request = post_to_be(webhook_be.to_string(),request_be);
+        let post_request = post_to_be(request_be);
         if post_request.await {
             status = "success".to_string();
         }
@@ -86,15 +90,14 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
              updated_by : "System".to_string(),
              used_status : status,
              prize_id : **choosed,
-             company_id :get_company.ok().unwrap().id
+             company_id : get_company.ok().unwrap().id,
+             ticket_uuid: ticket_id.to_string()
         };
 
         let to_vector = vec![prepare_data];   
-        let insert =   diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut conn);
-        match insert {
-                 Ok(_) => Ok(GenericResponse { status: Status::Success.to_string(),message: prize_name.to_string()}),
-                 Err(e) => Err(Box::new(e)),  
-            }
-        }
+        let _insert =   diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut conn);
+        
+        Ok(GenericResponse { status: Status::Success.to_string(),message: prize_name.to_string()})
 
+}
 }

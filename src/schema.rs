@@ -34,6 +34,19 @@ diesel::table! {
 }
 
 
+
+
+diesel::table! {
+    use diesel::sql_types::*;
+
+    tb_spin_reward (id) {
+        id -> Int4,
+        reward_name -> Varchar,
+        reward_note -> Nullable<Varchar>,
+        reward_category -> String,
+        prize_amount -> Nullable<Int4>,
+    }
+}
 diesel::table! {
     tb_spin_promos (id) {
         id -> Int4,

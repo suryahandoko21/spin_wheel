@@ -1,16 +1,13 @@
 use async_trait::async_trait;
-use diesel::{prelude::*};
+use diesel::prelude::*;
 use std::error::Error;
 use std::mem;
-use std::string;
 use crate::adapters::api::shared::response::GenericResponse;
 use crate::adapters::api::shared::enum_response::Status;
 use crate::adapters::api::shared::enum_response::Option;
 use crate::adapters::api::spin_prizes::spin_prizes_payloads::SpinPrizesPayload;
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::spi::cfg::schema::tb_spin_prizes::dsl::*;
-// use crate::adapters::spi::cfg::schema::tb_companies::dsl::*;
-// use crate::adapters::spi::companies::models::Companies;
 use crate::adapters::spi::prizes::models::SpinPrizesToDB;
 use crate::adapters::spi::prizes::{mappers::SpinPrizesDbMapper,models::SpinPrizes};
 use crate::application::repositories::spin_company_repository_abstract::SpinCompanyEntityAbstract;
@@ -54,7 +51,8 @@ impl SpinPrizesEntityAbstract for ConnectionRepository {
                 prize_amount:  mem::take(&mut data.prize_amount),
                 prize_money:mem::take(&mut data.prize_money),
                 percentage: mem::take(&mut data.percentage),
-                companies_id:company.ok().unwrap().id
+                companies_id:company.ok().unwrap().id,
+                prize_image :"tes".to_string()
                
             };
         let to_vector = vec![prepare_data];
@@ -86,7 +84,8 @@ impl SpinPrizesEntityAbstract for ConnectionRepository {
                                     prize_amount:  mem::take(&mut data.prize_amount),
                                     prize_money:  mem::take(&mut data.prize_money),
                                     percentage:mem::take(&mut data.percentage),
-                                    companies_id:1
+                                    companies_id:1,
+                                    prize_image :"tes".to_string()
     }).execute(&mut conn);
         match update {
         Ok(_res) => Ok(GenericResponse { status: Status::Success.to_string(),message:Option::Update.to_string()}),

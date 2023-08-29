@@ -1,9 +1,7 @@
-use chrono::NaiveDateTime;
 #[derive(Debug, Clone)]
 pub struct SpinTicketsEntity {
     pub id: i32,
     pub user_uuid : String,
-    pub ruleid : String,
     pub userid: String,
     pub username : String, 
     pub ticket_id : i32,
@@ -17,7 +15,6 @@ impl SpinTicketsEntity {
     pub fn new(
         id: i32,
         user_uuid : String,
-        ruleid : String,
         userid: String,
         username : String, 
         ticket_id : i32,
@@ -29,7 +26,6 @@ impl SpinTicketsEntity {
         SpinTicketsEntity{
             id,
             user_uuid,
-            ruleid,
             userid,
             username, 
             ticket_id,

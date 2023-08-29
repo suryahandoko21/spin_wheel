@@ -15,7 +15,8 @@ pub struct SpinPrizes {
     pub prize_amount : i32,
     pub prize_money : i32,
     pub companies_id:i32,
-    pub percentage:i32
+    pub percentage:i32,
+    pub prize_image: String
 }
 
 
@@ -29,7 +30,8 @@ pub struct SpinPrizesToDB {
     pub prize_amount :i32,
     pub prize_money : i32,
     pub percentage:i32,
-    pub companies_id:i32
+    pub companies_id:i32,
+    pub prize_image: String
 }
 
 
