@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use crate::{
-    application::{repositories::spin_lists_repository_abstract::SpinListsEntityAbstract, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
-    domain::error::ApiError, adapters::api::{spin_lists::spin_list_payloads::SpinPostPayload, shared::response::GenericResponse},
+    application::{repositories::spin_lists_repository_abstract_remove::SpinListsEntityAbstract, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
+    domain::error::ApiError, adapters::api::{spin_lists_remove::spin_list_payloads::SpinPostPayload, shared::response::GenericResponse},
 };
 
 pub struct PostSpinByUuidUseCase<'a>{

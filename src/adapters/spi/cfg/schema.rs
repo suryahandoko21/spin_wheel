@@ -70,21 +70,6 @@ diesel::table! {
         ticket_uuid ->Varchar
     }
 }
-diesel::table! {
-    use diesel::sql_types::*;
-    tb_spin_lists (id) {
-        id -> Int4,
-        company_code -> Varchar,
-        list_status -> Varchar,
-        percentage -> Int4,
-        roleid-> Int4,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
-        created_by -> Varchar,
-        updated_by -> Varchar,
-        spin_prizes_id -> Int4
-    }
-}
 
 
 diesel::table! {
@@ -151,13 +136,11 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(tb_spin_lists -> tb_spin_prizes (spin_prizes_id));
 diesel::joinable!(tb_spin_used -> tb_spin_prizes (prize_id));
 diesel::joinable!(tb_spin_prizes -> tb_companies (companies_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     tb_spin_prizes,
-    tb_spin_lists,
     tb_spin_promos,
     tb_companies,
     tb_spin_tickets,

@@ -1,7 +1,7 @@
 
 
 use crate::{
-    application::repositories::spin_lists_repository_abstract::SpinListsEntityAbstract, adapters::api::spin_lists::spin_list_payloads::SpinListPayload,
+    application::repositories::spin_lists_repository_abstract_remove::SpinListsEntityAbstract, adapters::api::spin_lists_remove::spin_list_payloads::SpinListPayload,
 };
 
 pub struct UpdateSpinListsUseCase<'a>{
