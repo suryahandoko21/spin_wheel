@@ -122,11 +122,36 @@ diesel::table! {
         }
 }
 
+diesel::table! {
+    tb_spin_failed_process (id) {
+        id -> Int4,
+        ticket_uuid -> Varchar,
+        user_id -> Varchar,
+        reward_name -> Varchar,
+        status -> Varchar,
+        reward_type -> Varchar,
+        money -> Int4,
+        post_status -> Varchar,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
 
+diesel::table! {
+    tb_spin_success_process (id) {
+        id -> Int4,
+        ticket_uuid -> Varchar,
+        user_id -> Varchar,
+        reward_name -> Varchar,
+        status -> Varchar,
+        reward_type -> Varchar,
+        money -> Int4,
+        post_status -> Varchar,
+        created_at -> Timestamp,
+    }
+}
 
 diesel::joinable!(tb_spin_lists -> tb_spin_prizes (spin_prizes_id));
-
-
 diesel::joinable!(tb_spin_used -> tb_spin_prizes (prize_id));
 diesel::joinable!(tb_spin_prizes -> tb_companies (companies_id));
 
@@ -137,7 +162,9 @@ diesel::allow_tables_to_appear_in_same_query!(
     tb_companies,
     tb_spin_tickets,
     tb_spin_used,
-    tb_spin_rewards
+    tb_spin_rewards,
+    tb_spin_success_process,
+    tb_spin_failed_process
 
 );
 

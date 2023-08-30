@@ -2,35 +2,37 @@ use actix_web::Result;
 use async_trait::async_trait;
 use std::error::Error;
 use std::time::SystemTime;
-use crate::adapters::api::shared::enum_response::Status;
 use crate::adapters::api::shared::request_be::RequestBeResult;
-use crate::adapters::api::shared::response::GenericResponse;
+use crate::adapters::api::shared::response::SpinResponse;
 use crate::adapters::api::spin_useds::spin_tickets_payloads::SpinUsedPayload;
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::spi::cfg::pg_connection::CONN;
+use crate::adapters::spi::failed::models::FailedProcessToDb;
+use crate::adapters::spi::success::models::ProcessSuccessToDb;
 use crate::adapters::spi::used::models::SpinUsedsToDb;
 use crate::adapters::spi::used::post_be::post_to_be;
-use crate::application::repositories::spin_prizes_repository_abstract::SpinPrizesEntityAbstract;
+
+use crate::application::repositories::failed_proccess_abstract::FailedProcessEntityAbstract;
 use crate::application::repositories::spin_rewards_repository_abstract::SpinRewardEntityAbstract;
 use crate::application::repositories::spin_ticket_repository_abstract::SpinTicketEntityAbstract;
 use crate::application::repositories::spin_useds_repository_abstract::SpinUsedEntityAbstract;
+use crate::application::repositories::success_process_abstract::SuccessProcessEntityAbstract;
 use rand::seq::SliceRandom; 
 use crate::adapters::spi::cfg::schema::tb_spin_used::dsl::*;
 use diesel::RunQueryDsl;
 use std::sync::Arc;
 #[async_trait(?Send)]
 impl SpinUsedEntityAbstract for ConnectionRepository {
-    async fn post_one_spin_useds(&self, post: &SpinUsedPayload) ->  Result<GenericResponse, Box<dyn Error> >{
+    async fn post_one_spin_useds(&self, post: &SpinUsedPayload) ->  Result<SpinResponse, Box<dyn Error> >{
         let post_payload =Arc::new(post);   
-        let uuid =  post_payload.user_uuid.to_string();
+        let uuid =  Arc::new(post_payload.user_uuid.to_string());
         let company_code = post_payload.company_code.to_string();
-
-       
+               
         /*  GET ONE SPIN TICKET FOR USER WHERE SPIN SI AVAILABLE (NOT EXPIRED) */
         let spin_available_uuid = SpinTicketEntityAbstract::get_single_spin_ticket_by_uuid(self, uuid.to_string()).await;  
         
         /* GET LIST SPIN FOR COMPANY SELECTED */
-        let get_all_spin_reward_by_company_code = SpinRewardEntityAbstract::get_all_spin_reward_by_company_code(self,company_code.to_string()).await;
+        let get_all_spin_reward_by_company_code = SpinRewardEntityAbstract::get_all_spin_reward_by_company_code_by_status(self,company_code.to_string()).await;
         
         /*LIST DEFINED FOR ARRAY TO DETERMINE RANDOM CHOOSED FOR SPIN*/
         let mut list = Vec::new();
@@ -49,60 +51,79 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         /*
         TRY POST TO BE FOR UPDATE SPIN TICKET (IF ERROR THEN WILL PENDING AND RETRY USING CRON JOB)
         */    
-      
-
-        let mut response_message = "None".to_string();
+        let mut response_message = "".to_string();
         let mut status = "failed".to_string();
-       
+        let mut reward_name = "None".to_string();
+        let mut reward_description = "None".to_string();
         if spin_choosed.get(0).is_some(){
-            response_message = "".to_string();
-            let  choosed = spin_choosed.get(0).unwrap();
-              let prizes_choosed = SpinPrizesEntityAbstract::get_one_spin_prize_by_id(self,**choosed).await;
+            response_message = "None".to_string();
+            let choosed = spin_choosed.get(0).unwrap();
+            let reward_choosed = SpinRewardEntityAbstract::get_one_spin_reward_by_id(self,**choosed).await;
+            let data_reward =  reward_choosed.ok().unwrap();
+            let reward_id = data_reward.reward_id;  
+            let spin_avail = spin_available_uuid.as_ref();
+            if spin_avail.ok().is_some(){
+                reward_name = String::from(&data_reward.reward_name);
+                reward_description = String::from(&data_reward.reward_note);
+                let reward_type = String::from(&data_reward.reward_category); 
+                let ticket_id = &spin_avail.ok().unwrap().ticket_uuid;
+                let _= SpinTicketEntityAbstract::used_single_spin_ticket_by_uuid(self,ticket_id.to_string()).await; 
+                /* reduce amount award used */
+                let _= SpinRewardEntityAbstract::used_one_spin_by_reward_id(self, reward_id).await;
+                let request_be = RequestBeResult{
+                        ticketUuid : ticket_id.to_string(),
+                        userId : uuid.to_string(),
+                        rewardName : reward_name.to_string(),
+                        status :"used".to_string(),
+                        rewardType: reward_type.to_string(),
+                        money : data_reward.reward_money
+                    };
+                /* POST REQUEST TO BE */
+                let post_request = post_to_be(request_be);
+                if post_request.await {
+                    let success_post = ProcessSuccessToDb{
+                        ticket_uuid : ticket_id.to_string(),
+                        user_id : uuid.to_string(),
+                        reward_name : reward_name.to_string(),
+                        status :"used".to_string(),
+                        reward_type: reward_type.to_string(),
+                        money : data_reward.reward_money,
+                        post_status : "success".to_string(),
+                        created_at : SystemTime::now()
+                        };       
+                    let _req = SuccessProcessEntityAbstract::post_success_proccess(self,success_post).await;
+                    status = "success".to_string();
+                }
+                else{
+                    let failed_post = FailedProcessToDb{
+                            ticket_uuid : ticket_id.to_string(),
+                            user_id : uuid.to_string(),
+                            reward_name : reward_name.to_string(),
+                            status :"used".to_string(),
+                            reward_type: reward_type.to_string(),
+                            money : data_reward.reward_money,
+                            post_status : "success".to_string(),
+                            created_at : SystemTime::now(),
+                            updated_at:SystemTime::now()
+                        };   
+                    let _req = FailedProcessEntityAbstract::post_failed_proccess(self,failed_post).await; 
+                }
+                let prepare_data = SpinUsedsToDb{
+                        user_id : uuid.to_string(), 
+                        created_at : SystemTime::now(), 
+                        updated_at : SystemTime::now(),
+                        created_by : "System".to_string(),
+                        updated_by : "System".to_string(),
+                        used_status : status,
+                        prize_id : **choosed,
+                        companies_code : company_code,
+                        ticket_uuid: ticket_id.to_string()
+                    };
+            let to_vector = vec![prepare_data];   
+            let _insert =   diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));
+             }
         }
-            
-        // let prizes_choosed = SpinPrizesEntityAbstract::get_one_spin_prize_by_id(self,**choosed).await;
-        // let data_prizes =  Arc::new(prizes_choosed.ok().unwrap());
-        // let prizes_id = data_prizes.prize_id;
-        // let prize_name = &data_prizes.prize_name;
-        // let ticket_id = Arc::new(spin_available_uuid.ok().unwrap().ticket_uuid);
-        // let request_be = RequestBeResult{
-        //     ticketUuid : "String".to_string(),
-        //     userId : "String".to_string(),
-        //     rewardName :  "String".to_string(),
-        //     status :"String".to_string(),
-        //     rewardType: "String".to_string(),
-        //     money :1
-        //     // prize: prize_name.to_string(),
-        //     // ticket_uuid: ticket_id.to_string()
-        // };
-
-        // /* update ticked to status */
-        // // let _= SpinTicketEntityAbstract::used_single_spin_ticket_by_uuid(self,ticket_uuid.to_string()).await;
-        // /* reduce amount prize used */
-        // let _= SpinPrizesEntityAbstract::used_one_spin_by_prize_id(self, prizes_id).await;
-       
-        // /* POST REQUEST TO BE */
-        // let post_request = post_to_be(request_be);
-        // if post_request.await {
-        //     status = "success".to_string();
-        // }
-
-        // let prepare_data = SpinUsedsToDb{
-        //      user_id : uuid.to_string(), 
-        //      created_at : SystemTime::now(), 
-        //      updated_at : SystemTime::now(),
-        //      created_by : "System".to_string(),
-        //      updated_by : "System".to_string(),
-        //      used_status : status,
-        //      prize_id : **choosed,
-        //      companies_code : company_code,
-        //      ticket_uuid: ticket_id.to_string()
-        // };
-
-        // let to_vector = vec![prepare_data];   
-        // let _insert =   diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));
-        
-        Ok(GenericResponse { status: Status::Success.to_string(),message: "prize_name".to_string()})
-
+        // Ok(Spi { status: Status::Success.to_string(),message:reward_name.to_string()})
+        Ok(SpinResponse { status: "ok".to_string(), message: "".to_string(), reward: reward_name, description: reward_description })
 }
 }
