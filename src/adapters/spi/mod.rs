@@ -2,7 +2,6 @@ pub mod cfg;
 
 // useless need to delete
 pub mod prizes;
-pub mod promos;
 pub mod companies;
 pub mod spintickets;
 

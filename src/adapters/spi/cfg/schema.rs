@@ -6,22 +6,6 @@ pub mod sql_types {
 
 diesel::table! {
     use diesel::sql_types::*;
-    tb_spin_promos (id) {
-        id -> Int4,
-        promo_amount -> Int4,
-        promo_status -> Varchar,
-        user_id -> Varchar,
-        username-> Varchar,
-        expired_at -> Timestamp,
-        point_currention_time -> Timestamp,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
-        created_by -> Varchar,
-        updated_by -> Varchar
-    }
-}
-diesel::table! {
-    use diesel::sql_types::*;
     use super::sql_types::PrizesCategories;
     tb_spin_prizes (id) {
         id -> Int4,
@@ -141,7 +125,6 @@ diesel::joinable!(tb_spin_prizes -> tb_companies (companies_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     tb_spin_prizes,
-    tb_spin_promos,
     tb_companies,
     tb_spin_tickets,
     tb_spin_used,

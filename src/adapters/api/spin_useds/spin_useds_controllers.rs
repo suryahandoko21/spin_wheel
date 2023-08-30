@@ -10,8 +10,8 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 
 #[post("/create")]
 async fn post_spin_used(data: web::Data<AppState>,post:Json<SpinUsedPayload>) ->Result<HttpResponse,ErrorReponse> {
-        let post_one_spin_promos = PostSpinUsedUseCase::new(&post, &data.connection_repository);
-        let spin_prizes: Result<SpinResponse, ApiError> = post_one_spin_promos.execute().await;
+        let post_one_spin_used = PostSpinUsedUseCase::new(&post, &data.connection_repository);
+        let spin_prizes: Result<SpinResponse, ApiError> = post_one_spin_used.execute().await;
         spin_prizes
         .map_err(ErrorReponse::map_io_error)
         .map(|fact| HttpResponse::Ok().json(fact))
