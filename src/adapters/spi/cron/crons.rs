@@ -24,6 +24,6 @@ pub fn cron_all(){
     let mut runner = Runner::new();
     runner = runner.add(Box::new(QueueJob));
     println!("Starting the Runner for 20 seconds");
-    runner = runner.run();
+    runner.run();
     thread::sleep(Duration::from_millis(20 * 1000));
 }

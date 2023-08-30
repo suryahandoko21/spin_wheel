@@ -51,12 +51,12 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         /*
         TRY POST TO BE FOR UPDATE SPIN TICKET (IF ERROR THEN WILL PENDING AND RETRY USING CRON JOB)
         */    
-        let mut response_message = "".to_string();
+        // let mut response_message = "".to_string();
         let mut status = "failed".to_string();
         let mut reward_name = "None".to_string();
         let mut reward_description = "None".to_string();
         if spin_choosed.get(0).is_some(){
-            response_message = "None".to_string();
+            // response_message = "None".to_string();
             let choosed = spin_choosed.get(0).unwrap();
             let reward_choosed = SpinRewardEntityAbstract::get_one_spin_reward_by_id(self,**choosed).await;
             let data_reward =  reward_choosed.ok().unwrap();

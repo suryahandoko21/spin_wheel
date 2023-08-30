@@ -1,9 +1,9 @@
 use crate::{
-    adapters::{api::{
+    adapters::api::{
         spin_prizes::{spin_prizes_mappers::SpinPrizesPresenterMapper,spin_prizes_presenters::SpinPrizesPresenter,spin_prizes_payloads::SpinPrizesPayload},
         
         shared::{app_state::AppState,error_presenter::ErrorReponse, response::GenericResponse}
-    }},
+    },
     application::{
         mappers::api_mapper::ApiMapper,
         usecases::{get_all_spin_prizes_usecase::GetAllSpinPrizesUseCase,interfaces::AbstractUseCase,spin_prizes::{find_by_id_usecase::GetOneSpinPrizesByIdUseCase, delete_by_id_usecase::DeleteOneSpinPrizesByIdUseCase},spin_prizes::post_one_spin_prize::PostSpinPrizesUseCase,spin_prizes::update_one_spin_prize_usecase::UpdateSpinPrizesUseCase}
