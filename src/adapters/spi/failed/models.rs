@@ -1,8 +1,8 @@
 use std::time::SystemTime;
 use diesel::prelude::*;
 use serde::{Serialize, Deserialize};
-
-#[derive(Queryable, Selectable,Debug,Deserialize,QueryableByName,Serialize,Clone,Insertable)]
+#[derive(Queryable, Selectable,Insertable,Identifiable,AsChangeset,Debug,Deserialize,QueryableByName,Serialize)]
+// #[derive(Queryable, Selectable,Debug,Deserialize,QueryableByName,Serialize,Clone,Insertable)]
 #[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_failed_process)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct FailedProcess {

@@ -15,6 +15,7 @@ pub  struct SpinRewards {
     pub company_code:String,
     pub image: String,
     pub status:String,
+    pub order:i32
 }
 
 #[derive(Serialize, Deserialize, Debug,Clone)]
@@ -33,4 +34,5 @@ pub  struct SpinRewardUpdates {
     pub company_code:String,
     pub image: String,
     pub status:String,
+    pub order:i32,
 }

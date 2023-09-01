@@ -21,8 +21,8 @@ impl <'a>PostSpinTicketUseCase<'a> {
 #[async_trait(?Send)]
 impl<'a> AbstractUseCase<TicketResponse> for PostSpinTicketUseCase<'a>{
     async fn execute(&self) -> Result<TicketResponse, ApiError> {
-        let spin_prizes = self.repository.post_one_spin_tickets(self.post).await;
-        match spin_prizes {
+        let spin_tickets = self.repository.post_one_spin_tickets(self.post).await;
+        match spin_tickets {
             Ok(facts) => Ok(facts),
             Err(e) => Err(ErrorHandlingUtils::application_error("Found Error", Some(e))),
         }

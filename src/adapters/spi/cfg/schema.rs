@@ -6,23 +6,6 @@ pub mod sql_types {
 
 diesel::table! {
     use diesel::sql_types::*;
-    use super::sql_types::PrizesCategories;
-    tb_spin_prizes (id) {
-        id -> Int4,
-        prize_name -> Varchar,
-        prize_note -> Varchar,
-        prize_category -> Varchar,
-        prize_amount -> Int4,
-        prize_money -> Int4,
-        companies_id -> Int4,
-        percentage ->Int4,
-        prize_image -> Varchar
-    }
-}
-
-
-diesel::table! {
-    use diesel::sql_types::*;
     tb_spin_rewards (id) {
         id -> Int4,
         reward_name -> Varchar,
@@ -31,6 +14,7 @@ diesel::table! {
         reward_amount -> Int4,
         reward_money -> Int4,
         reward_status ->Varchar,
+        reward_order->Int4,
         companies_code ->Varchar,
         percentage ->Int4,
         reward_image -> Varchar,
@@ -120,11 +104,9 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(tb_spin_used -> tb_spin_prizes (prize_id));
-diesel::joinable!(tb_spin_prizes -> tb_companies (companies_id));
+
 
 diesel::allow_tables_to_appear_in_same_query!(
-    tb_spin_prizes,
     tb_companies,
     tb_spin_tickets,
     tb_spin_used,

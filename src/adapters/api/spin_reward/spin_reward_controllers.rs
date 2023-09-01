@@ -23,7 +23,8 @@ async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload
 async fn get_all_spin_rewards(data: web::Data<AppState>,path:web::Path<(String,)>) ->Result<HttpResponse,ErrorReponse> {
     let company_code = path.into_inner().0.to_string();
     let spin_reward = ListSpinRewardsUseCase::new(&company_code,&data.connection_repository);
-    let spin_reward = spin_reward.execute().await;
+    let spin_reward: std::result::Result<Vec<crate::domain::spin_reward_entity::SpinRewardEntity>, ApiError> = spin_reward.execute().await;
+    
     spin_reward
         .map_err(ErrorReponse::map_io_error)
         .map(|data| HttpResponse::Ok().json(data.into_iter().map(SpinRewardPresenterMapper::to_api).collect::<Vec<SpinRewardsPresenter>>()))

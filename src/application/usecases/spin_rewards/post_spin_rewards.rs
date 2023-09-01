@@ -16,8 +16,8 @@ impl <'a>PostSpinRewardsUseCase<'a> {
 #[async_trait(?Send)]
 impl<'a> AbstractUseCase<GenericResponse> for PostSpinRewardsUseCase<'a>{
     async fn execute(&self) -> Result<GenericResponse, ApiError> {
-        let spin_prizes = self.repository.post_spin_rewards(self.post).await;
-        match spin_prizes {
+        let spin_rewards = self.repository.post_spin_rewards(self.post).await;
+        match spin_rewards {
             Ok(facts) => Ok(facts),
             Err(e) => Err(ErrorHandlingUtils::application_error("Found Error", Some(e))),
         }

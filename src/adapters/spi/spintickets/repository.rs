@@ -79,8 +79,10 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
 
     async fn get_spin_ticket_by_uuid(&self, uuid: String) ->  Result<SpinAvailableResponse, Box<dyn Error>>{
         let uuid_clone = uuid.clone();
-        let query = tb_spin_tickets.filter(user_uuid.eq(&uuid_clone)).select(count(id)).get_result::<i64>(&mut CONN.get().unwrap().get().expect("failed connect db"));
-        Ok(SpinAvailableResponse{message:"Spin Available".to_string(),status:"Success".to_string(),spin:query.unwrap()})
+        let query = tb_spin_tickets.filter(user_uuid.eq(&uuid_clone))
+        .filter(status.eq("AVAILABLE"))
+        .select(count(id)).get_result::<i64>(&mut CONN.get().unwrap().get().expect("failed connect db"));
+        Ok(SpinAvailableResponse{message:"Spin Available".to_string(),status:"Success".to_string(),spin_available:query.unwrap()})
     }
     async fn get_list_spin_ticket_by_uuid(&self, uuid: String) ->  Result<Vec<SpinTicketsEntity>, Box<dyn Error>>{
         let uuid_clone = uuid.clone();

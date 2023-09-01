@@ -86,22 +86,21 @@ impl TicketResponse {
 pub struct SpinAvailableResponse {
     pub status: String,
     pub message : String,
-    pub spin :  i64
+    pub spin_available :  i64
   
 }
-
 
 impl SpinAvailableResponse {
     pub fn new(
         status: String,
         message : String,
-        spin :  i64
+        spin_available :  i64
       
     )->Self{
         SpinAvailableResponse{
             status,
             message,
-            spin
+            spin_available
             
         }
 

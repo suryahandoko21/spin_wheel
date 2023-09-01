@@ -15,6 +15,7 @@ pub struct SpinRewards {
     pub reward_amount : i32,
     pub reward_money : i32,
     pub reward_status : String,
+    pub reward_order : i32,
     pub companies_code:String,
     pub percentage:i32,
     pub reward_image: String,
@@ -32,6 +33,7 @@ pub struct SpinRewardToDB {
     pub reward_amount : i32,
     pub reward_money : i32,
     pub reward_status : String,
+    pub reward_order : i32,
     pub companies_code:String,
     pub percentage:i32,
     pub reward_image: String,
@@ -50,23 +52,8 @@ pub struct SpinRewardUpdateToDB {
     pub reward_money : i32,
     pub reward_status : String,
     pub companies_code:String,
+    pub reward_order : i32,
     pub percentage:i32,
     pub reward_image: String,
     pub updated_at : SystemTime,
 }
-
-
-// #[derive(Debug, QueryableByName)]
-// #[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_prizes)]
-// #[diesel(check_for_backend(diesel::pg::Pg))]
-// pub struct SpinPrizesCompanies{
-//     #[diesel(embed)]
-//     pub companies :Companies,
-//     pub prize_name : String,
-//     pub prize_note : String,
-//     pub prize_category : String,
-//     pub prize_amount : i32,
-//     pub prize_money : i32,
-//     pub percentage:i32
-   
-// }

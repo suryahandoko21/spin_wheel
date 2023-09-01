@@ -8,24 +8,11 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
     .service(get_spin_ticket_by_uuid);
 }
 
-// #[get("/create")]
-// async fn post_spin_tickets(data: web::Data<AppState>,post:Json<SpinTicketPayload>) -> HttpResponse {
-//     let c = post.spinTickets[0].to_owned();
-//     println!("---{:?}",c);
-//     // println!("{}",c.clone_into(target))
-//     // println!("ssdasdas{:?}",post.spinTickets[0].to_owned());
-
- 
-//      HttpResponse::Ok().body("data")
-// }
-
-
 #[post("/create")]
 async fn post_spin_tickets(data: web::Data<AppState>,post:Json<SpinTicketPayload>) ->Result<HttpResponse,ErrorReponse>{
-    // let x = PostSpinTicketUseCase::new(post, repository)
     let post_one_spin_ticket =  PostSpinTicketUseCase::new(&post, &data.connection_repository);
-    let spin_prizes: Result<TicketResponse, ApiError> = post_one_spin_ticket.execute().await;
-    spin_prizes
+    let spin_ticket: Result<TicketResponse, ApiError> = post_one_spin_ticket.execute().await;
+    spin_ticket
     .map_err(ErrorReponse::map_io_error)
     .map(|fact| HttpResponse::Ok().json(fact))
 }
@@ -35,11 +22,9 @@ async fn post_spin_tickets(data: web::Data<AppState>,post:Json<SpinTicketPayload
 async fn get_spin_ticket_by_uuid(data: web::Data<AppState>,path:web::Path<(String,)>) ->Result<HttpResponse,ErrorReponse>{
     let uuid = path.into_inner().0;
     let get_one_spin_list_by_id_usecase = GetSpinTicketByUuidUseCase::new(&uuid, &data.connection_repository);
-
-    let spin_prize: Result<SpinAvailableResponse, ApiError> = get_one_spin_list_by_id_usecase.execute().await;
-    spin_prize
+    let spin_ticket: Result<SpinAvailableResponse, ApiError> = get_one_spin_list_by_id_usecase.execute().await;
+    spin_ticket
         .map_err(ErrorReponse::map_io_error)
         .map(|fact| HttpResponse::Ok().json(fact))
-   
 }
 

@@ -47,7 +47,6 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         let spin_choosed: Vec<_> = list
         .choose_multiple(&mut rand::thread_rng(), 1)
         .collect();			
-
         /*
         TRY POST TO BE FOR UPDATE SPIN TICKET (IF ERROR THEN WILL PENDING AND RETRY USING CRON JOB)
         */    
@@ -74,7 +73,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                         ticketUuid : ticket_id.to_string(),
                         userId : uuid.to_string(),
                         rewardName : reward_name.to_string(),
-                        status :"used".to_string(),
+                        status : "used".to_string(),
                         rewardType: reward_type.to_string(),
                         money : data_reward.reward_money
                     };
@@ -85,13 +84,13 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                         ticket_uuid : ticket_id.to_string(),
                         user_id : uuid.to_string(),
                         reward_name : reward_name.to_string(),
-                        status :"used".to_string(),
+                        status : "used".to_string(),
                         reward_type: reward_type.to_string(),
                         money : data_reward.reward_money,
                         post_status : "success".to_string(),
                         created_at : SystemTime::now()
                         };       
-                    let _req = SuccessProcessEntityAbstract::post_success_proccess(self,success_post).await;
+                    SuccessProcessEntityAbstract::post_success_proccess(self,success_post).await;
                     status = "success".to_string();
                 }
                 else{
@@ -102,11 +101,11 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                             status :"used".to_string(),
                             reward_type: reward_type.to_string(),
                             money : data_reward.reward_money,
-                            post_status : "success".to_string(),
+                            post_status : "failed".to_string(),
                             created_at : SystemTime::now(),
                             updated_at:SystemTime::now()
                         };   
-                    let _req = FailedProcessEntityAbstract::post_failed_proccess(self,failed_post).await; 
+                    FailedProcessEntityAbstract::post_failed_proccess(self,failed_post).await; 
                 }
                 let prepare_data = SpinUsedsToDb{
                         user_id : uuid.to_string(), 
@@ -120,7 +119,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                         ticket_uuid: ticket_id.to_string()
                     };
             let to_vector = vec![prepare_data];   
-            let _insert =   diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));
+            let _ = diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));
              }
         }
         // Ok(Spi { status: Status::Success.to_string(),message:reward_name.to_string()})
