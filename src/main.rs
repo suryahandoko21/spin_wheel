@@ -20,7 +20,7 @@ impl DurationExt for Duration {
 async fn main() -> std::io::Result<()> {
     set_global_init();
     actix_web::rt::spawn(async move {
-        let mut interval = time::interval(Duration::from_hours(1));
+        let mut interval = time::interval(Duration::from_secs(10));
         loop {
             interval.tick().await;
             job().await;
