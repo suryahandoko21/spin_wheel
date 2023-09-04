@@ -1,10 +1,13 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'asia.gcr.io/$PROJECT_ID/spinwheel-rust:$BRANCH_NAME', '.' ]
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'asia.gcr.io/$PROJECT_ID/spinwheel-rust:$BRANCH_NAME']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'asia.gcr.io/$PROJECT_ID/rust-cache-proxy:$TAG_NAME', '.' ]
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'asia.gcr.io/$PROJECT_ID/rust-cache-proxy:latest', '.' ]
-tags: ['latest', 'staging']
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "asia.gcr.io/$PROJECT_ID/spin-wheel-rust:$BRANCH_NAME",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "asia.gcr.io/$PROJECT_ID/spin-wheel-rust:$BRANCH_NAME"]
+tags: ["latest", "$BRANCH_NAME"]
+
