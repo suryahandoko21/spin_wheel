@@ -9,7 +9,7 @@ WORKDIR /spin-wheel
 
 COPY ./ .
 
-RUN cargo build --release --target x86_64-unknown-linux-musl
+RUN cargo build --release --bin spin-wheel
 
 ####################################################################################################
 ## Final image
@@ -22,5 +22,5 @@ RUN apt-get update && apt-get install -y wget libpq5 libssl-dev gcc libgcc1
 COPY --from=builder /spin-wheel/target/release/spin-wheel /usr/local/bin
 
 
-CMD ["/usr/local/bin//spin-wheel"]
+ENTRYPOINT ["/usr/local/bin//spin-wheel"]
 
