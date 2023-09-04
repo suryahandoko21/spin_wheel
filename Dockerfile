@@ -16,7 +16,7 @@ RUN cargo build --release --bin spin-wheel
 ####################################################################################################
 FROM debian:bullseye-slim AS runtime
 
-RUN apt-get update && apt-get install -y wget libpq5 libssl-dev gcc libgcc1
+RUN apt-get update && apt-get install -y wget libpq5 libssl-dev gcc libgcc1 libc6
 
 # Import from builder.
 COPY --from=builder /spin-wheel/target/release/spin-wheel /usr/local/bin
