@@ -24,7 +24,7 @@ WORKDIR /spin-wheel
 
 COPY ./ .
 
-RUN cargo build --release --bin spin-wheel
+RUN cargo build --target x86_64-unknown-linux-musl --release
 
 ####################################################################################################
 ## Final image
