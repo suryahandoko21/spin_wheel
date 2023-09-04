@@ -1,51 +1,25 @@
 FROM rust:latest AS builder
 
-RUN rustup target add x86_64-unknown-linux-musl
-RUN apt update && apt install -y musl-tools musl-dev
+RUN apt-get update && apt-get install -y musl-tools musl-dev wget gcc libssl-dev pkg-config libwayland-cursor0 libwayland-dev
 RUN update-ca-certificates
 RUN apt-get -y install libssl-dev pkg-config
 
-# Create appuser
-ENV USER=rust
-ENV UID=10001
-
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    "${USER}"
-
-
-#WORKDIR /proxy
 WORKDIR /spin-wheel
 
 COPY ./ .
 
-# We no longer need to use the x86_64-unknown-linux-musl target
-RUN cargo build --target x86_64-unknown-linux-musl --release
+RUN cargo build --release
 
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM alpine
+FROM debian:bullseye-slim AS runtime
 
-# Install ca-certificates so that HTTPS works consistently
-RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+RUN apt-get update && apt-get install -y wget libpq5 libssl-dev gcc libgcc1
 
 # Import from builder.
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
+COPY --from=builder /spin-wheel/target/release/spin-wheel /usr/local/bin
 
-WORKDIR /spin-wheel
 
-# Copy our build
-COPY --from=builder /spin-wheel/target/x86_64-unknown-linux-musl/release/spin-wheel ./
-
-# Use an unprivileged user.
-USER rust:rust
-
-ENTRYPOINT ["./spin-wheel"]
+CMD ["/usr/local/bin//spin-wheel"]
 
