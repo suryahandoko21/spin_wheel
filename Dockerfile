@@ -29,9 +29,9 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM scratch
+FROM debian:alpine
 
-#RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+RUN apk update && apk add ca-certificates libc6-compat gcompat --no-cache musl-dev
 
 
 COPY --from=builder /etc/passwd /etc/passwd
