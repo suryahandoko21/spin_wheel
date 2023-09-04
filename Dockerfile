@@ -14,13 +14,17 @@ RUN cargo build --release --bin spin-wheel
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM debian:bullseye-slim AS runtime
+FROM alpine
 
-RUN apt-get update && apt-get install -y wget libpq5 libssl-dev gcc libgcc1 libc6
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
-# Import from builder.
-COPY --from=builder /spin-wheel/target/release/spin-wheel /usr/local/bin
+WORKDIR /spin-wheel
+
+COPY --from=builder /spin-wheel/target/release/spin-wheel ./
+
+#RUN apt-get update && apt-get install -y wget libpq5 libssl-dev gcc libgcc1 libc6
+#COPY --from=builder /spin-wheel/target/release/spin-wheel /usr/local/bin
 
 
-ENTRYPOINT ["/usr/local/bin/spin-wheel"]
+ENTRYPOINT ["./spin-wheel"]
 
