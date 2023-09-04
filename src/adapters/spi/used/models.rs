@@ -1,7 +1,7 @@
 use std::time::SystemTime;
 
 use chrono::NaiveDateTime;
-use diesel::{prelude::*};
+use diesel::prelude::*;
 use serde::{Serialize, Deserialize};
 
 #[derive(Queryable, Selectable,Debug,Deserialize,QueryableByName,Serialize)]
@@ -16,7 +16,8 @@ pub struct SpinUseds {
     pub updated_by : String,
     pub used_status : String,
     pub prize_id : i32,
-    pub company_id :i32
+    pub companies_code :String,
+    pub ticket_uuid : String
 }
 
 #[derive(Queryable, Selectable,Debug,Deserialize,QueryableByName,Serialize,Insertable)]
@@ -30,5 +31,6 @@ pub struct SpinUsedsToDb {
     pub updated_by : String,
     pub used_status : String,
     pub prize_id : i32,
-    pub company_id :i32
+    pub companies_code :String,
+    pub ticket_uuid :String
 }

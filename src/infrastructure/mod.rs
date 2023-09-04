@@ -4,19 +4,12 @@ use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::{
     self,
     api::shared::app_state::AppState,
-    spi::{
-        cfg::{db_connection::DbConnection},
-        // prizes::{repository::SpinPrizesRepository},
-        // spinlist::{repository::SpinListsRepository},
-
-        // db::{db_connection::DbConnection, db_dog_facts_repository::DogFactsRepository},
-        // http::{http_cat_facts_repository::CatFactsRepository, http_connection::HttpConnection},
-    },
+    spi::cfg::db_connection::DbConnection,
 };
 use actix_web::{dev::Server, middleware::Logger};
 use actix_web::{web, App, HttpServer};
 
-pub fn server(mut listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
+pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
     println!("{:?}",&listener.local_addr());
     env::set_var("RUST_BACKTRACE", "1");
     env::set_var("RUST_LOG", "actix_web=debug");
@@ -31,12 +24,7 @@ pub fn server(mut listener: TcpListener, db_name: &str) -> Result<Server, std::i
 
     let data = web::Data::new(AppState {
         app_name: String::from("Spin WHeel Facts API"),
-        // cats_repository: CatFactsRepository {
-        //     http_connection,
-        //     source: dotenv::var("CATS_SOURCE").expect("CATS_SOURCE must be set"),
-        // },
         connection_repository: ConnectionRepository { db_connection },
-        // spin_list_repository: SpinListsRepository {  db_connection }
     });
 
     let port = listener.local_addr().unwrap().port();

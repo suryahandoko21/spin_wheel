@@ -6,38 +6,25 @@ pub mod sql_types {
 
 diesel::table! {
     use diesel::sql_types::*;
-    tb_spin_promos (id) {
+    tb_spin_rewards (id) {
         id -> Int4,
-        promo_amount -> Int4,
-        promo_status -> Varchar,
-        user_id -> Varchar,
-        username-> Varchar,
-        expired_at -> Timestamp,
-        point_currention_time -> Timestamp,
+        reward_name -> Varchar,
+        reward_note -> Varchar,
+        reward_category -> Varchar,
+        reward_amount -> Int4,
+        reward_money -> Int4,
+        reward_status ->Varchar,
+        reward_order->Int4,
+        companies_code ->Varchar,
+        percentage ->Int4,
+        reward_image -> Varchar,
         created_at -> Timestamp,
         updated_at -> Timestamp,
-        created_by -> Varchar,
-        updated_by -> Varchar
-    }
-}
-diesel::table! {
-    use diesel::sql_types::*;
-    use super::sql_types::PrizesCategories;
-    tb_spin_prizes (id) {
-        id -> Int4,
-        prize_name -> Varchar,
-        prize_note -> Varchar,
-        prize_category -> Varchar,
-        prize_amount -> Int4,
-        prize_money -> Int4,
-        companies_id -> Int4,
-        percentage ->Int4
     }
 }
 
 diesel::table! {
     use diesel::sql_types::*;
-    use super::sql_types::PrizesCategories;
     tb_spin_used (id) {
         id -> Int4,
         user_id -> Varchar,
@@ -47,22 +34,8 @@ diesel::table! {
         updated_by -> Varchar,
         used_status -> Varchar,
         prize_id -> Int4,
-        company_id ->Int4
-    }
-}
-diesel::table! {
-    use diesel::sql_types::*;
-    tb_spin_lists (id) {
-        id -> Int4,
-        company_code -> Varchar,
-        list_status -> Varchar,
-        percentage -> Int4,
-        roleid-> Int4,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
-        created_by -> Varchar,
-        updated_by -> Varchar,
-        spin_prizes_id -> Int4
+        companies_code ->Varchar,
+        ticket_uuid ->Varchar
     }
 }
 
@@ -87,33 +60,59 @@ diesel::table! {
     tb_spin_tickets(id){
         id -> Int4,
         user_uuid -> Varchar,
-        ruleid -> Varchar,
         userid -> Varchar,
         username -> Varchar,
         ticket_id -> Int4,
         ticket_uuid -> Varchar,
         status -> Varchar,
         pointrule_id ->Int4,
-        expired_date->VarChar
+        expired_date->VarChar,
+        pointrule_name->VarChar,
+        ticket_number ->Varchar,
+        expired_type->Varchar,
+        expired_value->Int4,
+        created_date->Varchar
+        }
+}
+
+diesel::table! {
+    tb_spin_failed_process (id) {
+        id -> Int4,
+        ticket_uuid -> Varchar,
+        user_id -> Varchar,
+        reward_name -> Varchar,
+        status -> Varchar,
+        reward_type -> Varchar,
+        money -> Int4,
+        post_status -> Varchar,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
+    tb_spin_success_process (id) {
+        id -> Int4,
+        ticket_uuid -> Varchar,
+        user_id -> Varchar,
+        reward_name -> Varchar,
+        status -> Varchar,
+        reward_type -> Varchar,
+        money -> Int4,
+        post_status -> Varchar,
+        created_at -> Timestamp,
     }
 }
 
 
 
-diesel::joinable!(tb_spin_lists -> tb_spin_prizes (spin_prizes_id));
-
-
-diesel::joinable!(tb_spin_used -> tb_spin_prizes (prize_id));
-diesel::joinable!(tb_spin_used -> tb_companies (company_id));
-diesel::joinable!(tb_spin_prizes -> tb_companies (companies_id));
-
 diesel::allow_tables_to_appear_in_same_query!(
-    tb_spin_prizes,
-    tb_spin_lists,
-    tb_spin_promos,
     tb_companies,
     tb_spin_tickets,
-    tb_spin_used
+    tb_spin_used,
+    tb_spin_rewards,
+    tb_spin_success_process,
+    tb_spin_failed_process
 
 );
 

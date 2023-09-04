@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 // use crate::domain::sp::SpinPrizesEntity;
-use crate::{domain::{ spin_lists_entity::{ SpinListsPrizesEntity}, spin_promos_entity::SpinPromosEntity, spin_tickets_entity::SpinTicketsEntity}, adapters::api::{shared::response::{GenericResponse, TicketResponse, SpinAvailableResponse}, spin_lists::spin_list_payloads::SpinListPayload, spin_tickets::spin_tickets_payloads::{SpinTicketPayload, SpinTickets}}};
+use crate::{domain::spin_tickets_entity::SpinTicketsEntity, adapters::api::{shared::response::{TicketResponse, SpinAvailableResponse}, spin_tickets::spin_tickets_payloads::SpinTicketPayload}};
 #[cfg(test)]
 use mockall::{predicate::*, *};
 use std::error::Error;

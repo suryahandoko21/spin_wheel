@@ -2,7 +2,7 @@ use async_trait::async_trait;
 
 use crate::{
     application::{repositories::spin_ticket_repository_abstract::SpinTicketEntityAbstract, usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils},
-    domain::{spin_prizes_entity::SpinPrizesEntity, error::ApiError}, adapters::api::shared::response::SpinAvailableResponse,
+    domain::error::ApiError, adapters::api::shared::response::SpinAvailableResponse,
 };
 
 pub struct GetSpinTicketByUuidUseCase<'a>{

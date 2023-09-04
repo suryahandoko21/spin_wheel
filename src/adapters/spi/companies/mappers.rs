@@ -1,13 +1,7 @@
 use crate::application::mappers::db_mapper::DBMapper;
 use crate::domain::spin_company_entity::SpinCompanyEntity;
-use crate::domain::spin_promos_entity::SpinPromosEntity;
-
 use super::models::Companies;
-
-
 pub struct SpinCompaniesDbMapper {}
-
-
 impl DBMapper<SpinCompanyEntity, Companies> for SpinCompaniesDbMapper {
     fn to_db(entity: SpinCompanyEntity) -> Companies {
         Companies {
