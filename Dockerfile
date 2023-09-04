@@ -39,7 +39,7 @@ COPY --from=builder /etc/group /etc/group
 
 WORKDIR /spin-wheel
 
-COPY --from=builder /spin-wheel/target/release/spin-wheel ./
+COPY --from=builder /spin-wheel/target/x86_64-unknown-linux-musl/release/spin-wheel ./
 
 #RUN apt-get update && apt-get install -y wget libpq5 libssl-dev gcc libgcc1 libc6
 #COPY --from=builder /spin-wheel/target/release/spin-wheel /usr/local/bin
