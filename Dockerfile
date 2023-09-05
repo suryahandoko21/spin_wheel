@@ -1,48 +1,13 @@
-FROM rust:latest AS builder
+FROM rust:latest
 
-RUN rustup target add x86_64-unknown-linux-musl
-RUN apt-get update && apt-get install -y musl-tools musl-dev wget gcc libssl-dev pkg-config libwayland-cursor0 libwayland-dev build-essential
-RUN update-ca-certificates
-RUN apt-get -y install libssl-dev pkg-config
+# Set the working directory
+WORKDIR /app
 
+# Copy the application files into the image
+COPY . .
 
-ENV USER=rust
-ENV UID=10001
+# Build the application in release mode
+RUN cargo build --release
 
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    "${USER}"
-
-
-
-WORKDIR /spin-wheel
-
-COPY ./ .
-
-RUN cargo build --target x86_64-unknown-linux-musl --release
-
-####################################################################################################
-## Final image
-####################################################################################################
-FROM debian:alpine
-
-RUN apk update && apk add ca-certificates libc6-compat gcompat --no-cache musl-dev
-
-
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
-
-COPY --from=builder /spin-wheel/target/x86_64-unknown-linux-musl/release/spin-wheel /spin-wheel
-
-#RUN apt-get update && apt-get install -y wget libpq5 libssl-dev gcc libgcc1 libc6
-#COPY --from=builder /spin-wheel/target/release/spin-wheel /usr/local/bin
-
-USER rust:rust
-
-ENTRYPOINT ["/spin-wheel"]
-
+# Set the command to run the binary
+CMD ["./target/release/spin-wheel"]
