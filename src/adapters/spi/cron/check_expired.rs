@@ -1,15 +1,10 @@
 use std::sync::Arc;
-
 use chrono::{Utc, NaiveDate};
 use diesel::prelude::*;
-
 use crate::adapters::spi::cfg::pg_connection::CONN;
-use crate::adapters::spi::failed::models::FailedProcess;
 use crate::adapters::spi::spintickets::models::SpinTickets;
-
 use crate::adapters::spi::cfg::schema::tb_spin_tickets::dsl::*;
 pub async fn check_ticket_expired_be(){
-
     let result:Result<Vec<SpinTickets>,_> = tb_spin_tickets.filter(status.eq("AVAILABLE")).load::<SpinTickets>(&mut CONN.get().unwrap().get().expect("cant connect database"));
     for i in result.iter(){
         for data in i.iter(){
