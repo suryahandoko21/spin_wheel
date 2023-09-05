@@ -1,51 +1,13 @@
-FROM rust:latest AS builder
+FROM rust:latest
 
-RUN rustup target add x86_64-unknown-linux-musl
-RUN apt update && apt install -y musl-tools musl-dev
-RUN update-ca-certificates
-RUN apt-get -y install libssl-dev pkg-config
+# Set the working directory
+WORKDIR /app
 
-# Create appuser
-ENV USER=rust
-ENV UID=10001
+# Copy the application files into the image
+COPY . .
 
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    "${USER}"
+# Build the application in release mode
+RUN cargo build --release
 
-
-#WORKDIR /proxy
-WORKDIR /spin-wheel
-
-COPY ./ .
-
-# We no longer need to use the x86_64-unknown-linux-musl target
-RUN cargo build --target x86_64-unknown-linux-musl --release
-
-####################################################################################################
-## Final image
-####################################################################################################
-FROM alpine
-
-# Install ca-certificates so that HTTPS works consistently
-RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
-
-# Import from builder.
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
-
-WORKDIR /spin-wheel
-
-# Copy our build
-COPY --from=builder /spin-wheel/target/x86_64-unknown-linux-musl/release/spin-wheel ./
-
-# Use an unprivileged user.
-USER rust:rust
-
-ENTRYPOINT ["./spin-wheel"]
-
+# Set the command to run the binary
+CMD ["./target/release/spin-wheel"]

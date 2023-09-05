@@ -10,6 +10,5 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "asia.gcr.io/$PROJECT_ID/spin-wheel-rust:$BRANCH_NAME"]
 tags: ["latest", "$BRANCH_NAME"]
-substitutions:
-  _BRANCH_NAME: ${BRANCH_NAME//\//-}
-
+options:
+  machineType: 'E2_HIGHCPU_8'
