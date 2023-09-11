@@ -2,6 +2,7 @@ use std::time::SystemTime;
 use std::error::Error;
 use async_trait::async_trait;
 use diesel::{RunQueryDsl, QueryDsl, ExpressionMethods};
+use crate::adapters::api::spin_reward::query_string::QstringReward;
 use crate::adapters::api::spin_reward::spin_reward_payload::SpinRewardUpdatedPayload;
 use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::application::mappers::db_mapper::DBMapper;
@@ -61,8 +62,19 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
         Ok(GenericResponse { status: statuses, message: messages})
     }
 
-    async fn get_all_spin_reward_by_company_code(&self,company_code: String) -> Result<Vec<SpinRewardEntity>, Box<dyn Error>>{
-        let results: Result<Vec<SpinRewards>, diesel::result::Error> = tb_spin_rewards.filter(companies_code.eq(company_code)).load::<SpinRewards>(&mut CONN.get().unwrap().get().expect("can't connect database"));
+    async fn get_all_spin_reward_by_company_code(&self,company_code: String,qstring:&QstringReward) -> Result<Vec<SpinRewardEntity>, Box<dyn Error>>{
+        let mut result_query =  tb_spin_rewards.into_boxed().filter(companies_code.eq(company_code));
+        let qstrings  = qstring.clone(); 
+        if qstrings.name !=None {
+            result_query = result_query.filter(reward_name.eq(qstrings.name.clone().unwrap()));
+        }
+        if qstrings.status !=None {
+            result_query = result_query.filter(reward_status.eq(qstrings.status.clone().unwrap()));
+        }
+        if qstring.types !=None {
+            result_query = result_query.filter(reward_category.eq(qstrings.types.clone().unwrap()));
+        }
+        let results: Result<Vec<SpinRewards>, diesel::result::Error> = result_query.load::<SpinRewards>(&mut CONN.get().unwrap().get().expect("can't connect database"));
         match results {
             Ok(models) => Ok(models.into_iter().map(SpinRewardsDbMapper::to_entity).collect::<Vec<SpinRewardEntity>>()),
             Err(e) => Err(Box::new(e)),
