@@ -52,8 +52,10 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         */    
         // let mut response_message = "".to_string();
         let mut status = "failed".to_string();
-        let mut reward_name = "None".to_string();
-        let mut reward_description = "None".to_string();
+        let mut reward_name = "".to_string();
+        let mut reward_type = "".to_string();
+        let mut reward_description = "".to_string();
+        let mut status_spin = "Anda tidak memiliki koin".to_string();
         if spin_choosed.get(0).is_some(){
             // response_message = "None".to_string();
             let choosed = spin_choosed.get(0).unwrap();
@@ -62,9 +64,10 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
             let reward_id = data_reward.reward_id;  
             let spin_avail = spin_available_uuid.as_ref();
             if spin_avail.ok().is_some(){
+                status_spin = "OK".to_string();
                 reward_name = String::from(&data_reward.reward_name);
                 reward_description = String::from(&data_reward.reward_note);
-                let reward_type = String::from(&data_reward.reward_category); 
+                reward_type = String::from(&data_reward.reward_category); 
                 let ticket_id = &spin_avail.ok().unwrap().ticket_uuid;
                 let _= SpinTicketEntityAbstract::used_single_spin_ticket_by_uuid(self,ticket_id.to_string()).await; 
                 /* reduce amount award used */
@@ -123,6 +126,6 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
              }
         }
         // Ok(Spi { status: Status::Success.to_string(),message:reward_name.to_string()})
-        Ok(SpinResponse { status: "ok".to_string(), message: "".to_string(), reward: reward_name, description: reward_description })
+        Ok(SpinResponse { status: status_spin.to_string(), category: reward_type.to_string(), reward: reward_name, description: reward_description })
 }
 }

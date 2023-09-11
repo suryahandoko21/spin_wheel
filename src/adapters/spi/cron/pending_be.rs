@@ -24,7 +24,7 @@ pub async fn process_for_pending_be(){
                     if post_request {
                         let _update_used = diesel::update(tb_spin_used.filter(crate::adapters::spi::cfg::schema::tb_spin_used::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set(used_status.eq("success")).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
                         let _update_failed = diesel::update(tb_spin_failed_process.filter(crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set(post_status.eq("success")).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
-                    println!("success process");
+                    println!("success process Repost to BE");
                     }
         
                 }
