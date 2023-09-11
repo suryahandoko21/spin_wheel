@@ -5,7 +5,7 @@ use diesel::sql_types::Text;
 use async_trait::async_trait;
 use diesel::{RunQueryDsl, QueryDsl, ExpressionMethods};
 use diesel::sql_query;
-use crate::adapters::api::shared::enum_response::Option;
+use crate::adapters::api::shared::enum_response::Options;
 use crate::adapters::api::shared::response::{TicketResponse, SpinAvailableResponse};
 use crate::adapters::api::spin_tickets::spin_tickets_payloads::SpinTicketPayload;
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
@@ -73,7 +73,7 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
         }else if length_success < incoming_data{
             response_status = "PARTIAL";
         }
-        Ok(TicketResponse { status:response_status.to_string(), message: Option::Add.to_string(),data:data_one})
+        Ok(TicketResponse { status:response_status.to_string(), message: Options::Add.to_string(),data:data_one})
 
     }
 

@@ -28,7 +28,7 @@ impl GenericResponse {
 #[derive(Serialize,Deserialize)]
 pub struct SpinResponse {
     pub status: String,
-    pub message : String,
+    pub category : String,
     pub reward : String,
     pub description : String
   }
@@ -36,13 +36,13 @@ pub struct SpinResponse {
   impl SpinResponse {
     pub fn new(
         status: String,
-        message : String,
+        category : String,
         reward: String,
         description : String
     )->Self{
         SpinResponse{
             status,
-            message,
+            category,
             reward,
             description,
             
