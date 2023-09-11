@@ -10,12 +10,12 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "asia.gcr.io/$PROJECT_ID/spin-wheel-rust:$BRANCH_NAME"]
   - name: gcr.io/cloud-builders/gcloud
-  entrypoint: "bash"
-  args:
-        - "-c"
-        - |
-            RESPONSE=$(curl -i -k --request POST --url 'https://app.buddy.works/lidowin/company-deployment-key/pipelines/pipeline/${_BUDDY_PIPELINE_ID}/trigger-webhook?token=${_BUDDY_ACTION_TOKEN}' --header 'content-type: application/json' --data '{ "BRANCH": "$BRANCH_NAME", "BUILD_ID": "$BUILD_ID", "COMMIT_SHA": "$COMMIT_SHA", "SHORT_SHA": "$SHORT_SHA" }' | grep HTTP | cut -d' ' -f2)
-            if [ "200" != "$$RESPONSE" ]; then exit 1; fi
+    entrypoint: "bash"
+    args:
+          - "-c"
+          - |
+              RESPONSE=$(curl -i -k --request POST --url 'https://app.buddy.works/lidowin/company-deployment-key/pipelines/pipeline/${_BUDDY_PIPELINE_ID}/trigger-webhook?token=${_BUDDY_ACTION_TOKEN}' --header 'content-type: application/json' --data '{ "BRANCH": "$BRANCH_NAME", "BUILD_ID": "$BUILD_ID", "COMMIT_SHA": "$COMMIT_SHA", "SHORT_SHA": "$SHORT_SHA" }' | grep HTTP | cut -d' ' -f2)
+              if [ "200" != "$$RESPONSE" ]; then exit 1; fi
 
 tags: ["latest", "$BRANCH_NAME"]
 options:
