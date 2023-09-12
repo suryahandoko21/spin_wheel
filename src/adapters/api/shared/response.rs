@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 
 
-#[derive(Serialize,Deserialize)]
+#[derive(Serialize,Deserialize,Debug)]
 pub struct GenericResponse {
     pub status: String,
     pub message : String
@@ -107,7 +107,22 @@ impl SpinAvailableResponse {
     }
 }
 
+#[derive(Serialize,Deserialize)]
+pub struct JwtResponse {
+    pub status: String,
+    pub message : String,
+}
 
+impl JwtResponse {
+    pub fn new(
+        status: String,
+        message : String)->Self{
+            JwtResponse{
+                status,
+                message,
+            }
 
+        }
+    }
 
 
