@@ -17,6 +17,7 @@ impl ApiMapper<SpinRewardEntity, SpinRewardsPresenter,SpinRewardPayload> for Spi
             percentage:entity.percentage,
             reward_image: entity.reward_image,
             reward_status: entity.reward_status,
+            reward_order:entity.reward_order
         }
     }
 
