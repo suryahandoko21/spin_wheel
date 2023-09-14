@@ -1,7 +1,6 @@
 use diesel::prelude::*;
 use serde::{Serialize, Deserialize};
 #[derive(Queryable, Selectable,Insertable,Identifiable,AsChangeset,Debug,Deserialize,QueryableByName,Serialize)]
-
 #[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_tickets)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct SpinTickets {
@@ -18,7 +17,8 @@ pub struct SpinTickets {
     pub ticket_number:String,
     pub expired_type:String,
     pub expired_value:i32,
-    pub created_date:String
+    pub created_date:String,
+    pub is_payment_gateway :bool
 }
 
 #[derive(Queryable, Selectable, Debug, PartialEq,Serialize,Deserialize,Insertable,QueryableByName)]
@@ -37,5 +37,6 @@ pub struct SpinTicketsToDb {
     pub ticket_number:String,
     pub expired_type:String,
     pub expired_value:i32,
-    pub created_date:String
+    pub created_date:String,
+    pub is_payment_gateway :bool
 }
