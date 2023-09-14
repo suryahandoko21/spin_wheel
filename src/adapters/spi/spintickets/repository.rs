@@ -43,6 +43,7 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
                     expired_type: spin.expiredType,
                     expired_value: spin.expiredValue,
                     created_date: spin.ticketCreatedDate,
+                    is_payment_gateway : spin.isPaymentGateWay,
                      };      
             let to_vector = vec![prepare_data];
             let insert =   diesel::insert_into(tb_spin_tickets).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));

@@ -16,6 +16,7 @@ pub async fn process_for_pending_be(){
                         ticketUuid : ticket_uuids.to_string(),
                         userId : data.user_id.to_string(),
                         rewardName : data.reward_name.to_string(),
+                        rewardDescriptions:data.reward_description.to_string(),
                         status : "used".to_string(),
                         rewardType: data.reward_type.to_string(),
                         money : data.money

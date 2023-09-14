@@ -71,7 +71,8 @@ diesel::table! {
         ticket_number ->Varchar,
         expired_type->Varchar,
         expired_value->Int4,
-        created_date->Varchar
+        created_date->Varchar,
+        is_payment_gateway->Bool
         }
 }
 
@@ -83,6 +84,7 @@ diesel::table! {
         reward_name -> Varchar,
         status -> Varchar,
         reward_type -> Varchar,
+        reward_description ->VarChar,
         money -> Int4,
         post_status -> Varchar,
         created_at -> Timestamp,

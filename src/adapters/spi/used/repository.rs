@@ -77,6 +77,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                         userId : uuid.to_string(),
                         rewardName : reward_name.to_string(),
                         status : "used".to_string(),
+                        rewardDescriptions:reward_description.to_string(),
                         rewardType: reward_type.to_string(),
                         money : data_reward.reward_money
                     };
@@ -101,6 +102,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                             ticket_uuid : ticket_id.to_string(),
                             user_id : uuid.to_string(),
                             reward_name : reward_name.to_string(),
+                            reward_description :reward_description.to_string(),    
                             status :"used".to_string(),
                             reward_type: reward_type.to_string(),
                             money : data_reward.reward_money,

@@ -23,5 +23,6 @@ pub  struct SpinTickets {
    pub expiredType:String,
    pub expiredValue:i32,
    pub ticketCreatedDate:String,
-   pub ticketExpiredDate:String
+   pub ticketExpiredDate:String,
+   pub isPaymentGateWay:bool
 }
