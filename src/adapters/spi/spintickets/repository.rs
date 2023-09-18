@@ -18,6 +18,7 @@ use crate::domain::spin_tickets_entity::SpinTicketsEntity;
 use std::sync::Arc;
 use super::mappers::SpinTicketDBMapper;
 use super::models::SpinTickets;
+use super::request_limit_spin::get_request_limit;
 
 #[async_trait(?Send)]
 impl SpinTicketEntityAbstract for ConnectionRepository {
@@ -79,11 +80,12 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
     }
 
     async fn get_spin_ticket_by_uuid(&self, uuid: String) ->  Result<SpinAvailableResponse, Box<dyn Error>>{
-        let uuid_clone = uuid.clone();
-        let query = tb_spin_tickets.filter(user_uuid.eq(&uuid_clone))
+        let mut uuid_clone = uuid.clone();
+        let limit_spin_user = get_request_limit(&mut uuid_clone).await; 
+        let query = tb_spin_tickets.filter(user_uuid.eq(uuid_clone))
         .filter(status.eq("AVAILABLE"))
         .select(count(id)).get_result::<i64>(&mut CONN.get().unwrap().get().expect("failed connect db"));
-        Ok(SpinAvailableResponse{message:"Spin Available".to_string(),status:"Success".to_string(),spin_available:query.unwrap()})
+        Ok(SpinAvailableResponse{message:"Spin Available".to_string(),spin_amount:query.unwrap(),available:limit_spin_user})
     }
     async fn get_list_spin_ticket_by_uuid(&self, uuid: String) ->  Result<Vec<SpinTicketsEntity>, Box<dyn Error>>{
         let uuid_clone = uuid.clone();

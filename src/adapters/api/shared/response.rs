@@ -84,24 +84,23 @@ impl TicketResponse {
 
 #[derive(Serialize,Deserialize,Debug)]
 pub struct SpinAvailableResponse {
-    pub status: String,
     pub message : String,
-    pub spin_available :  i64
+    pub spin_amount :  i64,
+    pub available : bool
   
 }
 
 impl SpinAvailableResponse {
     pub fn new(
-        status: String,
         message : String,
-        spin_available :  i64
+        spin_amount :  i64,
+        available : bool
       
     )->Self{
         SpinAvailableResponse{
-            status,
             message,
-            spin_available
-            
+            spin_amount,
+            available       
         }
 
     }
