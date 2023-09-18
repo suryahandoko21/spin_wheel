@@ -8,3 +8,5 @@ pub mod request_be;
 pub mod validate_token;
 pub mod request_limit;
 pub mod response_limit;
+pub mod enum_reward;
+pub mod selected_enum;
