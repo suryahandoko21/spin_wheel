@@ -1,30 +1,17 @@
 use std::env;
 use std::net::TcpListener;
-use std::time::Duration;
 use spin_wheel::adapters::api::shared::init_global::set_global_init;
 use spin_wheel::adapters::spi::cfg::pg_connection::check_connection;
 use spin_wheel::adapters::spi::cron::crons::job;
 use spin_wheel::run;
-use actix_rt::time;
-trait DurationExt {
-    fn from_hours(hours: u64) -> Duration;
-}
 
-impl DurationExt for Duration {
-    fn from_hours(hours: u64) -> Duration {
-        Duration::from_secs(hours * 60 * 60)
-    }
-}
 #[warn(unused_must_use)]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     set_global_init();
     actix_web::rt::spawn(async move {
-        let mut interval = time::interval(Duration::from_secs(60));
-        loop {
-            interval.tick().await;
-            job().await;
-            } 
+        job().await;
+            
     });
     let environment_file;
     if let Ok(e) = env::var("ENV") {

@@ -12,8 +12,6 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 
 #[post("/store")]
 async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload>,req: HttpRequest) ->HttpResponse {
-    let spin_reward = PostSpinRewardsUseCase::new(&post, &data.connection_repository);
-    let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
     let header_authorization =  req.headers().get("Authorization");
     if header_authorization.is_none(){
         let error = JwtResponse{
@@ -31,6 +29,8 @@ async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload
         };
        return HttpResponse::Ok().json(error);
     }
+    let spin_reward = PostSpinRewardsUseCase::new(&post, &data.connection_repository);
+    let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
     return HttpResponse::Ok().json(spin_rewards.unwrap());
 }
 
@@ -63,8 +63,6 @@ async fn get_all_spin_rewards(data: web::Data<AppState>,req: HttpRequest) ->Http
 
 #[post("/update")]
 async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdatedPayload>,req: HttpRequest) ->HttpResponse {
-    let spin_reward = UpdateSpinRewardsUseCase::new(&post, &data.connection_repository);
-    let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
     let header_authorization =  req.headers().get("Authorization");
     if header_authorization.is_none(){
         let error = JwtResponse{
@@ -82,5 +80,7 @@ async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdat
         };
        return HttpResponse::Ok().json(error);
     }
+    let spin_reward = UpdateSpinRewardsUseCase::new(&post, &data.connection_repository);
+    let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
     return HttpResponse::Ok().json(spin_rewards.unwrap());
 }
