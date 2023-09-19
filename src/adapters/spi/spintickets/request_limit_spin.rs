@@ -20,7 +20,6 @@ pub async fn get_request_limit(uuid:&mut String)->bool{
         if status == 200 {
             let body = res.ok().unwrap().body().await.ok();
             let rs:ResponseLimitSpin = serde_json::from_slice(&body.unwrap()).unwrap();
-            println!("response get{:?}",rs);
             if rs.status == "NOT_AVAILABLE"{
               return false;
             }  
