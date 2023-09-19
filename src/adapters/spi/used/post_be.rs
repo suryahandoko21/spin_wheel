@@ -6,7 +6,8 @@ pub async fn post_to_be(post_be:RequestBeResult)->bool{
     let client = awc::Client::default();
     let response = client.post(webhook_be)
     .send_json(&post_be).await;
-    if response.is_err(){ 
+    let status = response.ok().unwrap().status();
+    if status != 200 {
         bool = false;
     }
     return bool;
