@@ -1,7 +1,9 @@
 use std::sync::Arc;
+use std::time::SystemTime;
 
 use diesel::prelude::*;
 use crate::adapters::api::shared::request_be::RequestBeResult;
+use crate::adapters::api::shared::selected_enum::select_enum_reward;
 use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::*;
 use crate::adapters::spi::failed::models::FailedProcess;
@@ -18,14 +20,13 @@ pub async fn process_for_pending_be(){
                         rewardName : data.reward_name.to_string(),
                         rewardDescriptions:data.reward_description.to_string(),
                         status : "used".to_string(),
-                        rewardType: data.reward_type.to_string(),
+                        rewardType: select_enum_reward(data.reward_type.to_string()),
                         money : data.money
                     };
                     let post_request = post_to_be(request_be).await;
                     if post_request {
-                        let _update_used = diesel::update(tb_spin_used.filter(crate::adapters::spi::cfg::schema::tb_spin_used::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set(used_status.eq("success")).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
-                        let _update_failed = diesel::update(tb_spin_failed_process.filter(crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set(post_status.eq("success")).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
-                    println!("success process Repost to BE");
+                        let _update_used = diesel::update(tb_spin_used.filter(crate::adapters::spi::cfg::schema::tb_spin_used::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set((used_status.eq("success"),crate::adapters::spi::cfg::schema::tb_spin_used::dsl::updated_at.eq(SystemTime::now()))).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
+                        let _update_failed = diesel::update(tb_spin_failed_process.filter(crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set((post_status.eq("success"),crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::updated_at.eq(SystemTime::now()))).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
                     }
         
                 }
