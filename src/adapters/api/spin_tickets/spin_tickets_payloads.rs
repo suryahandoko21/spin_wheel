@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize, Debug,Clone)]
+use utoipa::ToSchema;
+#[derive(Serialize, Deserialize, Debug,Clone,ToSchema)]
 #[allow(non_snake_case)]
 pub struct SpinTicketPayload {
     // implement for POST/UPDATE requests
@@ -9,7 +9,7 @@ pub struct SpinTicketPayload {
     pub spinTickets :Vec<SpinTickets>,
 
 }
-#[derive(Serialize, Deserialize, Debug,Clone)]
+#[derive(Serialize, Deserialize, Debug,Clone,ToSchema)]
 #[allow(non_snake_case)]
 pub  struct SpinTickets {
    pub id:i32,

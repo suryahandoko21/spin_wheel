@@ -31,3 +31,5 @@ serde = "1.0.163"
 serde_json = "1.0.96"
 ssl = "0.1.0"
 thiserror = "1.0.40"
+utoipa = { version = "3.5.0", features = ["chrono", "actix_extras"] }
+utoipa-swagger-ui = { version="3.1.5", features = ["actix-web"] }

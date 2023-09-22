@@ -8,6 +8,36 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
     .service(get_spin_ticket_by_uuid);
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/spin_tickets/create",
+    tag = "Endpoint Ticket",
+    request_body(content = SpinTicketPayload, description = "Credentials to create account", example = json!({
+        "userUuId":"User Uuid",
+        "username":"Mr X ",
+        "spinTickets": [ {
+                   "id":9,
+                   "uuid": "1b3c89-09c2a1-8765cf-1231",
+                   "status":"AVAILABLE",
+                   "ticketNumber":"spx-cpn-2023081999821",
+                   "userId":9,
+                   "userName":"MR X",
+                   "pointRuleId":2,
+                   "pointRuleName":"DEPOSIT MINIMAL 1 JUTA",
+                   "expiredType":"DAYS",
+                   "expiredValue":1,
+                   "ticketCreatedDate":"2023-11-15 11:01:58",
+                   "ticketExpiredDate":"2023-08-27 ",
+                   "isPaymentGateWay":false
+                 }       
+               ]
+       })),
+       params(
+             ("spinWheelEngineSecretKey", Header, description = "Token env static"),
+       )
+       ,
+    responses()
+)]
 #[post("/create")]
 async fn post_spin_tickets(data: web::Data<AppState>,post:Json<SpinTicketPayload>,req: HttpRequest)->HttpResponse{
     let post_one_spin_ticket =  PostSpinTicketUseCase::new(&post, &data.connection_repository);
@@ -36,7 +66,12 @@ async fn post_spin_tickets(data: web::Data<AppState>,post:Json<SpinTicketPayload
     return HttpResponse::Ok().json(spin_ticket.unwrap());
 }
 
-
+#[utoipa::path(
+    get,
+    path = "/api/v1/spin_tickets/list/{uuid}",
+    tag = "Endpoint Ticket",
+    responses()
+)]
 #[get("/list/{uuid}")]
 async fn get_spin_ticket_by_uuid(data: web::Data<AppState>,path:web::Path<(String,)>) ->Result<HttpResponse,ErrorReponse>{
     let uuid = path.into_inner().0;

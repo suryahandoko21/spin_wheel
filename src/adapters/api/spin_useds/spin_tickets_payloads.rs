@@ -1,8 +1,7 @@
 use serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize, Debug,Clone)]
+use utoipa::ToSchema;
+#[derive(Serialize, Deserialize, Debug,Clone,ToSchema)]
 pub struct SpinUsedPayload {
-    // implement for POST/UPDATE requests
     pub user_uuid: String,
     pub company_code :String
 }

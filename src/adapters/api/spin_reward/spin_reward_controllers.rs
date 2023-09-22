@@ -10,6 +10,51 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
     .service(update_spin_rewards);
 }
 
+
+#[utoipa::path(
+    post,
+    path = "/api/v1/spin_reward/store",
+    tag = "Endpoint Reward",
+    request_body(content = SpinRewardPayload, description = "Credentials to create account", example = json!({
+        "company_code":"bintangbandar",  
+        "detail":[            
+                  {
+                  "name":"Fadly zonk",    
+                  "amount":5,
+                  "money":0,
+                  "note":"2222",
+                  "category":"zonk",
+                  "percentage":10,
+                  "image": "xxx",
+                  "status":"active",
+                  "order":1
+                  },
+                  {
+                  "name":"Mobil Carry",    
+                  "amount":5,
+                  "money":0,
+                  "note":"2222",
+                  "category":"product",
+                  "percentage":80,
+                  "image": "xxx",
+                  "status":"active",
+                   "order":2
+                  },
+                  {
+                  "name":"Payung Jingga",   
+                  "amount":5,
+                  "money":0,
+                  "note":"Nono",
+                  "category":"cash",
+                  "percentage":10,
+                  "image": "xxx",
+                  "status":"active",
+                  "order":3
+                  }
+              ]
+      })),
+    responses()
+)]
 #[post("/store")]
 async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload>,req: HttpRequest) ->HttpResponse {
     let header_authorization =  req.headers().get("Authorization");
@@ -34,6 +79,12 @@ async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload
     return HttpResponse::Ok().json(spin_rewards.unwrap());
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/spin_reward/list",
+    tag = "Endpoint Reward",
+    responses()
+)]
 #[get("/list")]
 async fn get_all_spin_rewards(data: web::Data<AppState>,req: HttpRequest) ->HttpResponse {
     let qstring = web::Query::<QstringReward>::from_query(req.query_string()).unwrap();
@@ -61,6 +112,66 @@ async fn get_all_spin_rewards(data: web::Data<AppState>,req: HttpRequest) ->Http
     
 }
 
+
+#[utoipa::path(
+    post,
+    path = "/api/v1/spin_reward/update",
+    tag = "Endpoint Reward",
+    request_body(content = SpinRewardPayload, description = "Credentials to create account", example = json!({
+        "company_code":"lido88",  
+        "detail":[
+                  {
+                      "id":1,    
+                      "name":"Fadly zonk3",    
+                      "amount":5,
+                      "money":0,
+                      "note":"2222",
+                      "category":"zonk",
+                      "percentage":10,
+                      "image": "xxx",
+                      "status":"inactive",
+                      "order":2
+                  },
+                  {
+                      "id":2,    
+                      "name":"Mobil Carry",    
+                      "amount":5,
+                      "money":0,
+                      "note":"2222",
+                      "category":"product",
+                      "percentage":10,
+                      "image": "xxx",
+                      "status":"active",
+                      "order":3
+                  },
+                  {
+                      "id":3,    
+                      "name":"Payung Jingga",   
+                      "amount":5,
+                      "money":0,
+                      "note":"Nono",
+                      "category":"cash",
+                      "percentage":10,
+                      "image": "xxx",
+                      "status":"inactive",
+                      "order":4
+                  },
+                   {
+                      "id":0,     
+                      "name":"Payung Jingga21",   
+                      "amount":5,
+                      "money":0,
+                      "note":"Nono",
+                      "category":"cash",
+                      "percentage":70,
+                      "image": "xxx",
+                      "status":"active",
+                      "order":5
+                  }
+              ]
+      })),
+    responses()
+)]
 #[post("/update")]
 async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdatedPayload>,req: HttpRequest) ->HttpResponse {
     let header_authorization =  req.headers().get("Authorization");
