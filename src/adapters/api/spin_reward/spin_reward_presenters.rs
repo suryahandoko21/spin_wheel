@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct SpinRewardsPresenter {
     pub reward_id: i32,
     pub reward_name: String,
-    pub reward_note: String,
+    pub reward_desc: String,
     pub reward_category: String,
     pub reward_amount: i32,
     pub reward_money: i32,

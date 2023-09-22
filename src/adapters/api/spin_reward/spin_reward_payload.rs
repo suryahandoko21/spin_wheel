@@ -8,7 +8,7 @@ pub struct SpinRewardPayload {
 #[derive(Serialize, Deserialize, Debug,Clone,ToSchema)]
 pub  struct SpinRewards {
     pub name: String,
-    pub note: String,
+    pub desc: String,
     pub category: String,
     pub amount: i32,
     pub money: i32,
@@ -27,7 +27,7 @@ pub struct SpinRewardUpdatedPayload {
 pub  struct SpinRewardUpdates {
     pub id : i32,
     pub name: String,
-    pub note: String,
+    pub desc: String,
     pub category: String,
     pub amount: i32,
     pub money: i32,

@@ -13,7 +13,7 @@ impl ApiMapper<SpinRewardEntity, SpinRewardsPresenter,SpinRewardPayload> for Spi
             reward_money:entity.reward_money,   
             reward_category:entity.reward_category,
             reward_name:entity.reward_name,
-            reward_note:entity.reward_note,
+            reward_desc:entity.reward_note,
             percentage:entity.percentage,
             reward_image: entity.reward_image,
             reward_status: entity.reward_status,
