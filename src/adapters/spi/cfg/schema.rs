@@ -64,6 +64,7 @@ diesel::table! {
         user_uuid -> Varchar,
         userid -> Varchar,
         username -> Varchar,
+        company_code->Varchar,
         ticket_id -> Int4,
         ticket_uuid -> Varchar,
         status -> Varchar,

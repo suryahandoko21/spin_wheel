@@ -6,6 +6,7 @@ pub struct SpinTicketPayload {
     // implement for POST/UPDATE requests
     pub userUuId: String,
     pub username: String,
+    pub companyCode :String,
     pub spinTickets :Vec<SpinTickets>,
 
 }
