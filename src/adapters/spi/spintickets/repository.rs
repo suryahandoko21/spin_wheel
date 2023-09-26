@@ -45,6 +45,7 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
                     expired_value: spin.expiredValue,
                     created_date: spin.ticketCreatedDate,
                     is_payment_gateway : spin.isPaymentGateWay,
+                    company_code:data.companyCode.to_string()
                      };      
             let to_vector = vec![prepare_data];
             let insert =   diesel::insert_into(tb_spin_tickets).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
@@ -95,8 +96,11 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
             Err(e) => Err(Box::new(e)),
         }
     }
-    async fn get_single_spin_ticket_by_uuid(&self, uuid: String) ->  Result<SpinTicketsEntity, Box<dyn Error>>{
-        let list_spins = sql_query("select * from tb_spin_tickets where status='AVAILABLE' and user_uuid=$1 ORDER BY ID ASC LIMIT 1").bind::<Text,_>(uuid).get_result::<SpinTickets>(&mut CONN.get().unwrap().get().expect("failed connect db"));
+    async fn get_single_spin_ticket_by_uuid(&self, uuid: String,companies_code: String) ->  Result<SpinTicketsEntity, Box<dyn Error>>{
+        let list_spins = sql_query("select * from tb_spin_tickets where status='AVAILABLE' and user_uuid=$1 and company_code=$2 ORDER BY ID ASC LIMIT 1")
+                        .bind::<Text,_>(uuid)
+                        .bind::<Text,_>(companies_code)
+                        .get_result::<SpinTickets>(&mut CONN.get().unwrap().get().expect("failed connect db"));
         match  list_spins
         {
            Ok(models) => Ok(SpinTicketDBMapper::to_entity(models)),

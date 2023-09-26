@@ -36,7 +36,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         let status_active = status_active_spinwheel(url_addresses.to_string()).await;
 
         /*  GET ONE SPIN TICKET FOR USER WHERE SPIN SI AVAILABLE (NOT EXPIRED) */
-        let spin_available_uuid = SpinTicketEntityAbstract::get_single_spin_ticket_by_uuid(self, uuid.to_string()).await;  
+        let spin_available_uuid = SpinTicketEntityAbstract::get_single_spin_ticket_by_uuid(self, uuid.to_string(),company_code.to_string()).await;  
         
         /* GET LIST SPIN FOR COMPANY SELECTED */
         let get_all_spin_reward_by_company_code = SpinRewardEntityAbstract::get_all_spin_reward_by_company_code_by_status(self,company_code.to_string()).await;

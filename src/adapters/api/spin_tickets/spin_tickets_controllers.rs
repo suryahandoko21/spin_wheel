@@ -15,6 +15,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
     request_body(content = SpinTicketPayload, description = "Credentials to create account", example = json!({
         "userUuId":"User Uuid",
         "username":"Mr X ",
+        "companyCode":"lido88",
         "spinTickets": [ {
                    "id":9,
                    "uuid": "1b3c89-09c2a1-8765cf-1231",

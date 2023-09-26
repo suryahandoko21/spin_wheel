@@ -8,6 +8,7 @@ pub struct SpinTickets {
     pub user_uuid : String,
     pub userid: String,
     pub username : String, 
+    pub company_code:String,
     pub ticket_id : i32,
     pub ticket_uuid : String,
     pub status : String,
@@ -27,7 +28,8 @@ pub struct SpinTickets {
 pub struct SpinTicketsToDb {
     pub user_uuid : String,
     pub userid: String,
-    pub username : String, 
+    pub username : String,
+    pub company_code:String, 
     pub ticket_id : i32,
     pub ticket_uuid : String,
     pub status : String,
