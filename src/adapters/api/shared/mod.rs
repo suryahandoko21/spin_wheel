@@ -10,3 +10,4 @@ pub mod request_limit;
 pub mod response_limit;
 pub mod enum_reward;
 pub mod selected_enum;
+pub mod response_spin_active;

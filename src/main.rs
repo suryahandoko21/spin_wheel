@@ -2,15 +2,19 @@ use std::env;
 use std::net::TcpListener;
 use spin_wheel::adapters::api::shared::init_global::set_global_init;
 use spin_wheel::adapters::spi::cfg::pg_connection::check_connection;
-use spin_wheel::adapters::spi::cron::crons::job;
+use spin_wheel::adapters::spi::cron::crons::{perseconds, perdays};
 use spin_wheel::run;
 
 #[warn(unused_must_use)]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     set_global_init();
-    actix_web::rt::spawn(async move {
-        job().await;
+    let _scn = actix_web::rt::spawn(async move {
+        perseconds().await;
+            
+    });
+    let _day = actix_web::rt::spawn(async move {
+        perdays().await;
             
     });
     let environment_file;

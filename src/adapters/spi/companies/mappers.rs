@@ -9,6 +9,8 @@ impl DBMapper<SpinCompanyEntity, Companies> for SpinCompaniesDbMapper {
             uuid: entity.uuid,
             companies_code: entity.companies_code,
             companies_name: entity.companies_name,
+            companies_address: entity.companies_address,
+            is_company_enabled : entity.is_company_enabled,
             created_at: entity.created_at,
             updated_at: entity.updated_at,
             created_by: entity.created_by,
@@ -18,8 +20,7 @@ impl DBMapper<SpinCompanyEntity, Companies> for SpinCompaniesDbMapper {
     }
 
     fn to_entity(model: Companies) -> SpinCompanyEntity {
-        SpinCompanyEntity {
-            
+        SpinCompanyEntity {   
             created_at: model.created_at,
             updated_at: model.updated_at,
             created_by: model.created_by,
@@ -28,6 +29,8 @@ impl DBMapper<SpinCompanyEntity, Companies> for SpinCompaniesDbMapper {
             uuid: model.uuid,
             companies_code:model.companies_code,
             companies_name: model.companies_name,
+            companies_address:model.companies_address,
+            is_company_enabled:model.is_company_enabled
         }
     }
 }
