@@ -23,7 +23,7 @@ pub async fn process_for_pending_be(){
                         rewardType: select_enum_reward(data.reward_type.to_string()),
                         money : data.money
                     };
-                    let post_request = post_to_be(request_be).await;
+                    let post_request = post_to_be(request_be,data.url_address.to_string()).await;
                     if post_request {
                         let _update_used = diesel::update(tb_spin_used.filter(crate::adapters::spi::cfg::schema::tb_spin_used::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set((used_status.eq("success"),crate::adapters::spi::cfg::schema::tb_spin_used::dsl::updated_at.eq(SystemTime::now()))).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
                         let _update_failed = diesel::update(tb_spin_failed_process.filter(crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set((post_status.eq("success"),crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::updated_at.eq(SystemTime::now()))).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));

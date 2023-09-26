@@ -1,13 +1,15 @@
 use actix_web::{ web::{self, Json}, HttpResponse,post,Result, get, HttpRequest};
-use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, JwtResponse}, validate_token::check_validation}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::QstringReward}}, 
-application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase}, interfaces::AbstractUseCase}, mappers::api_mapper::ApiMapper}, 
+use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, JwtResponse}, validate_token::check_validation}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload, SpinRewardActivePayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::QstringReward}}, 
+application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase, active_rewards::ActiveSpinRewardsUseCase}, interfaces::AbstractUseCase}, mappers::api_mapper::ApiMapper}, 
 domain::error::ApiError};
 
 /*  collection route for spin_rewards */
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(post_spin_rewards)
     .service(get_all_spin_rewards)
+    .service(get_all_spin_active_rewards)
     .service(update_spin_rewards);
+
 }
 
 
@@ -195,3 +197,15 @@ async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdat
     let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
     return HttpResponse::Ok().json(spin_rewards.unwrap());
 }
+
+#[post("/active")]
+async fn get_all_spin_active_rewards(data: web::Data<AppState>,post:Json<SpinRewardActivePayload>,req: HttpRequest) ->HttpResponse {
+    let header_authorization =  req.headers().get("Authorization");
+    if header_authorization.is_none(){
+        /* nanti disesuaikan payloadnya */
+    }
+    let data = ActiveSpinRewardsUseCase::new(&post.company_code, &data.connection_repository);
+    let values= data.execute().await;
+    return HttpResponse::Ok().json(values.unwrap());
+}
+

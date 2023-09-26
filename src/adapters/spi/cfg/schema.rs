@@ -47,6 +47,8 @@ diesel::table! {
         uuid -> Varchar,
         companies_code -> Varchar,
         companies_name -> Varchar,
+        companies_address ->Varchar,
+        is_company_enabled->Bool,
         created_at -> Timestamp,
         updated_at -> Timestamp,
         created_by -> Varchar,
@@ -87,6 +89,7 @@ diesel::table! {
         reward_description ->VarChar,
         money -> Int4,
         post_status -> Varchar,
+        url_address->VarChar,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }

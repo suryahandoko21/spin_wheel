@@ -15,6 +15,7 @@ pub struct FailedProcess {
     pub reward_description:String,
     pub money :i32,
     pub post_status : String,
+    pub url_address :String,
     pub created_at : SystemTime, 
     pub updated_at : SystemTime, 
   }
@@ -31,6 +32,7 @@ pub struct FailedProcessToDb {
     pub reward_description:String,
     pub money :i32,
     pub post_status : String,
+    pub url_address :String,
     pub created_at : SystemTime, 
     pub updated_at : SystemTime, 
   }

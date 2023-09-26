@@ -1,5 +1,13 @@
 use chrono::NaiveDateTime;
-#[derive(Debug, Clone)]
+use serde::{Deserialize, Serialize};
+#[derive(Debug, Clone,Serialize,Deserialize)]
+pub struct SpinRewardActiveEntity {
+    pub status : bool,
+    pub company_code : String,
+    pub reward_list : Vec<SpinRewardEntity>,
+}
+
+#[derive(Debug, Clone,Serialize,Deserialize)]
 pub struct SpinRewardEntity {
     pub reward_id: i32,
     pub reward_name: String,

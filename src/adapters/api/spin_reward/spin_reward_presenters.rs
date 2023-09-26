@@ -13,3 +13,14 @@ pub struct SpinRewardsPresenter {
     pub reward_status:String,
     pub reward_order :i32
 }
+
+
+
+#[derive(Serialize, Deserialize, Debug)]
+#[allow(non_snake_case)]
+pub struct ListRewardsPresenter {
+    pub rewardType: String,
+    pub rewardName: String,
+    pub rewardDescriptions: String,
+    pub money: i32,
+   }
