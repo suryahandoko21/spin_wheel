@@ -16,7 +16,7 @@ pub async fn process_for_pending_be(){
                     let ticket_uuids =  Arc::new(data.ticket_uuid.to_string());
                     let request_be = RequestBeResult{
                         ticketUuid : ticket_uuids.to_string(),
-                        userId : data.user_id.to_string(),
+                        userUuid : data.user_id.to_string(),
                         rewardName : data.reward_name.to_string(),
                         rewardDescriptions:data.reward_description.to_string(),
                         status : "used".to_string(),

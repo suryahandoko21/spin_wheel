@@ -79,7 +79,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         let _= SpinRewardEntityAbstract::used_one_spin_by_reward_id(self, *reward_id).await;
         let request_be = RequestBeResult{
             ticketUuid : ticket_id.to_string(),
-            userId : uuid.to_string(),
+            userUuid : uuid.to_string(),
             rewardName : reward_name.to_string(),
             status : "used".to_string(),
             rewardDescriptions:reward_description.to_string(),
