@@ -8,5 +8,5 @@ use std::error::Error;
 #[cfg_attr(test, automock)]
 #[async_trait(?Send)]
 pub trait SpinUsedEntityAbstract {
-    async fn post_one_spin_useds(&self, post: &SpinUsedPayload) ->  Result<SpinResponse, Box<dyn Error>>;
+    async fn post_one_spin_useds(&self, post: &SpinUsedPayload, companies_code: String,url_addresses:String) ->  Result<SpinResponse, Box<dyn Error>>;
    }

@@ -3,8 +3,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone,Serialize,Deserialize)]
 pub struct SpinRewardActiveEntity {
     pub status : bool,
+    pub user_uuid : String,
     pub company_code : String,
     pub reward_list : Vec<SpinRewardEntity>,
+    pub chance_spin :i64
 }
 
 #[derive(Debug, Clone,Serialize,Deserialize)]

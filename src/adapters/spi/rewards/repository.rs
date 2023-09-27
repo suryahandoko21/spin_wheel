@@ -8,6 +8,7 @@ use crate::adapters::api::spin_reward::spin_reward_payload::SpinRewardUpdatedPay
 use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::application::mappers::db_mapper::DBMapper;
 use crate::application::repositories::spin_company_repository_abstract::SpinCompanyEntityAbstract;
+use crate::application::repositories::spin_ticket_repository_abstract::SpinTicketEntityAbstract;
 use crate::domain::spin_reward_entity::{SpinRewardEntity, SpinRewardActiveEntity};
 use crate::{application::repositories::spin_rewards_repository_abstract::SpinRewardEntityAbstract, adapters::{spi::cfg::db_connection::ConnectionRepository, api::{spin_reward::spin_reward_payload::SpinRewardPayload, shared::{response::GenericResponse, enum_response::Status}}}};
 use crate::adapters::spi::cfg::schema::tb_spin_rewards::dsl::*;
@@ -17,6 +18,14 @@ use super::models::{SpinRewardToDB, SpinRewards, SpinRewardUpdateToDB};
 use super::status_active::status_active_spinwheel;
 #[async_trait(?Send)]
 impl SpinRewardEntityAbstract for ConnectionRepository {
+    async fn get_one_zonk_spin_reward_by_company(&self,company_code:String)->Result<SpinRewardEntity,Box<dyn Error>>{
+        let result = tb_spin_rewards.filter(reward_category.eq("zonk")).filter(reward_status.eq("active")).filter(companies_code.eq(company_code)).get_result::<SpinRewards>(&mut CONN.get().unwrap().get().expect("cant connect database"));
+        match  result
+         {
+            Ok(models) => Ok(SpinRewardsDbMapper::to_entity(models)),
+            Err(e) => Err(Box::new(e)),
+        }
+    }
     async fn get_one_spin_reward_by_id(&self,reward_id:i32)->Result<SpinRewardEntity,Box<dyn Error>>{
         let result = tb_spin_rewards.filter(id.eq(reward_id)).get_result::<SpinRewards>(&mut CONN.get().unwrap().get().expect("cant connect database"));
         match  result
@@ -65,15 +74,18 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
         Ok(GenericResponse { status: statuses, message: messages})
     }
 
-    async fn get_active_spin_reward_by_company_code(&self,company_code: String) -> Result<SpinRewardActiveEntity, Box<dyn Error>> {
+    async fn get_active_spin_reward_by_company_code(&self,company_code: String,user_uuid:String) -> Result<SpinRewardActiveEntity, Box<dyn Error>> {
         let result_query =  tb_spin_rewards.filter(reward_status.eq("active")).load::<SpinRewards>(&mut CONN.get().unwrap().get().expect("can't connect database"));
         let company = SpinCompanyEntityAbstract::get_spin_company_by_code(self,company_code.to_string()).await;
         let url_addresses = Arc::new(company.unwrap().companies_address.to_string());   
         let status_active = status_active_spinwheel(url_addresses.to_string()).await;
+        let c_spin  = SpinTicketEntityAbstract::get_spin_ticket_by_uuid(self, user_uuid.to_string()).await;
         let data = SpinRewardActiveEntity{
-            status :status_active,
+            status : status_active,
+            user_uuid : user_uuid.to_string(),
             company_code:company_code.to_string(),
-            reward_list:result_query.ok().unwrap().into_iter().map(SpinRewardsDbMapper::to_entity).collect::<Vec<SpinRewardEntity>>()
+            reward_list:result_query.ok().unwrap().into_iter().map(SpinRewardsDbMapper::to_entity).collect::<Vec<SpinRewardEntity>>(),
+            chance_spin:c_spin.ok().unwrap().spin_amount
         };
         Ok(data)
        }

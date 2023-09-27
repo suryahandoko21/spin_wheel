@@ -10,11 +10,13 @@ pub async fn status_active_spinwheel(url_address:String)->bool{
     let response = client.get(address)
     .insert_header(("spinWheelEngineSecretKey", token_validation_be.to_string())).send().await;
     let rstatus =  response.as_ref();
-    let status = rstatus.ok().unwrap().status();
-    if status == 200 {
-        let body = response.ok().unwrap().body().await.ok();
-        let rs:ResponseActiveSpin = serde_json::from_slice(&body.unwrap()).unwrap();
-        bool = rs.enableSpinWheelFeature;
+    if rstatus.is_ok(){
+        let status = rstatus.ok().unwrap().status();
+        if status == 200 {
+            let body = response.ok().unwrap().body().await.ok();
+            let rs:ResponseActiveSpin = serde_json::from_slice(&body.unwrap()).unwrap();
+            bool = rs.enableSpinWheelFeature;
+        }
     }
     return bool;
 }
