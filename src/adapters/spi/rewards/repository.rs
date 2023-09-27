@@ -77,17 +77,26 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
     async fn get_active_spin_reward_by_company_code(&self,company_code: String,user_uuid:String) -> Result<SpinRewardActiveEntity, Box<dyn Error>> {
         let result_query =  tb_spin_rewards.filter(reward_status.eq("active")).load::<SpinRewards>(&mut CONN.get().unwrap().get().expect("can't connect database"));
         let company = SpinCompanyEntityAbstract::get_spin_company_by_code(self,company_code.to_string()).await;
-        let url_addresses = Arc::new(company.unwrap().companies_address.to_string());   
-        let status_active = status_active_spinwheel(url_addresses.to_string()).await;
-        let c_spin  = SpinTicketEntityAbstract::get_spin_ticket_by_uuid(self, user_uuid.to_string()).await;
-        let data = SpinRewardActiveEntity{
-            status : status_active,
-            user_uuid : user_uuid.to_string(),
-            company_code:company_code.to_string(),
-            reward_list:result_query.ok().unwrap().into_iter().map(SpinRewardsDbMapper::to_entity).collect::<Vec<SpinRewardEntity>>(),
-            chance_spin:c_spin.ok().unwrap().spin_amount
+        let mut company_obj = SpinRewardActiveEntity{
+            status : false,
+            user_uuid : "".to_string(),
+            company_code:"".to_string(),
+            reward_list:None,
+            chance_spin:0
         };
-        Ok(data)
+        if !company.is_err(){
+            let url_addresses = Arc::new(company.unwrap().companies_address.to_string());   
+            let status_active = status_active_spinwheel(url_addresses.to_string()).await;
+            let c_spin  = SpinTicketEntityAbstract::get_spin_ticket_by_uuid(self, user_uuid.to_string()).await;
+
+            /* Fill Struct Data */
+            company_obj.status = status_active;
+            company_obj.user_uuid = user_uuid.to_string();
+            company_obj.company_code = company_code.to_string();
+            company_obj.reward_list = Some(result_query.ok().unwrap().into_iter().map(SpinRewardsDbMapper::to_entity).collect::<Vec<SpinRewardEntity>>());
+            company_obj.chance_spin = c_spin.ok().unwrap().spin_amount
+        }
+        Ok(company_obj)
        }
     async fn get_all_spin_reward_by_company_code(&self,company_code: String,qstring:&QstringReward) -> Result<Vec<SpinRewardEntity>, Box<dyn Error>>{
         let mut result_query =  tb_spin_rewards.into_boxed().filter(companies_code.eq(company_code));
