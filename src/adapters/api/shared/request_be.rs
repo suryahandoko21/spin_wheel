@@ -4,7 +4,7 @@ use serde::{Serialize, Deserialize};
 #[allow(non_snake_case)]
 pub struct RequestBeResult {
     pub ticketUuid : String,
-    pub userId : String,
+    pub userUuid : String,
     pub rewardName :  String,
     pub rewardDescriptions: String,
     pub status :String,
