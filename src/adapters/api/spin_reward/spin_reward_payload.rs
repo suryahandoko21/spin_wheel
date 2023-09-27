@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug,Clone,ToSchema)]
 pub struct SpinRewardActivePayload {
-    pub company_code:String,
     pub user_uuid:String
  }
 

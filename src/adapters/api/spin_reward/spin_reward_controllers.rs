@@ -1,3 +1,4 @@
+use actix_http::StatusCode;
 use actix_web::{ web::{self, Json}, HttpResponse,post,Result, get, HttpRequest};
 use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, JwtResponse}, validate_token::check_validation}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload, SpinRewardActivePayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::QstringReward}}, 
 application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase, active_rewards::ActiveSpinRewardsUseCase}, interfaces::AbstractUseCase}, mappers::api_mapper::ApiMapper}, 
@@ -201,10 +202,24 @@ async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdat
 #[post("/active")]
 async fn get_all_spin_active_rewards(data: web::Data<AppState>,post:Json<SpinRewardActivePayload>,req: HttpRequest) ->HttpResponse {
     let header_authorization =  req.headers().get("Authorization");
+    let mut error_msg = JwtResponse{
+            message: "".to_string(),
+            status: "".to_string()
+    };
     if header_authorization.is_none(){
-        /* nanti disesuaikan payloadnya */
+            error_msg.message = "Empty Bearer Authorization !!".to_string();
+            error_msg.status =  "error".to_string();      
+            return HttpResponse::build(StatusCode::UNAUTHORIZED).json(error_msg);
     }
-    let data = ActiveSpinRewardsUseCase::new(&post.company_code, &data.connection_repository);
+    let auth = header_authorization.unwrap().to_str().ok().unwrap().to_string(); 
+    let jwt_token_company_code = check_validation(auth);
+    if jwt_token_company_code.contains("Error"){
+        error_msg.message = jwt_token_company_code.to_string();
+        error_msg.status=  "error".to_string();
+        return HttpResponse::build(StatusCode::UNAUTHORIZED).json(error_msg);
+    }
+    let company_code = jwt_token_company_code.to_string();
+    let data = ActiveSpinRewardsUseCase::new(&company_code,&post.user_uuid, &data.connection_repository);
     let values= data.execute().await;
     return HttpResponse::Ok().json(values.unwrap());
 }

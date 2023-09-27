@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use serde::{Serialize, Deserialize};
 
+use crate::domain::spin_reward_entity::SpinRewardEntity;
+
 
 #[derive(Serialize,Deserialize,Debug)]
 pub struct GenericResponse {
@@ -28,23 +30,17 @@ impl GenericResponse {
 #[derive(Serialize,Deserialize)]
 pub struct SpinResponse {
     pub status: String,
-    pub category : String,
-    pub reward : String,
-    pub description : String
+    pub reward : Option<SpinRewardEntity>,
   }
   
   impl SpinResponse {
     pub fn new(
         status: String,
-        category : String,
-        reward: String,
-        description : String
+        reward :Option<SpinRewardEntity>
     )->Self{
         SpinResponse{
             status,
-            category,
-            reward,
-            description,
+            reward
             
         }
 
