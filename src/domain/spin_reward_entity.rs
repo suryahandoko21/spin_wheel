@@ -5,7 +5,7 @@ pub struct SpinRewardActiveEntity {
     pub status : bool,
     pub user_uuid : String,
     pub company_code : String,
-    pub reward_list : Vec<SpinRewardEntity>,
+    pub reward_list : Option<Vec<SpinRewardEntity>>,
     pub chance_spin :i64
 }
 
