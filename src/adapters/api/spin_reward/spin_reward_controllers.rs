@@ -1,6 +1,8 @@
+use std::sync::Arc;
+
 use actix_http::StatusCode;
 use actix_web::{ web::{self, Json}, HttpResponse,post,Result, get, HttpRequest};
-use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, JwtResponse}, validate_token::check_validation}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload, SpinRewardActivePayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::QstringReward}}, 
+use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, JwtResponse}, validate_token::check_validation, zonk_active::{filter_zonk_active, filter_zonk_active_update}}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload, SpinRewardActivePayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::QstringReward}}, 
 application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase, active_rewards::ActiveSpinRewardsUseCase}, interfaces::AbstractUseCase}, mappers::api_mapper::ApiMapper}, 
 domain::error::ApiError};
 
@@ -60,26 +62,39 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 )]
 #[post("/store")]
 async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload>,req: HttpRequest) ->HttpResponse {
+    let mut error_msg = JwtResponse{
+        message: "".to_string(),
+        status: "".to_string()
+    };
     let header_authorization =  req.headers().get("Authorization");
     if header_authorization.is_none(){
-        let error = JwtResponse{
-            message: "Empty Bearer Authorization !!".to_string(),
-            status:  "error".to_string()
-        };
-       return HttpResponse::Ok().json(error);
+        error_msg.message = "Empty Bearer Authorization !!".to_string();
+        error_msg.status =  "error".to_string();      
+        return HttpResponse::build(StatusCode::UNAUTHORIZED).json(error_msg);
     }
     let auth = header_authorization.unwrap().to_str().ok().unwrap().to_string(); 
     let jwt_token_company_code = check_validation(auth);
     if jwt_token_company_code.contains("Error"){
-        let error = JwtResponse{
-            message: jwt_token_company_code.to_string(),
-            status:  "error".to_string()
-        };
-       return HttpResponse::Ok().json(error);
+        error_msg.message = jwt_token_company_code.to_string();
+        error_msg.status=  "error".to_string();
+        return HttpResponse::build(StatusCode::UNAUTHORIZED).json(error_msg);
     }
+    let check_zonk_active = filter_zonk_active(&post);
+    if !check_zonk_active{
+        error_msg.message = "One Zonk Property must exist and set status is active!!".to_string();
+        error_msg.status=  "error".to_string();
+        return HttpResponse::build(StatusCode::NOT_ACCEPTABLE).json(error_msg);
+    }
+
     let spin_reward = PostSpinRewardsUseCase::new(&post, &data.connection_repository);
     let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
-    return HttpResponse::Ok().json(spin_rewards.unwrap());
+    let result = Arc::new(spin_rewards.unwrap());
+    if result.status == "Failed"{
+        error_msg.message = result.message.to_string();
+        error_msg.status=  "error".to_string();
+        return HttpResponse::build(StatusCode::NOT_ACCEPTABLE).json(error_msg);
+    }
+    return HttpResponse::Ok().json(result.as_ref());
 }
 
 #[utoipa::path(
@@ -90,23 +105,23 @@ async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload
 )]
 #[get("/list")]
 async fn get_all_spin_rewards(data: web::Data<AppState>,req: HttpRequest) ->HttpResponse {
+    let mut error_msg = JwtResponse{
+        message: "".to_string(),
+        status: "".to_string()
+    };
     let qstring = web::Query::<QstringReward>::from_query(req.query_string()).unwrap();
     let header_authorization =  req.headers().get("Authorization");
     if header_authorization.is_none(){
-        let error = JwtResponse{
-            message: "Empty Bearer Authorization !!".to_string(),
-            status:  "error".to_string()
-        };
-       return HttpResponse::Ok().json(error);
+        error_msg.message = "Empty Bearer Authorization !!".to_string();
+        error_msg.status =  "error".to_string();      
+        return HttpResponse::build(StatusCode::UNAUTHORIZED).json(error_msg);
     }
     let auth = header_authorization.unwrap().to_str().ok().unwrap().to_string(); 
     let jwt_token_company_code = check_validation(auth);
     if jwt_token_company_code.contains("Error"){
-        let error = JwtResponse{
-            message: jwt_token_company_code.to_string(),
-            status:  "error".to_string()
-        };
-       return HttpResponse::Ok().json(error);
+        error_msg.message = jwt_token_company_code.to_string();
+        error_msg.status=  "error".to_string();
+        return HttpResponse::build(StatusCode::UNAUTHORIZED).json(error_msg);
     }
     let company_code = jwt_token_company_code.to_string();
     let spin_reward = ListSpinRewardsUseCase::new(&company_code,&qstring,&data.connection_repository);
@@ -177,26 +192,38 @@ async fn get_all_spin_rewards(data: web::Data<AppState>,req: HttpRequest) ->Http
 )]
 #[post("/update")]
 async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdatedPayload>,req: HttpRequest) ->HttpResponse {
+    let mut error_msg = JwtResponse{
+        message: "".to_string(),
+        status: "".to_string()
+    };
     let header_authorization =  req.headers().get("Authorization");
     if header_authorization.is_none(){
-        let error = JwtResponse{
-            message: "Empty Bearer Authorization !!".to_string(),
-            status:  "error".to_string()
-        };
-       return HttpResponse::Ok().json(error);
+        error_msg.message = "Empty Bearer Authorization !!".to_string();
+        error_msg.status =  "error".to_string();      
+        return HttpResponse::build(StatusCode::UNAUTHORIZED).json(error_msg);
     }
     let auth = header_authorization.unwrap().to_str().ok().unwrap().to_string(); 
     let jwt_token_company_code = check_validation(auth);
     if jwt_token_company_code.contains("Error"){
-        let error = JwtResponse{
-            message: jwt_token_company_code.to_string(),
-            status:  "error".to_string()
-        };
-       return HttpResponse::Ok().json(error);
+        error_msg.message = jwt_token_company_code.to_string();
+        error_msg.status=  "error".to_string();
+        return HttpResponse::build(StatusCode::UNAUTHORIZED).json(error_msg);
+    }
+    let check_zonk_active = filter_zonk_active_update(&post);
+    if !check_zonk_active{
+        error_msg.message = "One Zonk Property must exist and set status is active!!".to_string();
+        error_msg.status=  "error".to_string();
+        return HttpResponse::build(StatusCode::NOT_ACCEPTABLE).json(error_msg);
     }
     let spin_reward = UpdateSpinRewardsUseCase::new(&post, &data.connection_repository);
     let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
-    return HttpResponse::Ok().json(spin_rewards.unwrap());
+    let result = Arc::new(spin_rewards.unwrap());
+    if result.status == "Failed"{
+        error_msg.message = result.message.to_string();
+        error_msg.status=  "error".to_string();
+        return HttpResponse::build(StatusCode::NOT_ACCEPTABLE).json(error_msg);
+    }
+    return HttpResponse::Ok().json(result.as_ref());
 }
 
 #[post("/active")]
