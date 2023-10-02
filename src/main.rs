@@ -25,7 +25,7 @@ async fn main() -> std::io::Result<()> {
     }
 
     dotenv::from_filename(environment_file).ok();
-    check_connection();
+    check_connection().await;
     let port = dotenv::var("PORT").expect("Failed to fetch port in .env");
     let listener = TcpListener::bind("0.0.0.0:".to_owned()+&port).expect("Failed to bind random port");
     let database_name = dotenv::var("DATABASE_NAME").expect("DATABASE_NAME must be set");
