@@ -1,5 +1,5 @@
 use actix_web::{web::{self, Json}, HttpResponse, post, HttpRequest, http::StatusCode};
-use crate::{adapters::{api::{shared::{app_state::AppState, response::{SpinResponse, JwtResponse}, validate_token::check_validation}, spin_useds::spin_tickets_payloads::SpinUsedPayload}, spi::rewards::status_active::status_active_spinwheel}, application::usecases::{interfaces::AbstractUseCase, spin_useds::post_one_spin_useds::PostSpinUsedUseCase, spin_companies::companies_by_code::CompaniesCodeUseCase, spin_tickets::find_by_userid_usecase::GetSpinTicketByUseridUseCase}, domain::error::ApiError};
+use crate::{adapters::{api::{shared::{app_state::AppState, response::{SpinResponse, JwtResponse}, validate_token::check_validation}, spin_useds::spin_tickets_payloads::SpinUsedPayload}, spi::{rewards::status_active::status_active_spinwheel, cfg::pg_connection::CONN}}, application::usecases::{interfaces::AbstractUseCase, spin_useds::post_one_spin_useds::PostSpinUsedUseCase, spin_companies::companies_by_code::CompaniesCodeUseCase, spin_tickets::find_by_userid_usecase::GetSpinTicketByUseridUseCase}, domain::error::ApiError};
 
 /*  collection route for spin_tickets */
 pub fn routes(cfg: &mut web::ServiceConfig) {
@@ -23,6 +23,11 @@ async fn post_spin_used(data: web::Data<AppState>,post:Json<SpinUsedPayload>,req
             message: "".to_string(),
             status: "".to_string()
     };
+    if CONN.get().is_none()|| CONN.get().unwrap().get().is_err(){
+        error_msg.message = "Database Not Connected !!".to_string();
+        error_msg.status =  "error".to_string();      
+        return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(error_msg);
+    }
     if header_authorization.is_none(){
             error_msg.message = "Empty Bearer Authorization !!".to_string();
             error_msg.status =  "error".to_string();      

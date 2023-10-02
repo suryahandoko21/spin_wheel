@@ -5,7 +5,7 @@ use actix_web::{ web::{self, Json}, HttpResponse,post,Result, get, HttpRequest};
 use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, JwtResponse}, validate_token::check_validation, zonk_active::{filter_zonk_active, filter_zonk_active_update}}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload, SpinRewardActivePayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::QstringReward}}, 
 application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase, active_rewards::ActiveSpinRewardsUseCase}, interfaces::AbstractUseCase}, mappers::api_mapper::ApiMapper}, 
 domain::error::ApiError};
-
+use crate::adapters::spi::cfg::pg_connection::CONN;
 /*  collection route for spin_rewards */
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(post_spin_rewards)
@@ -66,6 +66,11 @@ async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload
         message: "".to_string(),
         status: "".to_string()
     };
+    if CONN.get().is_none()|| CONN.get().unwrap().get().is_err(){
+        error_msg.message = "Database Not Connected !!".to_string();
+        error_msg.status =  "error".to_string();      
+        return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(error_msg);
+    }
     let header_authorization =  req.headers().get("Authorization");
     if header_authorization.is_none(){
         error_msg.message = "Empty Bearer Authorization !!".to_string();
@@ -109,6 +114,11 @@ async fn get_all_spin_rewards(data: web::Data<AppState>,req: HttpRequest) ->Http
         message: "".to_string(),
         status: "".to_string()
     };
+    if CONN.get().is_none() || CONN.get().unwrap().get().is_err(){
+        error_msg.message = "Database Not Connected !!".to_string();
+        error_msg.status =  "error".to_string();      
+        return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(error_msg);
+    }
     let qstring = web::Query::<QstringReward>::from_query(req.query_string()).unwrap();
     let header_authorization =  req.headers().get("Authorization");
     if header_authorization.is_none(){
@@ -196,6 +206,11 @@ async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdat
         message: "".to_string(),
         status: "".to_string()
     };
+    if CONN.get().is_none()|| CONN.get().unwrap().get().is_err(){
+        error_msg.message = "Database Not Connected !!".to_string();
+        error_msg.status =  "error".to_string();      
+        return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(error_msg);
+    }
     let header_authorization =  req.headers().get("Authorization");
     if header_authorization.is_none(){
         error_msg.message = "Empty Bearer Authorization !!".to_string();
@@ -233,6 +248,11 @@ async fn get_all_spin_active_rewards(data: web::Data<AppState>,post:Json<SpinRew
             message: "".to_string(),
             status: "".to_string()
     };
+    if CONN.get().is_none()|| CONN.get().unwrap().get().is_err(){
+        error_msg.message = "Database Not Connected !!".to_string();
+        error_msg.status =  "error".to_string();      
+        return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(error_msg);
+    }
     if header_authorization.is_none(){
             error_msg.message = "Empty Bearer Authorization !!".to_string();
             error_msg.status =  "error".to_string();      
