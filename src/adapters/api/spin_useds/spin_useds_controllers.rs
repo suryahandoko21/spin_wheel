@@ -18,6 +18,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 )]
 #[post("/create")]
 async fn post_spin_used(data: web::Data<AppState>,post:Json<SpinUsedPayload>,req: HttpRequest) ->HttpResponse {
+    log::info!("Incoming request payload: {:?}", req);
     let header_authorization =  req.headers().get("Authorization");
     let mut error_msg = JwtResponse{
             message: "".to_string(),
