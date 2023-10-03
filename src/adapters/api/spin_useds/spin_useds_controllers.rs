@@ -1,5 +1,5 @@
 use actix_web::{web::{self, Json}, HttpResponse, post, HttpRequest, http::StatusCode};
-use crate::{adapters::{api::{shared::{app_state::AppState, response::{SpinResponse, JwtResponse}, validate_token::check_validation}, spin_useds::spin_tickets_payloads::SpinUsedPayload}, spi::{rewards::status_active::status_active_spinwheel, cfg::pg_connection::CONN}}, application::usecases::{interfaces::AbstractUseCase, spin_useds::post_one_spin_useds::PostSpinUsedUseCase, spin_companies::companies_by_code::CompaniesCodeUseCase, spin_tickets::find_by_userid_usecase::GetSpinTicketByUseridUseCase}, domain::error::ApiError};
+use crate::{adapters::{api::{shared::{app_state::AppState, response::{SpinResponse, JwtResponse}, validate_token::check_validation}, spin_useds::spin_tickets_payloads::SpinUsedPayload}, spi::{rewards::status_active::status_active_spinwheel, cfg::pg_connection::CONN}}, application::usecases::{interfaces::AbstractUseCase, spin_useds::post_one_spin_useds::PostSpinUsedUseCase, spin_companies::companies_by_code::CompaniesCodeUseCase, spin_tickets::find_by_uuid_company_code::GetSpinTicketByUuidCompanyCodeUseCase}, domain::error::ApiError};
 
 /*  collection route for spin_tickets */
 pub fn routes(cfg: &mut web::ServiceConfig) {
@@ -57,7 +57,7 @@ async fn post_spin_used(data: web::Data<AppState>,post:Json<SpinUsedPayload>,req
         return HttpResponse::build(StatusCode::NOT_ACCEPTABLE).json(error_msg);
     } 
     let user_id =&post.user_uuid; 
-    let ck_ticket = GetSpinTicketByUseridUseCase::new(user_id,&data.connection_repository);
+    let ck_ticket = GetSpinTicketByUuidCompanyCodeUseCase::new(user_id,&company_code,&data.connection_repository);
     let ticket = ck_ticket.execute().await;
     let amount_ticket = ticket.ok().unwrap().spin_amount;
     if amount_ticket == 0 {
