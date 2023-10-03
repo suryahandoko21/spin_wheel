@@ -110,7 +110,6 @@ async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload
 )]
 #[get("/list")]
 async fn get_all_spin_rewards(data: web::Data<AppState>,req: HttpRequest) ->HttpResponse {
-    log::info!("Incoming request payload: {:?}", req);
     let mut error_msg = JwtResponse{
         message: "".to_string(),
         status: "".to_string()
