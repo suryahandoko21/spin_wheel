@@ -45,7 +45,7 @@ struct ApiDoc;
 pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
     println!("{:?}",&listener.local_addr());
     env::set_var("RUST_BACKTRACE", "1");
-    env::set_var("RUST_LOG", "actix_web=trace");
+    env::set_var("RUST_LOG", "info");
     env_logger::init_from_env(Env::default().default_filter_or("info"));
 
     let db_connection =   DbConnection { db_name: db_name.to_string() };
