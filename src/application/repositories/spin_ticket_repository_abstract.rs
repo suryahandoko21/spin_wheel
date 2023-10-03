@@ -14,4 +14,6 @@ pub trait SpinTicketEntityAbstract {
     async fn get_list_spin_ticket_by_uuid(&self, uuid: String) ->  Result<Vec<SpinTicketsEntity>, Box<dyn Error>>;
     async fn get_single_spin_ticket_by_uuid(&self, uuid: String,company_code:String) ->  Result<SpinTicketsEntity, Box<dyn Error>>;
     async fn used_single_spin_ticket_by_uuid(&self, uuid: String);
+    async fn get_spin_ticket_by_uuid_company_code(&self, uuid: String,company_code:String) ->  Result<SpinAvailableResponse, Box<dyn Error>>;
+   
 }
