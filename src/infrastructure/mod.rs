@@ -45,7 +45,7 @@ struct ApiDoc;
 pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
     println!("{:?}",&listener.local_addr());
     env::set_var("RUST_BACKTRACE", "1");
-    env::set_var("RUST_LOG", "info");
+    env::set_var("RUST_LOG", "actix_web=debug");
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
     let db_connection =   DbConnection { db_name: db_name.to_string() };
@@ -59,7 +59,7 @@ pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::E
 
     let server = HttpServer::new(move || App::new()
             .service(SwaggerUi::new("/swagger-api/{_:.*}").url("/api-docs/openapi.json", openapi.clone()))
-            .app_data(data.clone()).wrap(Logger::default()).configure(adapters::api::shared::routes::routes))
+            .app_data(data.clone()).wrap(Logger::new("%a %r %{User-Agent}i")).configure(adapters::api::shared::routes::routes))
         .listen(listener)?
         .run();
     
