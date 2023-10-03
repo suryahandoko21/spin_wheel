@@ -1,5 +1,5 @@
 use std::{env, net::TcpListener};
-use env_logger::Env;
+use env_logger::{Env, Target};
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::{
     self,
@@ -46,7 +46,7 @@ pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::E
     println!("{:?}",&listener.local_addr());
     env::set_var("RUST_BACKTRACE", "1");
     env::set_var("RUST_LOG", "actix_web=debug");
-    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).target(Target::Stdout).init();
 
     let db_connection =   DbConnection { db_name: db_name.to_string() };
     let data = web::Data::new(AppState {
