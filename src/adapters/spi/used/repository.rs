@@ -88,8 +88,8 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         };
 
         /* TRY POST TO BE FOR UPDATE SPIN TICKET (IF ERROR THEN WILL PENDING AND RETRY USING CRON JOB) */    
-        let post_request = post_to_be(request_be,url_addresses.to_string());
-        if post_request.await {
+        let post_request = post_to_be(request_be,url_addresses.to_string()).await;
+        if post_request {
             let success_post = ProcessSuccessToDb{
                 ticket_uuid : ticket_id.to_string(),
                 user_id : uuid.to_string(),
