@@ -1,17 +1,19 @@
 use std::{env, net::TcpListener};
+use actix_http::StatusCode;
 use env_logger::Env;
+use log::Level;
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::{
     self,
     api::shared::app_state::AppState,
     spi::cfg::db_connection::DbConnection,
 };
-use actix_web::{dev::Server, middleware::Logger};
+use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
 
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
-
+use actix_contrib_logger::middleware::Logger;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -45,7 +47,7 @@ struct ApiDoc;
 pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
     println!("{:?}",&listener.local_addr());
     env::set_var("RUST_BACKTRACE", "1");
-    env::set_var("RUST_LOG", "actix_web=debug");
+    env::set_var("RUST_LOG", "actix_web=trace");
     env_logger::init_from_env(Env::default().default_filter_or("info"));
 
     let db_connection =   DbConnection { db_name: db_name.to_string() };
@@ -57,9 +59,22 @@ pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::E
     let port = listener.local_addr().unwrap().port();
     let openapi = ApiDoc::openapi();
 
-    let server = HttpServer::new(move || App::new()
+    let server = HttpServer::new(move ||
+        {
+            let logger = Logger::default()
+            .custom_level(|status| {
+                if status.is_server_error() {
+                    Level::Error
+                } else if status == StatusCode::NOT_FOUND {
+                    Level::Warn
+                } else {
+                    Level::Info
+                }
+            });   
+         App::new().wrap(logger)
             .service(SwaggerUi::new("/swagger-api/{_:.*}").url("/api-docs/openapi.json", openapi.clone()))
-            .app_data(data.clone()).wrap(Logger::default()).configure(adapters::api::shared::routes::routes))
+            .app_data(data.clone()).wrap(Logger::default()).configure(adapters::api::shared::routes::routes)
+        })
         .listen(listener)?
         .run();
     
