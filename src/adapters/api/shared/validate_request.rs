@@ -4,6 +4,20 @@ use crate::{adapters::spi::{cfg::{pg_connection::CONN, db_connection::Connection
 
 use super::{response::ErrorResponse, validate_token::check_validation};
 
+
+pub fn validate_uuid(uuid:&Option<String>)->(StatusCode,bool,ErrorResponse){
+    let mut error_msg = ErrorResponse{
+        message: "".to_string(),
+        status: "".to_string()
+    };
+    if uuid.is_none(){
+        error_msg.message = "UUID params is empty!!".to_string();
+        error_msg.status =  "error".to_string();      
+        return   (StatusCode::UNAUTHORIZED,true,error_msg);
+    }
+    return  (StatusCode::OK,false,error_msg);
+
+}
 pub fn validate_request(header:Option<&HeaderValue>)->(StatusCode,String,bool,ErrorResponse){
     let mut error_msg = ErrorResponse{
         message: "".to_string(),
