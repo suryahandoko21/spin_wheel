@@ -1,5 +1,5 @@
 use actix_web::{ web::{self, Json}, HttpResponse,post,Result, get, HttpRequest};
-use crate::{adapters::api::{shared::{app_state::AppState, response::GenericResponse, zonk_active::{filter_zonk_active, filter_zonk_active_update, reponse_status}, validate_request::validate_request}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload, SpinRewardActivePayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::QstringReward}}, 
+use crate::{adapters::api::{shared::{app_state::AppState, response::GenericResponse, zonk_active::{filter_zonk_active, filter_zonk_active_update, reponse_status}, validate_request::validate_request}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload, SpinRewardActivePayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::{QstringReward, QstringCompany}}}, 
 application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase, active_rewards::ActiveSpinRewardsUseCase}, interfaces::AbstractUseCase}, mappers::api_mapper::ApiMapper}, 
 domain::error::ApiError};
 
@@ -177,14 +177,23 @@ async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdat
     return HttpResponse::Ok().json(result);
 }
 
-#[post("/active")]
+#[get("/active")]
 async fn get_all_spin_active_rewards(data: web::Data<AppState>,post:Json<SpinRewardActivePayload>,req: HttpRequest) ->HttpResponse {
+    let qstring = web::Query::<QstringCompany>::from_query(req.query_string()).unwrap();
     let header_authorization =  req.headers().get("Authorization");
-    let (validate_status_code, company_code, error_request,error_validate) = validate_request(header_authorization); 
-    if error_request {
-        return HttpResponse::build(validate_status_code).json(error_validate);
-    }  
-    let data = ActiveSpinRewardsUseCase::new(&company_code,&post.user_uuid, &data.connection_repository);
+    let  company;
+    if qstring.company_code.is_none(){
+        let (validate_status_code, company_code, error_request,error_validate) = validate_request(header_authorization); 
+        if error_request {
+            return HttpResponse::build(validate_status_code).json(error_validate);
+        }  
+        company= company_code;
+    }
+    else{
+        company= qstring.company_code.as_ref().unwrap().to_string();
+    }
+   
+    let data = ActiveSpinRewardsUseCase::new(&company,&post.user_uuid, &data.connection_repository);
     let values= data.execute().await;
     return HttpResponse::Ok().json(values.unwrap());
 }

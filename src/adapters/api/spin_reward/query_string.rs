@@ -6,3 +6,9 @@ pub struct QstringReward {
   pub types: Option<String>,
   pub name :Option<String>
 }
+
+#[derive(Deserialize,Serialize,Debug)]
+pub struct QstringCompany {
+  pub company_code: Option<String>
+ 
+}
