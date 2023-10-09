@@ -4,12 +4,12 @@ use crate::adapters::spi::cfg::pg_connection::{CONN, check_connection};
 
 use super::{pending_be::process_for_pending_be, check_expired::check_ticket_expired_be, list_reward::check_list_reward};
 trait DurationExt {
-    fn from_hours(hours: u64) -> Duration;
+    fn from_hours(hours: u32) -> Duration;
 }
 
 impl DurationExt for Duration {
-    fn from_hours(hours: u64) -> Duration {
-        Duration::from_secs(hours * 60 * 60)
+    fn from_hours(hours: u32) -> Duration {
+        Duration::from_secs((hours * 60 * 60).into())
     }
 }
 pub async fn perseconds(){

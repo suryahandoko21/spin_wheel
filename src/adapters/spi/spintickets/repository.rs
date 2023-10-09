@@ -15,7 +15,6 @@ use crate::adapters::spi::spintickets::models::SpinTicketsToDb;
 use crate::application::mappers::db_mapper::DBMapper;
 use crate::application::repositories::spin_ticket_repository_abstract::SpinTicketEntityAbstract;
 use crate::domain::spin_tickets_entity::SpinTicketsEntity;
-use std::sync::Arc;
 use super::mappers::SpinTicketDBMapper;
 use super::models::SpinTickets;
 
@@ -23,27 +22,27 @@ use super::models::SpinTickets;
 #[async_trait(?Send)]
 impl SpinTicketEntityAbstract for ConnectionRepository {
     async fn post_one_spin_tickets(&self, post: &SpinTicketPayload) ->  Result<TicketResponse, Box<dyn Error>>{
-        let  data =  post.clone();
+        let  data =  &post;
         let mut message = HashMap::new();
         let mut data_one = vec![];
         let incoming_data = data.spinTickets.len();
         let mut  length_success = 0;
-        for spin in data.spinTickets{
-            let uuid = Arc::new(spin.uuid);
+        for spin in &data.spinTickets{
+            let uuid = spin.uuid.to_string();
             let  prepare_data: SpinTicketsToDb = SpinTicketsToDb{
                     user_uuid :data.userUuId.to_string() ,
                     userid:spin.userId.to_string(),
                     username : data.username.to_string(),
                     ticket_id :spin.id,
                     ticket_uuid : uuid.to_string(),
-                    status : spin.status,
+                    status : spin.status.to_string(),
                     pointrule_id : spin.pointRuleId,
                     expired_date : spin.ticketExpiredDate.to_string(),
-                    pointrule_name: spin.pointRuleName,
-                    ticket_number: spin.ticketNumber,
-                    expired_type: spin.expiredType,
+                    pointrule_name: spin.pointRuleName.to_string(),
+                    ticket_number: spin.ticketNumber.to_string(),
+                    expired_type: spin.expiredType.to_string(),
                     expired_value: spin.expiredValue,
-                    created_date: spin.ticketCreatedDate,
+                    created_date: spin.ticketCreatedDate.to_string(),
                     is_payment_gateway : spin.isPaymentGateWay,
                     company_code:data.companyCode.to_string()
                      };      
@@ -104,8 +103,7 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
         Ok(SpinAvailableResponse{message:"Spin Available".to_string(),spin_amount:query.unwrap(),available:limit_spin_user})
     }
     async fn get_list_spin_ticket_by_uuid(&self, uuid: String) ->  Result<Vec<SpinTicketsEntity>, Box<dyn Error>>{
-        let uuid_clone = uuid.clone();
-        let results = tb_spin_tickets.filter(user_uuid.eq(&uuid_clone)).load::<SpinTickets>(&mut CONN.get().unwrap().get().expect("failed connect db"));
+        let results = tb_spin_tickets.filter(user_uuid.eq(&uuid)).load::<SpinTickets>(&mut CONN.get().unwrap().get().expect("failed connect db"));
         match results {
             Ok(models) => Ok(models.into_iter().map(SpinTicketDBMapper::to_entity).collect::<Vec<SpinTicketsEntity>>()),
             Err(e) => Err(Box::new(e)),

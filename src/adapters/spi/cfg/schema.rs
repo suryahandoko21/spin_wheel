@@ -91,6 +91,7 @@ diesel::table! {
         money -> Int4,
         post_status -> Varchar,
         url_address->VarChar,
+        failed_message->Varchar,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }

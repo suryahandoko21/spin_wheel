@@ -20,13 +20,12 @@ use crate::application::repositories::success_process_abstract::SuccessProcessEn
 use rand::seq::SliceRandom; 
 use crate::adapters::spi::cfg::schema::tb_spin_used::dsl::*;
 use diesel::RunQueryDsl;
-use std::sync::Arc;
 #[async_trait(?Send)]
 impl SpinUsedEntityAbstract for ConnectionRepository {
     async fn post_one_spin_useds(&self, post: &SpinUsedPayload,company_code:String,url_addresses:String) ->  Result<SpinResponse, Box<dyn Error> >{
-        let post_payload =Arc::new(post);   
-        let uuid =  Arc::new(post_payload.user_uuid.to_string());
-        let url_addresses = Arc::new(url_addresses.to_string());      
+        let post_payload =&post;   
+        let uuid = post_payload.user_uuid.to_string();
+        let url_addresses = url_addresses.to_string();      
         /*  GET ONE SPIN TICKET FOR USER WHERE SPIN SI AVAILABLE (NOT EXPIRED) */
         let spin_available_uuid = SpinTicketEntityAbstract::get_single_spin_ticket_by_uuid(self, uuid.to_string(),company_code.to_string()).await;  
         /* GET LIST SPIN FOR COMPANY SELECTED */
@@ -44,7 +43,6 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         let spin_choosed: Vec<_> = list
         .choose_multiple(&mut rand::thread_rng(), 1)
         .collect();			
-        let mut status = "zonk".to_string();
         let mut response = SpinResponse{
             status :"".to_string(),
             reward:None
@@ -54,9 +52,9 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         let choosed ;
         if !spin_choosed.get(0).is_some() || !spin_avail.ok().is_some(){
             let obj_zonk = SpinRewardEntityAbstract::get_one_zonk_spin_reward_by_company(self,company_code.to_string()).await;
-            let result = obj_zonk.ok().unwrap();
-            choosed = result.reward_id;
-            response.reward= Some(result);
+            let result_zonk = obj_zonk.ok().unwrap();
+            choosed = result_zonk.reward_id;
+            response.reward= Some(result_zonk);
             response.status = "zonk".to_string();
         }
         else{
@@ -74,9 +72,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         let reward_description = String::from(&reward.reward_note);
         let reward_type = String::from(&reward.reward_category); 
         let ticket_id = &spin_avail.ok().unwrap().ticket_uuid;
-        let _= SpinTicketEntityAbstract::used_single_spin_ticket_by_uuid(self,ticket_id.to_string()).await; 
-        /* reduce amount award used */
-        let _= SpinRewardEntityAbstract::used_one_spin_by_reward_id(self, *reward_id).await;
+
         let request_be = RequestBeResult{
             ticketUuid : ticket_id.to_string(),
             userUuid : uuid.to_string(),
@@ -88,8 +84,8 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
         };
 
         /* TRY POST TO BE FOR UPDATE SPIN TICKET (IF ERROR THEN WILL PENDING AND RETRY USING CRON JOB) */    
-        let post_request = post_to_be(request_be,url_addresses.to_string()).await;
-        if post_request {
+        let (status_post, status, message,status_code) = post_to_be(request_be,url_addresses.to_string()).await;
+        if status_post {
             let success_post = ProcessSuccessToDb{
                 ticket_uuid : ticket_id.to_string(),
                 user_id : uuid.to_string(),
@@ -101,23 +97,6 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                 created_at : SystemTime::now()
                 };       
             SuccessProcessEntityAbstract::post_success_proccess(self,success_post).await;
-            status = "success".to_string();
-            }else{
-            let failed_post = FailedProcessToDb{
-                ticket_uuid : ticket_id.to_string(),
-                user_id : uuid.to_string(),
-                reward_name : reward_name.to_string(),
-                reward_description :reward_description.to_string(),    
-                status :"used".to_string(),
-                reward_type: reward_type.to_string(),
-                money : reward.reward_money,
-                post_status : "failed".to_string(),
-                url_address: url_addresses.to_string(),
-                created_at : SystemTime::now(),
-                updated_at:SystemTime::now()
-                };   
-            FailedProcessEntityAbstract::post_failed_proccess(self,failed_post).await; 
-            }
             let prepare_data = SpinUsedsToDb{
                 user_id : uuid.to_string(), 
                 created_at : SystemTime::now(), 
@@ -129,8 +108,47 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                 companies_code : company_code,
                 ticket_uuid: ticket_id.to_string()
                 };
-            let to_vector = vec![prepare_data];   
-            let _ = diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));
+            let to_vector = vec![prepare_data]; 
+            let _ = diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));    
+            /* reduce amount award used */
+            let _= SpinRewardEntityAbstract::used_one_spin_by_reward_id(self, *reward_id).await;  
+        }else{
+            let obj_zonk = SpinRewardEntityAbstract::get_one_zonk_spin_reward_by_company(self,company_code.to_string()).await;
+            let result_zonk = obj_zonk.ok().unwrap();
+            let mut failed_post_status = "rejected".to_string();
+            if status_code == 504{
+                failed_post_status = "failed".to_string();
+            }
+            let failed_post = FailedProcessToDb{
+                ticket_uuid : ticket_id.to_string(),
+                user_id : uuid.to_string(),
+                reward_name : result_zonk.reward_name.to_string(),
+                reward_description :result_zonk.reward_note.to_string(),    
+                status :"used".to_string(),
+                reward_type: result_zonk.reward_category.to_string(),
+                money : result_zonk.reward_money,
+                post_status : failed_post_status.to_string(),
+                failed_message : message,
+                url_address: url_addresses.to_string(),
+                created_at : SystemTime::now(),
+                updated_at:SystemTime::now()
+                };   
+            FailedProcessEntityAbstract::post_failed_proccess(self,failed_post).await; 
+            let prepare_data = SpinUsedsToDb{
+                user_id : uuid.to_string(), 
+                created_at : SystemTime::now(), 
+                updated_at : SystemTime::now(),
+                created_by : "System".to_string(),
+                updated_by : "System".to_string(),
+                used_status : failed_post_status.to_string(),
+                prize_id : result_zonk.reward_id,
+                companies_code : company_code,
+                ticket_uuid: ticket_id.to_string()
+                };
+                let to_vector = vec![prepare_data];   
+                let _ = diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));      
+       }     
+       let _= SpinTicketEntityAbstract::used_single_spin_ticket_by_uuid(self,ticket_id.to_string()).await;      
         Ok(response)
 }
 }

@@ -1,6 +1,6 @@
 use actix_web::{web::{self, Json}, HttpResponse, post, get, HttpRequest};
 
-use crate::{adapters::api::{spin_tickets::spin_tickets_payloads::SpinTicketPayload, shared::{app_state::AppState, response::{TicketResponse, SpinAvailableResponse, JwtResponse}, error_presenter::ErrorReponse, init_global::GLOBAL_INIT}}, application::usecases::{spin_tickets::{post_one_spin_tickets::PostSpinTicketUseCase, find_by_uuid_usecase::GetSpinTicketByUuidUseCase}, interfaces::AbstractUseCase}, domain::error::ApiError};
+use crate::{adapters::api::{spin_tickets::spin_tickets_payloads::SpinTicketPayload, shared::{app_state::AppState, response::{TicketResponse, SpinAvailableResponse, ErrorResponse}, error_presenter::ErrorReponse, init_global::GLOBAL_INIT}}, application::usecases::{spin_tickets::{post_one_spin_tickets::PostSpinTicketUseCase, find_by_uuid_usecase::GetSpinTicketByUuidUseCase}, interfaces::AbstractUseCase}, domain::error::ApiError};
 
 /*  collection route for spin_tickets */
 pub fn routes(cfg: &mut web::ServiceConfig) {
@@ -48,14 +48,14 @@ async fn post_spin_tickets(data: web::Data<AppState>,post:Json<SpinTicketPayload
     let token_validation_be =  &global_init["token_validation_be"];
     if *enable_token_validation{
         if header_authorization.is_none(){
-            let error = JwtResponse{
+            let error = ErrorResponse{
                 message:"Empty Token Authorization !!".to_string(),
                 status:  "error".to_string()
             };
             return HttpResponse::Ok().json(error);
         }else{
              if header_authorization.unwrap().to_str().ok().unwrap().to_string() != token_validation_be.to_string(){
-             let error = JwtResponse{
+             let error = ErrorResponse{
                 message:"Token mismatch!!".to_string(),
                 status:  "error".to_string()
             };

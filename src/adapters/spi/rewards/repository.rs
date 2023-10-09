@@ -1,4 +1,3 @@
-use std::sync::Arc;
 use std::time::SystemTime;
 use std::error::Error;
 use async_trait::async_trait;
@@ -35,7 +34,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
         }
     }
     async fn post_spin_rewards(&self, post: &SpinRewardPayload) ->  Result<GenericResponse, Box<dyn Error>>{
-       let data =  post.clone();
+       let data =  &post;
        let company_code = &data.company_code;
        let mut messages = Status::PercentageMismatch.to_string();
        let mut statuses =  Status::Fail.to_string();
@@ -51,14 +50,14 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
             else{
                 messages = Status::DataAdd.to_string();
                 statuses = Status::Success.to_string();
-                for spin in data.detail{   
+                for spin in &data.detail{   
                     let prepare_data = SpinRewardToDB{
                         companies_code: company_code.to_string(),
-                        reward_category:spin.category,
-                        reward_image:spin.image,
-                        reward_name:spin.name,
-                        reward_note:spin.desc,
-                        reward_status:spin.status,
+                        reward_category:spin.category.to_string(),
+                        reward_image:spin.image.to_string(),
+                        reward_name:spin.name.to_string(),
+                        reward_note:spin.desc.to_string(),
+                        reward_status:spin.status.to_string(),
                         reward_order:spin.order,
                         percentage:spin.percentage,
                         reward_amount:spin.amount,
@@ -85,7 +84,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
             chance_spin:0
         };
         if !company.is_err(){
-            let url_addresses = Arc::new(company.unwrap().companies_address.to_string());   
+            let url_addresses = company.unwrap().companies_address.to_string();   
             let status_active = status_active_spinwheel(url_addresses.to_string()).await;
             let c_spin  = SpinTicketEntityAbstract::get_spin_ticket_by_uuid(self, user_uuid.to_string()).await;
 
@@ -100,15 +99,15 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
        }
     async fn get_all_spin_reward_by_company_code(&self,company_code: String,qstring:&QstringReward) -> Result<Vec<SpinRewardEntity>, Box<dyn Error>>{
         let mut result_query =  tb_spin_rewards.into_boxed().filter(companies_code.eq(company_code));
-        let qstrings  = qstring.clone(); 
+        let qstrings = &qstring;
         if qstrings.name !=None {
-            result_query = result_query.filter(reward_name.eq(qstrings.name.clone().unwrap()));
+            result_query = result_query.filter(reward_name.eq(qstrings.name.as_ref().unwrap().to_string()));
         }
         if qstrings.status !=None {
-            result_query = result_query.filter(reward_status.eq(qstrings.status.clone().unwrap()));
+            result_query = result_query.filter(reward_status.eq(qstrings.name.as_ref().unwrap().to_string()));
         }
-        if qstring.types !=None {
-            result_query = result_query.filter(reward_category.eq(qstrings.types.clone().unwrap()));
+        if qstrings.types !=None {
+            result_query = result_query.filter(reward_category.eq(qstrings.name.as_ref().unwrap().to_string()));
         }
         let results: Result<Vec<SpinRewards>, diesel::result::Error> = result_query.load::<SpinRewards>(&mut CONN.get().unwrap().get().expect("can't connect database"));
         match results {
@@ -126,7 +125,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
     }    
 
      async fn update_spin_rewards(&self, post: &SpinRewardUpdatedPayload) ->  Result<GenericResponse, Box<dyn Error>>{
-        let  data =  post.clone();
+        let  data =  &post;
         let company_code = &data.company_code;
         let mut statuses =  Status::Fail.to_string();
         let mut messages = Status::PercentageMismatch.to_string();
@@ -142,15 +141,15 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
             if total_percentage == 100{
                 statuses = Status::Success.to_string();
                 messages = Status::DataUpdated.to_string();
-                for spin in data.detail{
+                for spin in &data.detail{
                     if spin.id !=0{
                         let _update = diesel::update(tb_spin_rewards.find(spin.id)).set(&SpinRewardUpdateToDB{
                             companies_code:company_code.to_string(),
-                            reward_category:spin.category,
-                            reward_image:spin.image,
-                            reward_name:spin.name,
-                            reward_note:spin.desc,
-                            reward_status:spin.status,
+                            reward_category:spin.category.to_string(),
+                            reward_image:spin.image.to_string(),
+                            reward_name:spin.name.to_string(),
+                            reward_note:spin.desc.to_string(),
+                            reward_status:spin.status.to_string(),
                             reward_order:spin.order,
                             percentage:spin.percentage,
                             reward_amount:spin.amount,
@@ -161,11 +160,11 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                     else{
                         let prepare_data = SpinRewardToDB{
                             companies_code:company_code.to_string(),
-                            reward_category:spin.category,
-                            reward_image:spin.image,
-                            reward_name:spin.name,
-                            reward_note:spin.desc,
-                            reward_status:spin.status,
+                            reward_category:spin.category.to_string(),
+                            reward_image:spin.image.to_string(),
+                            reward_name:spin.name.to_string(),
+                            reward_note:spin.desc.to_string(),
+                            reward_status:spin.status.to_string(),
                             reward_order:spin.order,
                             percentage:spin.percentage,
                             reward_amount:spin.amount,
