@@ -18,9 +18,7 @@ impl<'a> ActiveSpinRewardsUseCase<'a> {
 #[async_trait(?Send)]
 impl<'a> AbstractUseCase<SpinRewardActiveEntity> for ActiveSpinRewardsUseCase<'a> {
     async fn execute(&self) ->Result<SpinRewardActiveEntity, ApiError> {
-        let company_uuid = self.company_code.clone();
-        let uuid = self.user_uuid.clone();
-        let spin_rewards = self.repository.get_active_spin_reward_by_company_code(company_uuid,uuid).await;
+        let spin_rewards = self.repository.get_active_spin_reward_by_company_code(self.company_code.to_string(),self.user_uuid.to_string()).await;
         match spin_rewards {
             Ok(facts) => Ok(facts),
             Err(e) => Err(ErrorHandlingUtils::application_error("Cannot get all DATA", Some(e))),

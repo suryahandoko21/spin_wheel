@@ -18,8 +18,7 @@ impl<'a> ListSpinRewardsUseCase<'a> {
 #[async_trait(?Send)]
 impl<'a> AbstractUseCase<Vec<SpinRewardEntity>> for ListSpinRewardsUseCase<'a> {
     async fn execute(&self) -> Result<Vec<SpinRewardEntity>, ApiError> {
-        let company_uuid = self.company_code.clone();
-        let spin_rewards = self.repository.get_all_spin_reward_by_company_code(company_uuid,self.qstring).await;
+        let spin_rewards = self.repository.get_all_spin_reward_by_company_code(self.company_code.to_string(),self.qstring).await;
         match spin_rewards {
             Ok(facts) => Ok(facts),
             Err(e) => Err(ErrorHandlingUtils::application_error("Cannot get all DATA", Some(e))),

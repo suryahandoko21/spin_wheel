@@ -103,16 +103,16 @@ impl SpinAvailableResponse {
 }
 
 #[derive(Serialize,Deserialize)]
-pub struct JwtResponse {
+pub struct ErrorResponse {
     pub status: String,
     pub message : String,
 }
 
-impl JwtResponse {
+impl ErrorResponse {
     pub fn new(
         status: String,
         message : String)->Self{
-            JwtResponse{
+            ErrorResponse{
                 status,
                 message,
             }

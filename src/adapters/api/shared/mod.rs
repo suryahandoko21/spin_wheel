@@ -12,3 +12,5 @@ pub mod enum_reward;
 pub mod selected_enum;
 pub mod response_spin_active;
 pub mod zonk_active;
+pub mod validate_request;
+pub mod response_be;

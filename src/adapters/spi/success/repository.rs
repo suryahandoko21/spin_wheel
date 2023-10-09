@@ -8,8 +8,8 @@ use super::models::ProcessSuccessToDb;
 #[async_trait(?Send)]
 impl SuccessProcessEntityAbstract for ConnectionRepository {
     async fn post_success_proccess(&self,value : ProcessSuccessToDb){
-        let data = value.clone();
+        let data = &value;
         let to_vector = vec![data];
-        let _insert =   diesel::insert_into(tb_spin_success_process).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
+        let _insert =   diesel::insert_into(tb_spin_success_process).values(to_vector).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
         }
 }
