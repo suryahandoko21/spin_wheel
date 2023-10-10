@@ -179,6 +179,7 @@ async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdat
 
 #[get("/active")]
 async fn get_all_spin_active_rewards(data: web::Data<AppState>,req: HttpRequest) ->HttpResponse {
+    let mut is_login = false;
     let qstring = web::Query::<QstringCompany>::from_query(req.query_string()).unwrap();
     let header_authorization =  req.headers().get("Authorization");
     let (response_code,error_response,error_response_message) =validate_uuid(&qstring.id);
@@ -187,18 +188,18 @@ async fn get_all_spin_active_rewards(data: web::Data<AppState>,req: HttpRequest)
     }
     let user_uuid= qstring.id.as_ref().unwrap().to_string();
     let company;
-    if qstring.company_code.is_none(){
+    if qstring.company_code.is_none() || !header_authorization.is_none(){
         let (validate_status_code, company_code, error_request,error_validate) = validate_request(header_authorization); 
         if error_request {
             return HttpResponse::build(validate_status_code).json(error_validate);
         }  
         company= company_code;
+        is_login = true;
     }
     else{
         company= qstring.company_code.as_ref().unwrap().to_string();
-    }
-   
-    let data = ActiveSpinRewardsUseCase::new(&company,&user_uuid, &data.connection_repository);
+    } 
+    let data = ActiveSpinRewardsUseCase::new(&company,&user_uuid,&is_login, &data.connection_repository);
     let values= data.execute().await;
     return HttpResponse::Ok().json(values.unwrap());
 }

@@ -73,7 +73,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
         Ok(GenericResponse { status: statuses, message: messages})
     }
 
-    async fn get_active_spin_reward_by_company_code(&self,company_code: String,user_uuid:String) -> Result<SpinRewardActiveEntity, Box<dyn Error>> {
+    async fn get_active_spin_reward_by_company_code(&self,company_code: String,user_uuid:String,is_login:bool) -> Result<SpinRewardActiveEntity, Box<dyn Error>> {
         let result_query =  tb_spin_rewards.filter(reward_status.eq("active")).load::<SpinRewards>(&mut CONN.get().unwrap().get().expect("can't connect database"));
         let company = SpinCompanyEntityAbstract::get_spin_company_by_code(self,company_code.to_string()).await;
         let mut company_obj = SpinRewardActiveEntity{
@@ -87,13 +87,16 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
             let url_addresses = company.unwrap().companies_address.to_string();   
             let status_active = status_active_spinwheel(url_addresses.to_string()).await;
             let c_spin  = SpinTicketEntityAbstract::get_spin_ticket_by_uuid(self, user_uuid.to_string()).await;
-
+            let mut chance_spin =c_spin.ok().unwrap().spin_amount;
+            if !is_login{
+                chance_spin = 0;
+            }
             /* Fill Struct Data */
             company_obj.status = status_active;
             company_obj.user_uuid = user_uuid.to_string();
             company_obj.company_code = company_code.to_string();
             company_obj.reward_list = Some(result_query.ok().unwrap().into_iter().map(SpinRewardsDbMapper::to_entity).collect::<Vec<SpinRewardEntity>>());
-            company_obj.chance_spin = c_spin.ok().unwrap().spin_amount
+            company_obj.chance_spin = chance_spin
         }
         Ok(company_obj)
        }
