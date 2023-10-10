@@ -74,7 +74,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
     }
 
     async fn get_active_spin_reward_by_company_code(&self,company_code: String,user_uuid:String,is_login:bool) -> Result<SpinRewardActiveEntity, Box<dyn Error>> {
-        let result_query =  tb_spin_rewards.filter(reward_status.eq("active")).load::<SpinRewards>(&mut CONN.get().unwrap().get().expect("can't connect database"));
+        let result_query =  tb_spin_rewards.filter(reward_status.eq("active")).filter(companies_code.eq(&company_code)).load::<SpinRewards>(&mut CONN.get().unwrap().get().expect("can't connect database"));
         let company = SpinCompanyEntityAbstract::get_spin_company_by_code(self,company_code.to_string()).await;
         let mut company_obj = SpinRewardActiveEntity{
             status : false,
