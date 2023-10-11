@@ -111,6 +111,20 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    use diesel::sql_types::*;
+    tb_content (id) {
+        id -> Int4,
+        companies_code -> Varchar,
+        content_title -> Varchar,
+        content_description ->Varchar,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+        created_by -> Varchar,
+        updated_by -> Varchar,
+    }
+}
+
 
 
 diesel::allow_tables_to_appear_in_same_query!(
@@ -119,7 +133,8 @@ diesel::allow_tables_to_appear_in_same_query!(
     tb_spin_used,
     tb_spin_rewards,
     tb_spin_success_process,
-    tb_spin_failed_process
+    tb_spin_failed_process,
+    tb_content
 
 );
 

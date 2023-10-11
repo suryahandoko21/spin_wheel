@@ -10,3 +10,4 @@ pub mod cron;
 pub mod rewards;
 pub mod failed;
 pub mod success;
+pub mod content;
