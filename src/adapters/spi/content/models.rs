@@ -16,6 +16,7 @@ pub struct Content {
     pub updated_at : SystemTime,
     pub created_by : String,
     pub updated_by : String,
+    pub default: bool
 }
 
 #[derive(Queryable, Selectable,Insertable,AsChangeset,Debug,Deserialize,QueryableByName,Serialize)]
@@ -29,6 +30,7 @@ pub struct ContentToDb {
     pub updated_at : SystemTime,
     pub created_by : String,
     pub updated_by : String,
+    pub default: bool
     
 }
 
