@@ -9,6 +9,7 @@ pub struct ContentEntity{
     pub created_by: String,
     pub updated_at: SystemTime,
     pub updated_by :String,
+    pub default:bool
 }
 impl ContentEntity {
     pub fn new(
@@ -20,6 +21,7 @@ impl ContentEntity {
         updated_at : SystemTime,
         created_by : String,
         updated_by : String,
+        default:bool
   
     )->Self{
         ContentEntity{
@@ -31,6 +33,7 @@ impl ContentEntity {
             created_by,
             updated_at,
             updated_by,
+            default
         }
 
     }

@@ -15,6 +15,7 @@ impl DBMapper<ContentEntity, Content> for ContentDbMapper {
             updated_at: entity.updated_at,
             created_by: entity.created_by,
             updated_by: entity.updated_by,
+            default:entity.default
             
         }
     }
@@ -29,6 +30,7 @@ impl DBMapper<ContentEntity, Content> for ContentDbMapper {
             companies_code: model.companies_code,
             content_title: model.content_title,
             content_description: model.content_description,
+            default:model.default
            
         }
     }

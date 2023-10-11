@@ -25,6 +25,16 @@ impl ContentCompanyEntityAbstract for ConnectionRepository {
 
     }
 
+    async fn get_content_default(&self) -> Result<ContentEntity, Box<dyn Error>>{
+        let result = tb_content.filter(default.eq(true)).get_result::<Content>(&mut CONN.get().unwrap().get().expect("cant connect database"));
+        match  result
+         {
+            Ok(models) => Ok(ContentDbMapper::to_entity(models)),
+            Err(e) => Err(Box::new(e)),
+        }
+
+    }
+
     async fn post_contents(&self,company_code: String, post: &ContentPayload) ->  Result<GenericResponse, Box<dyn Error>>{
         let statuses;
         let  content_exist = select(exists(tb_content.filter(companies_code.eq(&company_code)))).get_result::<bool>(&mut CONN.get().unwrap().get().expect("failed connect db"));
@@ -37,7 +47,8 @@ impl ContentCompanyEntityAbstract for ConnectionRepository {
                  created_at: SystemTime::now(),
                  updated_at: SystemTime::now(),
                  created_by: "System".to_string(),
-                 updated_by: "System".to_string()
+                 updated_by: "System".to_string(),
+                 default:false
                  };
                  let to_vector = vec![prepare_data]; 
                  let _ = diesel::insert_into(tb_content).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));       

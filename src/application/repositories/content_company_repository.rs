@@ -9,5 +9,6 @@ use std::error::Error;
 #[async_trait(?Send)]
 pub trait ContentCompanyEntityAbstract {
     async fn get_content_by_company_by_id(&self,company_code: String) -> Result<ContentEntity, Box<dyn Error>>;
+    async fn get_content_default(&self) -> Result<ContentEntity, Box<dyn Error>>;
     async fn post_contents(&self,company_code: String, post: &ContentPayload) ->  Result<GenericResponse, Box<dyn Error>>;
 }

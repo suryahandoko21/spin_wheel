@@ -122,6 +122,7 @@ diesel::table! {
         updated_at -> Timestamp,
         created_by -> Varchar,
         updated_by -> Varchar,
+        default ->Bool,
     }
 }
 

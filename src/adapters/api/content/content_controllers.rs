@@ -1,6 +1,6 @@
 use actix_web::{ web::{self, Json}, HttpResponse, get, HttpRequest, post};
-use crate::{adapters::api::{shared::{app_state::AppState, validate_request::validate_request}, spin_reward::query_string::QstringCompany, content::{content_mappers::ContentPresenterMapper, content_payload::ContentPayload, content_presenter::ContentPresenter}}, 
-application::{usecases::{interfaces::AbstractUseCase, content::{content_by_company_code::ContentByCompannyCodeUseCase, post_content_by_company_code::PostContentByCompannyCodeUseCase}}, mappers::api_mapper::ApiMapper}};
+use crate::{adapters::api::{shared::{app_state::AppState, validate_request::validate_request}, spin_reward::query_string::QstringCompany, content::{content_mappers::ContentPresenterMapper, content_payload::ContentPayload}}, 
+application::{usecases::{interfaces::AbstractUseCase, content::{content_by_company_code::ContentByCompannyCodeUseCase, post_content_by_company_code::PostContentByCompannyCodeUseCase, content_default::ContentDefaultUseCase}}, mappers::api_mapper::ApiMapper}};
 
 /*  collection route for spin_rewards */
 pub fn routes(cfg: &mut web::ServiceConfig) {
@@ -25,15 +25,13 @@ async fn get_content_info(data: web::Data<AppState>,req: HttpRequest) ->HttpResp
     else{
         company= qstring.company_code.as_ref().unwrap().to_string();
     } 
-    let data = ContentByCompannyCodeUseCase::new(&company, &data.connection_repository);
-    let  values= data.execute().await;
-    let empty =ContentPresenter{
-        id:0,
-        title:"".to_string(),
-        description:"".to_string()
-    };
+    let request = ContentByCompannyCodeUseCase::new(&company, &data.connection_repository);
+    let  values= request.execute().await;
+
     if values.is_err(){
-        return HttpResponse::Ok().json(empty);
+        let request = ContentDefaultUseCase::new(&data.connection_repository);
+        let values= request.execute().await;
+        return HttpResponse::Ok().json(ContentPresenterMapper::to_api(values.unwrap()));
     }
     return HttpResponse::Ok().json(ContentPresenterMapper::to_api(values.unwrap()));
 }
