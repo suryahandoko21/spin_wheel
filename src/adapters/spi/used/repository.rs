@@ -4,7 +4,6 @@ use std::error::Error;
 use std::time::SystemTime;
 use crate::adapters::api::shared::request_be::RequestBeResult;
 use crate::adapters::api::shared::response::SpinResponse;
-use crate::adapters::api::shared::selected_enum::select_enum_reward;
 use crate::adapters::api::spin_useds::spin_tickets_payloads::SpinUsedPayload;
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::spi::cfg::pg_connection::CONN;
@@ -79,7 +78,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
             rewardName : reward_name.to_string(),
             status : "used".to_string(),
             rewardDescriptions:reward_description.to_string(),
-            rewardType: select_enum_reward(reward_type.to_string()),
+            rewardType: reward_type.to_string(),
             money : reward.reward_money
         };
 

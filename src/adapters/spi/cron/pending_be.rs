@@ -1,7 +1,6 @@
 use std::time::SystemTime;
 use diesel::prelude::*;
 use crate::adapters::api::shared::request_be::RequestBeResult;
-use crate::adapters::api::shared::selected_enum::select_enum_reward;
 use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::*;
 use crate::adapters::spi::failed::models::FailedProcess;
@@ -18,7 +17,7 @@ pub async fn process_for_pending_be(){
                         rewardName : data.reward_name.to_string(),
                         rewardDescriptions:data.reward_description.to_string(),
                         status : "used".to_string(),
-                        rewardType: select_enum_reward(data.reward_type.to_string()),
+                        rewardType: data.reward_type.to_string(),
                         money : data.money
                     };
                    let (status_post, _status,message,status_code)  = post_to_be(request_be,data.url_address.to_string()).await;           
