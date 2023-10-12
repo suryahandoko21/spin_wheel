@@ -81,7 +81,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
             rewardType: reward_type.to_string(),
             money : reward.reward_money
         };
-
+        let _= SpinTicketEntityAbstract::used_single_spin_ticket_by_uuid(self,ticket_id.to_string()).await;      
         /* TRY POST TO BE FOR UPDATE SPIN TICKET (IF ERROR THEN WILL PENDING AND RETRY USING CRON JOB) */    
         let (status_post, status, message,status_code) = post_to_be(request_be,url_addresses.to_string()).await;
         if status_post {
@@ -147,7 +147,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                 let to_vector = vec![prepare_data];   
                 let _ = diesel::insert_into(tb_spin_used).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));      
        }     
-       let _= SpinTicketEntityAbstract::used_single_spin_ticket_by_uuid(self,ticket_id.to_string()).await;      
+      
         Ok(response)
 }
 }
