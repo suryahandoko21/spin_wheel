@@ -41,11 +41,12 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 )]
 #[post("/create")]
 async fn post_spin_tickets(data: web::Data<AppState>,post:Json<SpinTicketPayload>,req: HttpRequest)->HttpResponse{
-    let post_one_spin_ticket =  PostSpinTicketUseCase::new(&post, &data.connection_repository);
     let header_authorization =  req.headers().get("spinWheelEngineSecretKey");
+    let company_req =  req.headers().get("companyCode");
     let global_init =GLOBAL_INIT.get().unwrap();
     let enable_token_validation = &global_init["enable_token_validation"].parse().unwrap_or(false);
     let token_validation_be =  &global_init["token_validation_be"];
+    
     if *enable_token_validation{
         if header_authorization.is_none(){
             let error = ErrorResponse{
@@ -63,6 +64,15 @@ async fn post_spin_tickets(data: web::Data<AppState>,post:Json<SpinTicketPayload
             }
             }
     }
+    if company_req.is_none(){
+        let error = ErrorResponse{
+            message:"company_code is Null!!".to_string(),
+            status:  "error".to_string()
+        };
+        return HttpResponse::Ok().json(error);
+    }
+    let company_code = company_req.unwrap().to_str().ok().unwrap().to_string();
+    let post_one_spin_ticket =  PostSpinTicketUseCase::new(&company_code,&post, &data.connection_repository);
     let spin_ticket: Result<TicketResponse, ApiError> = post_one_spin_ticket.execute().await;
     return HttpResponse::Ok().json(spin_ticket.unwrap());
 }

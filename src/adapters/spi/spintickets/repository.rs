@@ -21,7 +21,7 @@ use super::models::SpinTickets;
 
 #[async_trait(?Send)]
 impl SpinTicketEntityAbstract for ConnectionRepository {
-    async fn post_one_spin_tickets(&self, post: &SpinTicketPayload) ->  Result<TicketResponse, Box<dyn Error>>{
+    async fn post_one_spin_tickets(&self,companies_code:String, post: &SpinTicketPayload) ->  Result<TicketResponse, Box<dyn Error>>{
         let  data =  &post;
         let mut message = HashMap::new();
         let mut data_one = vec![];
@@ -44,7 +44,7 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
                     expired_value: spin.expiredValue,
                     created_date: spin.ticketCreatedDate.to_string(),
                     is_payment_gateway : spin.isPaymentGateWay,
-                    company_code:data.companyCode.to_string()
+                    company_code:companies_code.to_string()
                      };      
             let to_vector = vec![prepare_data];
             let insert =   diesel::insert_into(tb_spin_tickets).values(&to_vector).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
