@@ -54,7 +54,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
             let result_zonk = obj_zonk.ok().unwrap();
             choosed = result_zonk.reward_id;
             response.reward= Some(result_zonk);
-            response.status = "zonk".to_string();
+            response.status = "NONE".to_string();
         }
         else{
             let reward_id = spin_choosed.get(0).unwrap();

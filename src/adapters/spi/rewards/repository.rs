@@ -18,7 +18,7 @@ use super::status_active::status_active_spinwheel;
 #[async_trait(?Send)]
 impl SpinRewardEntityAbstract for ConnectionRepository {
     async fn get_one_zonk_spin_reward_by_company(&self,company_code:String)->Result<SpinRewardEntity,Box<dyn Error>>{
-        let result = tb_spin_rewards.filter(reward_category.eq("zonk")).filter(reward_status.eq("active")).filter(companies_code.eq(company_code)).get_result::<SpinRewards>(&mut CONN.get().unwrap().get().expect("cant connect database"));
+        let result = tb_spin_rewards.filter(reward_category.eq("NONE")).filter(reward_status.eq("active")).filter(companies_code.eq(company_code)).get_result::<SpinRewards>(&mut CONN.get().unwrap().get().expect("cant connect database"));
         match  result
          {
             Ok(models) => Ok(SpinRewardsDbMapper::to_entity(models)),
