@@ -9,7 +9,7 @@ pub fn filter_zonk_active(payload :&SpinRewardPayload)->(StatusCode,bool,ErrorRe
     };
     
     let payload = &payload.detail;
-    let target_key = "zonk";
+    let target_key = "NONE";
     let target_value = "active";
     // Use filter to create a new iterator with only the matching elements
     let filtered_list: Vec<_> =payload
@@ -31,7 +31,7 @@ pub fn filter_zonk_active_update(payload :&SpinRewardUpdatedPayload)->(StatusCod
     };
     let payload = &payload.detail;
     
-    let target_key = "zonk";
+    let target_key = "NONE";
     let target_value = "active";
     // Use filter to create a new iterator with only the matching elements
     let filtered_list: Vec<_> =payload
