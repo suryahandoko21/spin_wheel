@@ -1,5 +1,5 @@
 use actix_web::{ web::{self, Json}, HttpResponse,post,Result, get, HttpRequest};
-use crate::{adapters::api::{shared::{app_state::AppState, response::GenericResponse, zonk_active::{filter_zonk_active, filter_zonk_active_update, reponse_status}, validate_request::{validate_request, validate_uuid}}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::{QstringReward, QstringCompany}}}, 
+use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, ErrorResponse}, zonk_active::{filter_zonk_active, filter_zonk_active_update, reponse_status}, validate_request::{validate_request, validate_uuid}, init_global::GLOBAL_INIT}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::{QstringReward, QstringCompany}}}, 
 application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase, active_rewards::ActiveSpinRewardsUseCase}, interfaces::AbstractUseCase}, mappers::api_mapper::ApiMapper}, 
 domain::error::ApiError};
 
@@ -8,6 +8,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(post_spin_rewards)
     .service(get_all_spin_rewards)
     .service(get_all_spin_active_rewards)
+    .service(get_all_spin_rewards_be)
     .service(update_spin_rewards);
 
 }
@@ -96,6 +97,47 @@ async fn get_all_spin_rewards(data: web::Data<AppState>,req: HttpRequest) ->Http
     let spin_reward: std::result::Result<Vec<crate::domain::spin_reward_entity::SpinRewardEntity>, ApiError> = spin_reward.execute().await;
     HttpResponse::Ok().json(spin_reward.unwrap().into_iter().map(SpinRewardPresenterMapper::to_api).collect::<Vec<SpinRewardsPresenter>>())
 }
+
+
+#[get("/list_reward_be")]
+async fn get_all_spin_rewards_be(data: web::Data<AppState>,req: HttpRequest) ->HttpResponse {
+    let qstring = web::Query::<QstringReward>::from_query(req.query_string()).unwrap();
+    let header_authorization =  req.headers().get("spinWheelEngineSecretKey");
+    let company_req =  req.headers().get("companyCode");
+    let global_init =GLOBAL_INIT.get().unwrap();
+    let enable_token_validation = &global_init["enable_token_validation"].parse().unwrap_or(false);
+    let token_validation_be =  &global_init["token_validation_be"];
+    
+    if *enable_token_validation{
+        if header_authorization.is_none(){
+            let error = ErrorResponse{
+                message:"Empty Token Authorization !!".to_string(),
+                status:  "error".to_string()
+            };
+            return HttpResponse::Ok().json(error);
+        }else{
+             if header_authorization.unwrap().to_str().ok().unwrap().to_string() != token_validation_be.to_string(){
+             let error = ErrorResponse{
+                message:"Token mismatch!!".to_string(),
+                status:  "error".to_string()
+            };
+            return HttpResponse::Ok().json(error);
+            }
+            }
+    }
+    if company_req.is_none(){
+        let error = ErrorResponse{
+            message:"company_code is Null!!".to_string(),
+            status:  "error".to_string()
+        };
+        return HttpResponse::Ok().json(error);
+    }
+    let company_code = company_req.unwrap().to_str().ok().unwrap().to_string();
+    let spin_reward = ListSpinRewardsUseCase::new(&company_code,&qstring,&data.connection_repository);
+    let spin_reward: std::result::Result<Vec<crate::domain::spin_reward_entity::SpinRewardEntity>, ApiError> = spin_reward.execute().await;
+    HttpResponse::Ok().json(spin_reward.unwrap().into_iter().map(SpinRewardPresenterMapper::to_api).collect::<Vec<SpinRewardsPresenter>>())
+}
+
 
 #[utoipa::path(
     post,
