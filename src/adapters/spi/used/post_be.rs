@@ -4,7 +4,6 @@ pub async fn post_to_be(post_be:RequestBeResult,url_address:String)->(bool,Strin
     let global_map = GLOBAL_INIT.get().unwrap();
     let url_prefix = "services/backend/api/spinwheel/callback/submit-rewards";
     let address = format!("{}/{}", url_address, url_prefix);
-    println!("cron{:?}",address);
     let mut bool =false; 
     let mut status = "FAILED".to_string();  
     let mut message = "".to_string();
