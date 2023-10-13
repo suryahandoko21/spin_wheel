@@ -2,7 +2,7 @@ use std::env;
 use std::net::TcpListener;
 use spin_wheel::adapters::api::shared::init_global::set_global_init;
 use spin_wheel::adapters::spi::cfg::pg_connection::check_connection;
-use spin_wheel::adapters::spi::cron::crons::{perseconds, perdays};
+use spin_wheel::adapters::spi::cron::crons::perseconds;
 use spin_wheel::run;
 
 #[warn(unused_must_use)]
@@ -13,10 +13,10 @@ async fn main() -> std::io::Result<()> {
         perseconds().await;
             
     });
-    let _day = actix_web::rt::spawn(async move {
-        perdays().await;
+    // let _day = actix_web::rt::spawn(async move {
+    //     perdays().await;
             
-    });
+    // });
     let environment_file;
     if let Ok(e) = env::var("ENV") {
         environment_file = format!(".env.{}", e);
