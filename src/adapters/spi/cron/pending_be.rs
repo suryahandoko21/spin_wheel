@@ -26,8 +26,8 @@ pub async fn process_for_pending_be(){
                     let _update_failed = diesel::update(tb_spin_failed_process.filter(crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set((post_status.eq("success"),crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::updated_at.eq(SystemTime::now()))).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
                    }else{
                      if status_code !=504{
-                        let _update_used = diesel::update(tb_spin_used.filter(crate::adapters::spi::cfg::schema::tb_spin_used::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set((used_status.eq(&message),crate::adapters::spi::cfg::schema::tb_spin_used::dsl::updated_at.eq(SystemTime::now()))).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
-                        let _update_failed = diesel::update(tb_spin_failed_process.filter(crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set((post_status.eq(message),crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::updated_at.eq(SystemTime::now()))).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
+                        let _update_used = diesel::update(tb_spin_used.filter(crate::adapters::spi::cfg::schema::tb_spin_used::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set((used_status.eq("precceded"),crate::adapters::spi::cfg::schema::tb_spin_used::dsl::updated_at.eq(SystemTime::now()))).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
+                        let _update_failed = diesel::update(tb_spin_failed_process.filter(crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::ticket_uuid.eq(ticket_uuids.to_string()))).set((failed_message.eq(message),crate::adapters::spi::cfg::schema::tb_spin_failed_process::dsl::updated_at.eq(SystemTime::now()))).execute(&mut CONN.get().unwrap().get().expect("failed connect db"));
                      }
                 }
         

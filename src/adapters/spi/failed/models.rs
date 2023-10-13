@@ -15,8 +15,8 @@ pub struct FailedProcess {
     pub reward_description:String,
     pub money :i32,
     pub post_status : String,
-    pub failed_message :String,
     pub url_address :String,
+    pub failed_message :String,
     pub created_at : SystemTime, 
     pub updated_at : SystemTime, 
   }

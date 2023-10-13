@@ -1,6 +1,7 @@
 use actix_web::Result;
 use async_trait::async_trait;
 use std::error::Error;
+use std::sync::Arc;
 use std::time::SystemTime;
 use crate::adapters::api::shared::request_be::RequestBeResult;
 use crate::adapters::api::shared::response::SpinResponse;
@@ -113,7 +114,10 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
             let _= SpinRewardEntityAbstract::used_one_spin_by_reward_id(self, *reward_id).await;  
         }else{
             let obj_zonk = SpinRewardEntityAbstract::get_one_zonk_spin_reward_by_company(self,company_code.to_string()).await;
-            let result_zonk = obj_zonk.ok().unwrap();
+            let result_zonk = Arc::new(obj_zonk.ok().unwrap());
+            response.reward= Some(result_zonk.clone().as_ref().clone());
+            response.status = "NONE".to_string();
+
             let mut failed_post_status = "rejected".to_string();
             if status_code == 504{
                 failed_post_status = "failed".to_string();
