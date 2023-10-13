@@ -1,5 +1,5 @@
 use actix_web::{ web::{self, Json}, HttpResponse,post,Result, get, HttpRequest};
-use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, ErrorResponse}, zonk_active::{filter_zonk_active, filter_zonk_active_update, reponse_status}, validate_request::{validate_request, validate_uuid}, init_global::GLOBAL_INIT}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::{QstringReward, QstringCompany}}}, 
+use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, ErrorResponse}, zonk_active::{filter_zonk_active, filter_zonk_active_update, reponse_status}, validate_request::{validate_request, validate_uuid}, init_global::GLOBAL_INIT, max_reward::{max_reward_active_add, max_reward_active_update}}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::{QstringReward, QstringCompany}}}, 
 application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase, active_rewards::ActiveSpinRewardsUseCase}, interfaces::AbstractUseCase}, mappers::api_mapper::ApiMapper}, 
 domain::error::ApiError};
 
@@ -60,6 +60,10 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
 #[post("/store")]
 async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload>,req: HttpRequest) ->HttpResponse {
     let header_authorization =  req.headers().get("Authorization");
+    let (validate_max_reward_code,status_max,message_max) = max_reward_active_add(&post);
+    if status_max {
+        return HttpResponse::build(validate_max_reward_code).json(message_max);
+    } 
     let (validate_status_code, _company_code, error_request,error_validate) = validate_request(header_authorization); 
     if error_request {
         return HttpResponse::build(validate_status_code).json(error_validate);
@@ -200,6 +204,10 @@ async fn get_all_spin_rewards_be(data: web::Data<AppState>,req: HttpRequest) ->H
 )]
 #[post("/update")]
 async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdatedPayload>,req: HttpRequest) ->HttpResponse {
+    let (validate_max_reward_code,status_max,message_max) = max_reward_active_update(&post);
+    if status_max {
+        return HttpResponse::build(validate_max_reward_code).json(message_max);
+    } 
     let header_authorization =  req.headers().get("Authorization");
     let (validate_status_code, _company_code, error_request,error_validate) = validate_request(header_authorization); 
     if error_request {
