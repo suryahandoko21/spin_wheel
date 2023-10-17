@@ -5,7 +5,7 @@ pub struct SpinRewardActiveEntity {
     pub status : bool,
     pub user_uuid : String,
     pub company_code : String,
-    pub reward_list : Option<Vec<SpinRewardEntity>>,
+    pub reward_list : Option<Vec<ActiveRewardEntity>>,
     pub chance_spin :i64
 }
 
@@ -61,35 +61,39 @@ impl SpinRewardEntity {
     
 }
 
-// #[derive(Debug)]
-// pub struct SpinRewardCompaniesEntity {
-//     pub prize_name: String,
-//     pub prize_note: String,
-//     pub prize_category: String,
-//     pub prize_amount: i32,
-//     pub companies : Companies,
-//     pub percentage: i32,
-// }
+#[derive(Debug, Clone,Serialize,Deserialize)]
+pub struct ActiveRewardEntity {
+    pub reward_id: i32,
+    pub reward_name: String,
+    pub reward_note: String,
+    pub reward_category: String,
+    pub reward_image:String,
+    pub reward_status:String,
+    pub created_at : NaiveDateTime, 
+    pub updated_at : NaiveDateTime,
+}
 
-// impl SpinRewardCompaniesEntity {
-//     pub fn new(
-//         prize_name: String,
-//         prize_note: String,
-//         prize_category: String,
-//         prize_amount: i32,
-//         companies : Companies,
-//         percentage:i32,
-//     )->Self{
-//         SpinRewardCompaniesEntity{
-//             prize_name,
-//             prize_note,
-//             prize_category,
-//             prize_amount,
-//             companies,
-//             percentage
-     
-//         }
-
-//     }    
-// }
-
+impl ActiveRewardEntity {
+    pub fn new(
+        reward_id: i32,
+        reward_name: String,
+        reward_note: String,
+        reward_category: String,
+        reward_image:String,
+        reward_status:String,
+        created_at : NaiveDateTime, 
+        updated_at : NaiveDateTime,
+    )->Self{
+        ActiveRewardEntity{
+            reward_id,
+            reward_name,
+            reward_note,
+            reward_category,
+            reward_image,
+            reward_status,
+            created_at,
+            updated_at
+        }
+    }
+    
+}

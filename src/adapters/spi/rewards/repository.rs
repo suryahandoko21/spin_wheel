@@ -8,11 +8,11 @@ use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::application::mappers::db_mapper::DBMapper;
 use crate::application::repositories::spin_company_repository_abstract::SpinCompanyEntityAbstract;
 use crate::application::repositories::spin_ticket_repository_abstract::SpinTicketEntityAbstract;
-use crate::domain::spin_reward_entity::{SpinRewardEntity, SpinRewardActiveEntity};
+use crate::domain::spin_reward_entity::{SpinRewardEntity, SpinRewardActiveEntity, ActiveRewardEntity};
 use crate::{application::repositories::spin_rewards_repository_abstract::SpinRewardEntityAbstract, adapters::{spi::cfg::db_connection::ConnectionRepository, api::{spin_reward::spin_reward_payload::SpinRewardPayload, shared::{response::GenericResponse, enum_response::Status}}}};
 use crate::adapters::spi::cfg::schema::tb_spin_rewards::dsl::*;
 use diesel::dsl::*;
-use super::mappers::SpinRewardsDbMapper;
+use super::mappers::{SpinRewardsDbMapper, SpinRewardsActiveDbMapper};
 use super::models::{SpinRewardToDB, SpinRewards, SpinRewardUpdateToDB};
 use super::status_active::status_active_spinwheel;
 #[async_trait(?Send)]
@@ -95,7 +95,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
             company_obj.status = status_active;
             company_obj.user_uuid = user_uuid.to_string();
             company_obj.company_code = company_code.to_string();
-            company_obj.reward_list = Some(result_query.ok().unwrap().into_iter().map(SpinRewardsDbMapper::to_entity).collect::<Vec<SpinRewardEntity>>());
+            company_obj.reward_list = Some(result_query.ok().unwrap().into_iter().map(SpinRewardsActiveDbMapper::to_entity).collect::<Vec<ActiveRewardEntity>>());
             company_obj.chance_spin = chance_spin
         }
         Ok(company_obj)

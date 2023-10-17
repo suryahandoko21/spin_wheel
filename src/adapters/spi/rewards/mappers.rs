@@ -1,7 +1,10 @@
 
-use crate::{application::mappers::db_mapper::DBMapper, domain::spin_reward_entity::SpinRewardEntity};
+use crate::{application::mappers::db_mapper::DBMapper, domain::spin_reward_entity::{SpinRewardEntity, ActiveRewardEntity}};
 use super::models::SpinRewards;
 pub struct SpinRewardsDbMapper {}
+
+
+pub struct SpinRewardsActiveDbMapper {}
 
 impl DBMapper<SpinRewardEntity, SpinRewards> for SpinRewardsDbMapper {
     fn to_db(entity: SpinRewardEntity) -> SpinRewards {
@@ -37,8 +40,27 @@ impl DBMapper<SpinRewardEntity, SpinRewards> for SpinRewardsDbMapper {
             reward_status: model.reward_status,
             created_at: model.created_at,
             updated_at: model.updated_at,
-            // created_at :model.created_at,
-            // updated_at:model.updated_at
+        }
+    }
+}
+
+impl DBMapper<ActiveRewardEntity, SpinRewards> for SpinRewardsActiveDbMapper {
+    fn to_db(_entity: ActiveRewardEntity) -> SpinRewards {
+        todo!()
+    }
+
+    fn to_entity(model: SpinRewards) -> ActiveRewardEntity {
+        ActiveRewardEntity {
+            reward_id: model.id,
+            reward_name: model.reward_name,
+            reward_note: model.reward_note,
+            reward_category: model.reward_category,
+            reward_image: model.reward_image,
+            reward_status: model.reward_status,
+            created_at: model.created_at,
+            updated_at: model.updated_at,
+            
+
         }
     }
 }
