@@ -39,7 +39,6 @@ diesel::table! {
     }
 }
 
-
 diesel::table! {
     use diesel::sql_types::*;
     tb_companies (id) {
@@ -56,7 +55,6 @@ diesel::table! {
         updated_by -> Varchar,
     }
 }
-
 
 diesel::table! {
     use diesel::sql_types::*;
@@ -127,8 +125,6 @@ diesel::table! {
     }
 }
 
-
-
 diesel::allow_tables_to_appear_in_same_query!(
     tb_companies,
     tb_spin_tickets,
@@ -137,6 +133,4 @@ diesel::allow_tables_to_appear_in_same_query!(
     tb_spin_success_process,
     tb_spin_failed_process,
     tb_content
-
 );
-

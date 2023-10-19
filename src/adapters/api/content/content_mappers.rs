@@ -1,11 +1,10 @@
-
-use crate::application::mappers::api_mapper::ApiMapper;
-use crate::domain::content_entity::ContentEntity;
 use super::content_payload::ContentPayload;
 use super::content_presenter::ContentPresenter;
+use crate::application::mappers::api_mapper::ApiMapper;
+use crate::domain::content_entity::ContentEntity;
 pub struct ContentPresenterMapper {}
 
-impl ApiMapper<ContentEntity, ContentPresenter,ContentPayload> for ContentPresenterMapper {
+impl ApiMapper<ContentEntity, ContentPresenter, ContentPayload> for ContentPresenterMapper {
     fn to_api(entity: ContentEntity) -> ContentPresenter {
         ContentPresenter {
             id: entity.id,
@@ -17,5 +16,4 @@ impl ApiMapper<ContentEntity, ContentPresenter,ContentPayload> for ContentPresen
     fn to_entity(_payload: ContentPayload) -> ContentEntity {
         panic!("not implemented");
     }
-
 }

@@ -1,8 +1,9 @@
-
-use crate::{application::mappers::db_mapper::DBMapper, domain::spin_reward_entity::{SpinRewardEntity, ActiveRewardEntity}};
 use super::models::SpinRewards;
+use crate::{
+    application::mappers::db_mapper::DBMapper,
+    domain::spin_reward_entity::{ActiveRewardEntity, SpinRewardEntity},
+};
 pub struct SpinRewardsDbMapper {}
-
 
 pub struct SpinRewardsActiveDbMapper {}
 
@@ -16,7 +17,7 @@ impl DBMapper<SpinRewardEntity, SpinRewards> for SpinRewardsDbMapper {
             reward_amount: entity.reward_amount,
             reward_money: entity.reward_money,
             reward_status: entity.reward_status,
-            reward_order:entity.reward_order,
+            reward_order: entity.reward_order,
             companies_code: entity.companies_code,
             percentage: entity.percentage,
             reward_image: entity.reward_image,
@@ -33,7 +34,7 @@ impl DBMapper<SpinRewardEntity, SpinRewards> for SpinRewardsDbMapper {
             reward_category: model.reward_category,
             reward_amount: model.reward_amount,
             reward_money: model.reward_money,
-            reward_order:model.reward_order,
+            reward_order: model.reward_order,
             companies_code: model.companies_code,
             percentage: model.percentage,
             reward_image: model.reward_image,
@@ -59,8 +60,6 @@ impl DBMapper<ActiveRewardEntity, SpinRewards> for SpinRewardsActiveDbMapper {
             reward_status: model.reward_status,
             created_at: model.created_at,
             updated_at: model.updated_at,
-            
-
         }
     }
 }

@@ -6,5 +6,5 @@ use crate::adapters::spi::failed::models::FailedProcessToDb;
 #[cfg_attr(test, automock)]
 #[async_trait(?Send)]
 pub trait FailedProcessEntityAbstract {
-    async fn post_failed_proccess(&self,value : FailedProcessToDb);
+    async fn post_failed_proccess(&self, value: FailedProcessToDb);
 }

@@ -1,17 +1,14 @@
-use std::{env, net::TcpListener};
-use env_logger::{Env, Target};
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::{
-    self,
-    api::shared::app_state::AppState,
-    spi::cfg::db_connection::DbConnection,
+    self, api::shared::app_state::AppState, spi::cfg::db_connection::DbConnection,
 };
 use actix_web::{dev::Server, middleware::Logger};
 use actix_web::{web, App, HttpServer};
+use env_logger::{Env, Target};
+use std::{env, net::TcpListener};
 
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
-
 
 #[derive(OpenApi)]
 #[openapi(
@@ -43,12 +40,16 @@ use utoipa_swagger_ui::SwaggerUi;
 struct ApiDoc;
 
 pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
-    println!("{:?}",&listener.local_addr());
+    println!("{:?}", &listener.local_addr());
     env::set_var("RUST_BACKTRACE", "1");
     env::set_var("RUST_LOG", "actix_web=debug");
-    env_logger::Builder::from_env(Env::default().default_filter_or("info")).target(Target::Stdout).init();
+    env_logger::Builder::from_env(Env::default().default_filter_or("info"))
+        .target(Target::Stdout)
+        .init();
 
-    let db_connection =   DbConnection { db_name: db_name.to_string() };
+    let db_connection = DbConnection {
+        db_name: db_name.to_string(),
+    };
     let data = web::Data::new(AppState {
         app_name: String::from("Spin WHeel Facts API"),
         connection_repository: ConnectionRepository { db_connection },
@@ -57,12 +58,19 @@ pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::E
     let port = listener.local_addr().unwrap().port();
     let openapi = ApiDoc::openapi();
 
-    let server = HttpServer::new(move || App::new()
-            .service(SwaggerUi::new("/swagger-api/{_:.*}").url("/api-docs/openapi.json", openapi.clone()))
-            .app_data(data.clone()).wrap(Logger::new("%a %r %{User-Agent}i")).configure(adapters::api::shared::routes::routes))
-        .listen(listener)?
-        .run();
-    
+    let server = HttpServer::new(move || {
+        App::new()
+            .service(
+                SwaggerUi::new("/swagger-api/{_:.*}")
+                    .url("/api-docs/openapi.json", openapi.clone()),
+            )
+            .app_data(data.clone())
+            .wrap(Logger::new("%a %r %{User-Agent}i"))
+            .configure(adapters::api::shared::routes::routes)
+    })
+    .listen(listener)?
+    .run();
+
     println!("Server running on port {}, db_name {}", port, db_name);
 
     Ok(server)
