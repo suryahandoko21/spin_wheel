@@ -8,7 +8,7 @@ pub struct SpinRewardsPresenter {
     pub reward_category: String,
     pub reward_amount: i32,
     pub reward_money: i32,
-    pub percentage:i32,
+    pub percentage:f64,
     pub reward_image:String,
     pub reward_status:String,
     pub reward_order :i32

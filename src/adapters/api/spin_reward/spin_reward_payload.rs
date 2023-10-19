@@ -18,7 +18,7 @@ pub  struct SpinRewards {
     pub category: String,
     pub amount: i32,
     pub money: i32,
-    pub percentage:i32,
+    pub percentage:f64,
     pub image: String,
     pub status:String,
     pub order:i32
@@ -37,7 +37,7 @@ pub  struct SpinRewardUpdates {
     pub category: String,
     pub amount: i32,
     pub money: i32,
-    pub percentage:i32,
+    pub percentage:f64,
     pub image: String,
     pub status:String,
     pub order:i32,

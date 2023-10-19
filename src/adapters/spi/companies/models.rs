@@ -14,6 +14,7 @@ pub struct Companies {
     pub companies_name : String,
     pub companies_address :String,
     pub is_company_enabled :bool,
+    pub max_credit:i32,
     pub created_at : SystemTime, 
     pub updated_at : SystemTime,
     pub created_by : String,
