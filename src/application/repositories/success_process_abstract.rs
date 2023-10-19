@@ -6,5 +6,5 @@ use crate::adapters::spi::success::models::ProcessSuccessToDb;
 #[cfg_attr(test, automock)]
 #[async_trait(?Send)]
 pub trait SuccessProcessEntityAbstract {
-    async fn post_success_proccess(&self,value : ProcessSuccessToDb);
+    async fn post_success_proccess(&self, value: ProcessSuccessToDb);
 }

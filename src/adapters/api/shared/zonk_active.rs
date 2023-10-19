@@ -1,60 +1,70 @@
-use actix_http::StatusCode;
-use crate::adapters::api::spin_reward::spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload};
 use super::response::{ErrorResponse, GenericResponse};
+use crate::adapters::api::spin_reward::spin_reward_payload::{
+    SpinRewardPayload, SpinRewardUpdatedPayload,
+};
+use actix_http::StatusCode;
 
-pub fn filter_zonk_active(payload :&SpinRewardPayload)->(StatusCode,bool,ErrorResponse){
-    let mut error_msg = ErrorResponse{
+pub fn filter_zonk_active(payload: &SpinRewardPayload) -> (StatusCode, bool, ErrorResponse) {
+    let mut error_msg = ErrorResponse {
         message: "".to_string(),
-        status: "".to_string()
+        status: "".to_string(),
     };
-    
+
     let payload = &payload.detail;
     let target_key = "NONE";
     let target_value = "active";
     // Use filter to create a new iterator with only the matching elements
-    let filtered_list: Vec<_> =payload
+    let filtered_list: Vec<_> = payload
         .into_iter()
-        .filter(|item| item.category == target_key && item.status == target_value && item.percentage > 0.0)
+        .filter(|item| {
+            item.category == target_key && item.status == target_value && item.percentage > 0.0
+        })
         .collect();
-    if filtered_list.len() < 1{
-        error_msg.message = "One Zonk Property must exist, percentage not 0 and set status is active!!".to_string();
-        error_msg.status=  "error".to_string();
-        return  (StatusCode::NOT_ACCEPTABLE,true,error_msg);      
+    if filtered_list.len() < 1 {
+        error_msg.message =
+            "One Zonk Property must exist, percentage not 0 and set status is active!!".to_string();
+        error_msg.status = "error".to_string();
+        return (StatusCode::NOT_ACCEPTABLE, true, error_msg);
     }
-    return  (StatusCode::OK,false,error_msg);   
+    return (StatusCode::OK, false, error_msg);
 }
 
-pub fn filter_zonk_active_update(payload :&SpinRewardUpdatedPayload)->(StatusCode,bool,ErrorResponse){
-    let mut error_msg = ErrorResponse{
+pub fn filter_zonk_active_update(
+    payload: &SpinRewardUpdatedPayload,
+) -> (StatusCode, bool, ErrorResponse) {
+    let mut error_msg = ErrorResponse {
         message: "".to_string(),
-        status: "".to_string()
+        status: "".to_string(),
     };
     let payload = &payload.detail;
-    
+
     let target_key = "NONE";
     let target_value = "active";
     // Use filter to create a new iterator with only the matching elements
-    let filtered_list: Vec<_> =payload
+    let filtered_list: Vec<_> = payload
         .into_iter()
-        .filter(|item| item.category == target_key && item.status == target_value && item.percentage > 0.0)
+        .filter(|item| {
+            item.category == target_key && item.status == target_value && item.percentage > 0.0
+        })
         .collect();
-    if filtered_list.len() < 1{
-        error_msg.message = "One Zonk Property must exist, percentage not 0 and set status is active!!".to_string();
-        error_msg.status=  "error".to_string();
-        return  (StatusCode::NOT_ACCEPTABLE,true,error_msg);    
+    if filtered_list.len() < 1 {
+        error_msg.message =
+            "One Zonk Property must exist, percentage not 0 and set status is active!!".to_string();
+        error_msg.status = "error".to_string();
+        return (StatusCode::NOT_ACCEPTABLE, true, error_msg);
     }
-    return  (StatusCode::OK,false,error_msg); 
+    return (StatusCode::OK, false, error_msg);
 }
 
-pub fn reponse_status(result:&GenericResponse)->(StatusCode,bool,ErrorResponse){
-    let mut error_msg = ErrorResponse{
+pub fn reponse_status(result: &GenericResponse) -> (StatusCode, bool, ErrorResponse) {
+    let mut error_msg = ErrorResponse {
         message: "".to_string(),
-        status: "".to_string()
+        status: "".to_string(),
     };
-    if result.status == "Failed"{
+    if result.status == "Failed" {
         error_msg.message = result.message.to_string();
-        error_msg.status=  "error".to_string();
-        return  (StatusCode::NOT_ACCEPTABLE,true,error_msg);  
+        error_msg.status = "error".to_string();
+        return (StatusCode::NOT_ACCEPTABLE, true, error_msg);
     }
-    return  (StatusCode::OK,false,error_msg);   
+    return (StatusCode::OK, false, error_msg);
 }

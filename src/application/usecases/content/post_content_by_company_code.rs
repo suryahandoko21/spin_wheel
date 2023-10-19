@@ -1,5 +1,12 @@
+use crate::{
+    adapters::api::{content::content_payload::ContentPayload, shared::response::GenericResponse},
+    application::{
+        repositories::content_company_repository::ContentCompanyEntityAbstract,
+        usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils,
+    },
+    domain::error::ApiError,
+};
 use async_trait::async_trait;
-use crate::{application::{repositories::content_company_repository::ContentCompanyEntityAbstract, utils::error_handling_utils::ErrorHandlingUtils, usecases::interfaces::AbstractUseCase}, domain::error::ApiError, adapters::api::{content::content_payload::ContentPayload, shared::response::GenericResponse}};
 
 pub struct PostContentByCompannyCodeUseCase<'a> {
     company_code: &'a String,
@@ -9,22 +16,31 @@ pub struct PostContentByCompannyCodeUseCase<'a> {
 
 impl<'a> PostContentByCompannyCodeUseCase<'a> {
     pub fn new(
-    company_code: &'a String,
-    post: &'a ContentPayload,
-    repository: &'a dyn ContentCompanyEntityAbstract) -> Self {    
-        PostContentByCompannyCodeUseCase { repository, company_code, post }
+        company_code: &'a String,
+        post: &'a ContentPayload,
+        repository: &'a dyn ContentCompanyEntityAbstract,
+    ) -> Self {
+        PostContentByCompannyCodeUseCase {
+            repository,
+            company_code,
+            post,
+        }
     }
 }
 
-
-
 #[async_trait(?Send)]
-impl<'a> AbstractUseCase<GenericResponse,> for PostContentByCompannyCodeUseCase<'a> {
+impl<'a> AbstractUseCase<GenericResponse> for PostContentByCompannyCodeUseCase<'a> {
     async fn execute(&self) -> Result<GenericResponse, ApiError> {
-        let post_content = self.repository.post_contents(self.company_code.to_string(),self.post).await;
+        let post_content = self
+            .repository
+            .post_contents(self.company_code.to_string(), self.post)
+            .await;
         match post_content {
             Ok(facts) => Ok(facts),
-            Err(e) => Err(ErrorHandlingUtils::application_error("Cannot get all DATA", Some(e))),
+            Err(e) => Err(ErrorHandlingUtils::application_error(
+                "Cannot get all DATA",
+                Some(e),
+            )),
         }
     }
 }

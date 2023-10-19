@@ -1,6 +1,4 @@
-
 use std::error::Error;
-
 
 use async_trait::async_trait;
 
@@ -9,19 +7,16 @@ use crate::application::repositories::cron_repository_abstract::CronEntityAbstra
 
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 
-
-
-
-
-
-
 // use crate::application::repositories::cron_repository_abstract::CronEntityAbstract;
 #[async_trait(?Send)]
 impl CronEntityAbstract for ConnectionRepository {
-    async fn check_pending_post_be(&self)->Result<GenericResponse, Box<dyn Error>>{
+    async fn check_pending_post_be(&self) -> Result<GenericResponse, Box<dyn Error>> {
         println!("dasdasda");
 
-        Ok(GenericResponse { status: "ok".to_string(), message: "ok".to_string() })
+        Ok(GenericResponse {
+            status: "ok".to_string(),
+            message: "ok".to_string(),
+        })
         // println!("dasda");
         // let result:Result<Vec<FailedProcess>,_> = tb_spin_failed_process.filter(status.eq("used")).load::<FailedProcess>(&mut CONN.get().unwrap().get().expect("cant connect database"));
         //     for i in result.iter(){
@@ -46,7 +41,5 @@ impl CronEntityAbstract for ConnectionRepository {
         //         }
         //     //    }
         //     }
-        
     }
 }
-

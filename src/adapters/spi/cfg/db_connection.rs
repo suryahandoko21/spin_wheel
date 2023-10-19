@@ -15,7 +15,7 @@ impl DbConnection {
         let database = format!("{}/{}", database_url, &self.db_name);
 
         let manager = ConnectionManager::<PgConnection>::new(&database);
-        
+
         r2d2::Pool::new(manager).unwrap()
     }
 }

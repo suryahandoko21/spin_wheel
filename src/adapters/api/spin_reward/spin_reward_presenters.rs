@@ -8,13 +8,11 @@ pub struct SpinRewardsPresenter {
     pub reward_category: String,
     pub reward_amount: i32,
     pub reward_money: i32,
-    pub percentage:f64,
-    pub reward_image:String,
-    pub reward_status:String,
-    pub reward_order :i32
+    pub percentage: f64,
+    pub reward_image: String,
+    pub reward_status: String,
+    pub reward_order: i32,
 }
-
-
 
 #[derive(Serialize, Deserialize, Debug)]
 #[allow(non_snake_case)]
@@ -23,4 +21,4 @@ pub struct ListRewardsPresenter {
     pub rewardName: String,
     pub rewardDescriptions: String,
     pub money: i32,
-   }
+}

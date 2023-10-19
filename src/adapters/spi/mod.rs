@@ -3,11 +3,10 @@ pub mod cfg;
 // useless need to delete
 pub mod companies;
 
-
-pub mod spintickets;
-pub mod used;
-pub mod cron;
-pub mod rewards;
-pub mod failed;
-pub mod success;
 pub mod content;
+pub mod cron;
+pub mod failed;
+pub mod rewards;
+pub mod spintickets;
+pub mod success;
+pub mod used;
