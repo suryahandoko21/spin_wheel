@@ -38,11 +38,11 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
        let company_code = &data.company_code;
        let mut messages = Status::PercentageMismatch.to_string();
        let mut statuses =  Status::Fail.to_string();
-       let mut total_percentage = 0;
+       let mut total_percentage = 0.0;
        for spin in &data.detail{
              total_percentage += spin.percentage;
        }
-       if total_percentage == 100{
+       if total_percentage == 100.0{
         let  reward_exist = select(exists(tb_spin_rewards.filter(companies_code.eq(company_code)))).get_result::<bool>(&mut CONN.get().unwrap().get().expect("failed connect db"));
             if  reward_exist.unwrap() {
                 messages = Status::DataExist.to_string();
@@ -132,7 +132,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
         let company_code = &data.company_code;
         let mut statuses =  Status::Fail.to_string();
         let mut messages = Status::PercentageMismatch.to_string();
-        let mut total_percentage = 0;
+        let mut total_percentage = 0.0;
         for spin in &data.detail{
               total_percentage += spin.percentage;
         }
@@ -141,7 +141,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
             messages = Status::DataNotExist.to_string();
         }
         else{
-            if total_percentage == 100{
+            if total_percentage == 100.0{
                 statuses = Status::Success.to_string();
                 messages = Status::DataUpdated.to_string();
                 for spin in &data.detail{
@@ -191,7 +191,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                 if val == 0{
                     return false;
                 }
-                let _update = diesel::update(tb_spin_rewards.filter(id.eq(reward_id))).set(reward_amount.eq(val-1)).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));
+                let _update = diesel::update(tb_spin_rewards.filter(id.eq(reward_id))).filter(reward_category.ne("NONE")).set(reward_amount.eq(val-1)).execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));
                 return true;
             },
             Err(_)=>{

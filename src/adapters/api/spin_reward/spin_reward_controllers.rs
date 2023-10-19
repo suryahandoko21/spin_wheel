@@ -1,6 +1,6 @@
 use actix_web::{ web::{self, Json}, HttpResponse,post,Result, get, HttpRequest};
-use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, ErrorResponse}, zonk_active::{filter_zonk_active, filter_zonk_active_update, reponse_status}, validate_request::{validate_request, validate_uuid}, init_global::GLOBAL_INIT, max_reward::{max_reward_active_add, max_reward_active_update}}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::{QstringReward, QstringCompany}}}, 
-application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase, active_rewards::ActiveSpinRewardsUseCase}, interfaces::AbstractUseCase}, mappers::api_mapper::ApiMapper}, 
+use crate::{adapters::api::{shared::{app_state::AppState, response::{GenericResponse, ErrorResponse}, zonk_active::{filter_zonk_active, filter_zonk_active_update, reponse_status}, validate_request::{validate_request, validate_uuid, compare_max_credit_add, compare_max_credit_update}, init_global::GLOBAL_INIT, max_reward::{max_reward_active_add, max_reward_active_update}}, spin_reward::{spin_reward_payload::{SpinRewardPayload, SpinRewardUpdatedPayload}, spin_reward_presenters::SpinRewardsPresenter, spin_reward_mappers::SpinRewardPresenterMapper, query_string::{QstringReward, QstringCompany}}}, 
+application::{usecases::{spin_rewards::{post_spin_rewards::PostSpinRewardsUseCase, list_spin_rewards::ListSpinRewardsUseCase, update_spin_rewards::UpdateSpinRewardsUseCase, active_rewards::ActiveSpinRewardsUseCase}, interfaces::AbstractUseCase, spin_companies::companies_by_code::CompaniesCodeUseCase}, mappers::api_mapper::ApiMapper}, 
 domain::error::ApiError};
 
 /*  collection route for spin_rewards */
@@ -64,10 +64,22 @@ async fn post_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardPayload
     if status_max {
         return HttpResponse::build(validate_max_reward_code).json(message_max);
     } 
-    let (validate_status_code, _company_code, error_request,error_validate) = validate_request(header_authorization); 
+    let (validate_status_code, company_code, error_request,error_validate) = validate_request(header_authorization); 
     if error_request {
         return HttpResponse::build(validate_status_code).json(error_validate);
     }  
+
+    /* Fetch company for get max credit */
+    let check_company = CompaniesCodeUseCase::new(&company_code, &data.connection_repository);
+    let company= check_company.execute().await;
+
+    let max_credit= &company.ok().unwrap().max_credit;
+
+    let (validate_max_credit_code,error_max_credit,error_max_credit_message) = compare_max_credit_add(&post,*max_credit); 
+    if error_max_credit {
+        return HttpResponse::build(validate_max_credit_code).json(error_max_credit_message);
+    }    
+
     let (validate_filter_code,error_filter,error_filter_message) = filter_zonk_active(&post); 
     if error_filter {
         return HttpResponse::build(validate_filter_code).json(error_filter_message);
@@ -209,10 +221,21 @@ async fn update_spin_rewards(data: web::Data<AppState>,post:Json<SpinRewardUpdat
         return HttpResponse::build(validate_max_reward_code).json(message_max);
     } 
     let header_authorization =  req.headers().get("Authorization");
-    let (validate_status_code, _company_code, error_request,error_validate) = validate_request(header_authorization); 
+    let (validate_status_code, company_code, error_request,error_validate) = validate_request(header_authorization); 
     if error_request {
         return HttpResponse::build(validate_status_code).json(error_validate);
     }  
+
+    /* Fetch company for get max credit */
+    let check_company = CompaniesCodeUseCase::new(&company_code, &data.connection_repository);
+    let company= check_company.execute().await;
+ 
+    let max_credit= &company.ok().unwrap().max_credit;
+ 
+    let (validate_max_credit_code,error_max_credit,error_max_credit_message) = compare_max_credit_update(&post,*max_credit); 
+    if error_max_credit {
+        return HttpResponse::build(validate_max_credit_code).json(error_max_credit_message);
+    }   
     let (validate_filter_code,error_filter,error_filter_message) = filter_zonk_active_update(&post);
     if error_filter {
         return HttpResponse::build(validate_filter_code).json(error_filter_message);

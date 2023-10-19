@@ -11,6 +11,7 @@ impl DBMapper<SpinCompanyEntity, Companies> for SpinCompaniesDbMapper {
             companies_name: entity.companies_name,
             companies_address: entity.companies_address,
             is_company_enabled : entity.is_company_enabled,
+            max_credit: entity.max_credit,
             created_at: entity.created_at,
             updated_at: entity.updated_at,
             created_by: entity.created_by,
@@ -30,7 +31,8 @@ impl DBMapper<SpinCompanyEntity, Companies> for SpinCompaniesDbMapper {
             companies_code:model.companies_code,
             companies_name: model.companies_name,
             companies_address:model.companies_address,
-            is_company_enabled:model.is_company_enabled
+            is_company_enabled:model.is_company_enabled,
+            max_credit:model.max_credit,
         }
     }
 }

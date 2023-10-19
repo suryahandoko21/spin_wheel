@@ -14,10 +14,10 @@ pub fn filter_zonk_active(payload :&SpinRewardPayload)->(StatusCode,bool,ErrorRe
     // Use filter to create a new iterator with only the matching elements
     let filtered_list: Vec<_> =payload
         .into_iter()
-        .filter(|item| item.category == target_key && item.status == target_value)
+        .filter(|item| item.category == target_key && item.status == target_value && item.percentage > 0.0)
         .collect();
     if filtered_list.len() < 1{
-        error_msg.message = "One Zonk Property must exist and set status is active!!".to_string();
+        error_msg.message = "One Zonk Property must exist, percentage not 0 and set status is active!!".to_string();
         error_msg.status=  "error".to_string();
         return  (StatusCode::NOT_ACCEPTABLE,true,error_msg);      
     }
@@ -36,10 +36,10 @@ pub fn filter_zonk_active_update(payload :&SpinRewardUpdatedPayload)->(StatusCod
     // Use filter to create a new iterator with only the matching elements
     let filtered_list: Vec<_> =payload
         .into_iter()
-        .filter(|item| item.category == target_key && item.status == target_value)
+        .filter(|item| item.category == target_key && item.status == target_value && item.percentage > 0.0)
         .collect();
     if filtered_list.len() < 1{
-        error_msg.message = "One Zonk Property must exist and set status is active!!".to_string();
+        error_msg.message = "One Zonk Property must exist, percentage not 0 and set status is active!!".to_string();
         error_msg.status=  "error".to_string();
         return  (StatusCode::NOT_ACCEPTABLE,true,error_msg);    
     }
