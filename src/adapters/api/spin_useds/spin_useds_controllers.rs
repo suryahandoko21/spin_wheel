@@ -41,6 +41,7 @@ async fn post_spin_used(
     req: HttpRequest,
 ) -> HttpResponse {
     let user_id = &post.user_uuid;
+    log::info!("Payload Body: {}", user_id.to_string());
     let header_authorization = req.headers().get("Authorization");
     let (validate_status_code, company_code, error_request, error_validate) =
         validate_request(header_authorization);
