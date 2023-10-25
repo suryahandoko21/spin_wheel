@@ -45,6 +45,7 @@ impl ContentCompanyEntityAbstract for ConnectionRepository {
     async fn post_contents(
         &self,
         company_code: String,
+        email: String,
         post: &ContentPayload,
     ) -> Result<GenericResponse, Box<dyn Error>> {
         let statuses;
@@ -58,8 +59,8 @@ impl ContentCompanyEntityAbstract for ConnectionRepository {
                 content_description: post.content_description.to_string(),
                 created_at: SystemTime::now(),
                 updated_at: SystemTime::now(),
-                created_by: "System".to_string(),
-                updated_by: "System".to_string(),
+                created_by: email.to_string(),
+                updated_by: email.to_string(),
                 default: false,
             };
             let to_vector = vec![prepare_data];
@@ -74,6 +75,7 @@ impl ContentCompanyEntityAbstract for ConnectionRepository {
                         content_title: post.content_title.to_string(),
                         content_description: post.content_description.to_string(),
                         updated_at: SystemTime::now(),
+                        updated_by: email.to_string(),
                     })
                     .execute(&mut CONN.get().unwrap().get().expect("cant connect database"));
         }

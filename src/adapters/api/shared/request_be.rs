@@ -10,4 +10,5 @@ pub struct RequestBeResult {
     pub status: String,
     pub rewardType: String,
     pub money: i32,
+    pub ipAddress:String
 }

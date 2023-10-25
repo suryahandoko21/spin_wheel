@@ -18,6 +18,7 @@ pub struct SpinUseds {
     pub prize_id: i32,
     pub companies_code: String,
     pub ticket_uuid: String,
+    pub remote_ip :String
 }
 
 #[derive(Queryable, Selectable, Debug, Deserialize, QueryableByName, Serialize, Insertable)]
@@ -33,4 +34,5 @@ pub struct SpinUsedsToDb {
     pub prize_id: i32,
     pub companies_code: String,
     pub ticket_uuid: String,
+    pub remote_ip :String
 }

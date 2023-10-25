@@ -60,6 +60,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
     }
     async fn post_spin_rewards(
         &self,
+        email: String,
         post: &SpinRewardPayload,
     ) -> Result<GenericResponse, Box<dyn Error>> {
         let data = &post;
@@ -94,6 +95,8 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                         reward_money: spin.money,
                         created_at: SystemTime::now(),
                         updated_at: SystemTime::now(),
+                        created_by: email.to_string(),
+                        updated_by: email.to_string(),
                     };
                     let value: Vec<SpinRewardToDB> = vec![prepare_data];
                     let _insert = diesel::insert_into(tb_spin_rewards)
@@ -205,6 +208,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
 
     async fn update_spin_rewards(
         &self,
+        email: String,
         post: &SpinRewardUpdatedPayload,
     ) -> Result<GenericResponse, Box<dyn Error>> {
         let data = &post;
@@ -240,6 +244,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                                 reward_amount: spin.amount,
                                 reward_money: spin.money,
                                 updated_at: SystemTime::now(),
+                                updated_by: email.to_string(),
                             })
                             .execute(
                                 &mut CONN.get().unwrap().get().expect("cant connect database"),
@@ -258,6 +263,8 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                             reward_money: spin.money,
                             created_at: SystemTime::now(),
                             updated_at: SystemTime::now(),
+                            created_by: email.to_string(),
+                            updated_by: email.to_string(),
                         };
                         let value = vec![prepare_data];
                         let _insert = diesel::insert_into(tb_spin_rewards).values(&value).execute(

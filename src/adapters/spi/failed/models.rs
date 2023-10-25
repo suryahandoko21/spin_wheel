@@ -29,6 +29,8 @@ pub struct FailedProcess {
     pub failed_message: String,
     pub created_at: SystemTime,
     pub updated_at: SystemTime,
+    pub remote_ip :String
+
 }
 
 #[derive(
@@ -49,4 +51,5 @@ pub struct FailedProcessToDb {
     pub url_address: String,
     pub created_at: SystemTime,
     pub updated_at: SystemTime,
+    pub remote_ip :String
 }

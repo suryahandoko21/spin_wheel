@@ -20,6 +20,8 @@ diesel::table! {
         reward_image -> Varchar,
         created_at -> Timestamp,
         updated_at -> Timestamp,
+        created_by -> Varchar,
+        updated_by -> Varchar,
     }
 }
 
@@ -35,7 +37,8 @@ diesel::table! {
         used_status -> Varchar,
         prize_id -> Int4,
         companies_code ->Varchar,
-        ticket_uuid ->Varchar
+        ticket_uuid ->Varchar,
+        remote_ip->Varchar
     }
 }
 
@@ -93,6 +96,7 @@ diesel::table! {
         failed_message->Varchar,
         created_at -> Timestamp,
         updated_at -> Timestamp,
+        remote_ip ->Varchar
     }
 }
 

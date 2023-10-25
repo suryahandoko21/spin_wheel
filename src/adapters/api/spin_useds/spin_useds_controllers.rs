@@ -12,12 +12,14 @@ use crate::{
     },
     domain::error::ApiError,
 };
+extern crate log;
 use actix_web::{
     http::StatusCode,
     post,
     web::{self, Json},
     HttpRequest, HttpResponse,
 };
+use log::info;
 
 /*  collection route for spin_tickets */
 pub fn routes(cfg: &mut web::ServiceConfig) {
@@ -41,9 +43,14 @@ async fn post_spin_used(
     req: HttpRequest,
 ) -> HttpResponse {
     let user_id = &post.user_uuid;
-    log::info!("Payload Body: {}", user_id.to_string());
+    let remote_ip = req
+        .connection_info()
+        .realip_remote_addr()
+        .unwrap_or("uknown IP Address")
+        .to_string();
+    info!("Received JSON payload: {:?}", post);
     let header_authorization = req.headers().get("Authorization");
-    let (validate_status_code, company_code, error_request, error_validate) =
+    let (validate_status_code, company_code, error_request, error_validate, email) =
         validate_request(header_authorization);
     let companies_code = &company_code;
     if error_request {
@@ -61,8 +68,10 @@ async fn post_spin_used(
     }
     let post_one_spin_used = PostSpinUsedUseCase::new(
         &post,
+        &email,
         &companies_code,
         &company_address,
+        &remote_ip,
         &data.connection_repository,
     );
     let spin_used: Result<SpinResponse, ApiError> = post_one_spin_used.execute().await;

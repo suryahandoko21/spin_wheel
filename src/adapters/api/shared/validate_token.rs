@@ -25,20 +25,26 @@ pub struct Claims {
     sub: String,
 }
 
-pub fn check_validation(auth: String) -> String {
+pub fn check_validation(auth: String) -> (String, String) {
     let mut spl = auth.split(".");
     let _header = spl.next();
     let payload = spl.next();
     if payload == None {
-        return "Error Token Empty !!".to_string();
+        (
+            "Error Token Empty !!".to_string(),
+            "Please login first".to_string(),
+        );
     }
 
     let bytes = engine::GeneralPurpose::new(&alphabet::URL_SAFE, general_purpose::NO_PAD)
         .decode(payload.unwrap());
 
     if bytes.is_err() {
-        return "Error Format Token !!".to_string();
+        (
+            "Error Format Token !!".to_string(),
+            "Please login first".to_string(),
+        );
     }
     let claim: Claims = serde_json::from_slice(&bytes.unwrap()).unwrap();
-    return claim.companyCode;
+    (claim.companyCode, claim.email)
 }
