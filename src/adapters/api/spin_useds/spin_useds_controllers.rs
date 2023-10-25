@@ -48,7 +48,7 @@ async fn post_spin_used(
         .realip_remote_addr()
         .unwrap_or("uknown IP Address")
         .to_string();
-    info!("Received JSON payload: {:?}{:?}",req, post);
+    info!("Received JSON payload: {:?}{:?}",req.peer_addr(), post);
     let header_authorization = req.headers().get("Authorization");
     let (validate_status_code, company_code, error_request, error_validate, email) =
         validate_request(header_authorization);
