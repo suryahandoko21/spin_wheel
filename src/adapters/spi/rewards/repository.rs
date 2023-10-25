@@ -126,6 +126,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                 .await;
         let mut company_obj = SpinRewardActiveEntity {
             status: false,
+            float_image:"".to_string(),
             user_uuid: "".to_string(),
             company_code: "".to_string(),
             reward_list: None,
@@ -133,7 +134,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
         };
         if !company.is_err() {
             let url_addresses = company.unwrap().companies_address.to_string();
-            let status_active = status_active_spinwheel(url_addresses.to_string()).await;
+            let (status_active,url_image) = status_active_spinwheel(url_addresses.to_string()).await;
             let c_spin =
                 SpinTicketEntityAbstract::get_spin_ticket_by_uuid(self, user_uuid.to_string())
                     .await;
@@ -143,6 +144,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
             }
             /* Fill Struct Data */
             company_obj.status = status_active;
+            company_obj.float_image = url_image;
             company_obj.user_uuid = user_uuid.to_string();
             company_obj.company_code = company_code.to_string();
             company_obj.reward_list = Some(

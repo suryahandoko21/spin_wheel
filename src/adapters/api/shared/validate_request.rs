@@ -100,7 +100,7 @@ pub async fn validate_company(
         return (StatusCode::NOT_ACCEPTABLE, true, "".to_string(), error_msg);
     }
     let company_address = &rcompany.ok().unwrap().companies_address;
-    let check_status = status_active_spinwheel(company_address.to_string()).await;
+    let (check_status,_url_image) = status_active_spinwheel(company_address.to_string()).await;
     if !check_status {
         error_msg.message = "Status inactive".to_string();
         error_msg.status = "error".to_string();
