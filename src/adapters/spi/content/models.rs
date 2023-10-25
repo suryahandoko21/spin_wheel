@@ -53,4 +53,5 @@ pub struct ContentUpdateDb {
     pub content_title: String,
     pub content_description: String,
     pub updated_at: SystemTime,
+    pub updated_by: String,
 }

@@ -27,8 +27,10 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
     async fn post_one_spin_useds(
         &self,
         post: &SpinUsedPayload,
+        email: String,
         company_code: String,
         url_addresses: String,
+        remoteip: String,
     ) -> Result<SpinResponse, Box<dyn Error>> {
         let mut response = SpinResponse {
             status: "".to_string(),
@@ -94,6 +96,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
             rewardDescriptions: reward_description.to_string(),
             rewardType: reward_type.to_string(),
             money: data_reward.reward_money,
+            ipAddress: remoteip.to_string()
         };
 
         let _ =
@@ -118,12 +121,13 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                 user_id: uuid.to_string(),
                 created_at: SystemTime::now(),
                 updated_at: SystemTime::now(),
-                created_by: "System".to_string(),
-                updated_by: "System".to_string(),
+                created_by: email.to_string(),
+                updated_by: email.to_string(),
                 used_status: status,
                 prize_id: *result_choice,
                 companies_code: company_code,
                 ticket_uuid: ticket_id.to_string(),
+                remote_ip :remoteip.to_string()
             };
             let to_vector = vec![prepare_data];
             let _ = diesel::insert_into(tb_spin_used)
@@ -158,6 +162,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                 url_address: url_addresses.to_string(),
                 created_at: SystemTime::now(),
                 updated_at: SystemTime::now(),
+                remote_ip :remoteip.to_string()
             };
             FailedProcessEntityAbstract::post_failed_proccess(self, failed_post).await;
             let prepare_data = SpinUsedsToDb {
@@ -170,6 +175,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                 prize_id: result_zonk.reward_id,
                 companies_code: company_code,
                 ticket_uuid: ticket_id.to_string(),
+                remote_ip :remoteip.to_string()
             };
             let to_vector = vec![prepare_data];
             let _ = diesel::insert_into(tb_spin_used)

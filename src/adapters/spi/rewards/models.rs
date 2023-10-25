@@ -29,6 +29,8 @@ pub struct SpinRewards {
     pub reward_image: String,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
+    pub created_by: String,
+    pub updated_by: String,
 }
 
 #[derive(Queryable, Insertable, Debug, AsChangeset)]
@@ -47,6 +49,8 @@ pub struct SpinRewardToDB {
     pub reward_image: String,
     pub created_at: SystemTime,
     pub updated_at: SystemTime,
+    pub created_by: String,
+    pub updated_by: String,
 }
 
 #[derive(Queryable, Insertable, Debug, AsChangeset)]
@@ -64,4 +68,5 @@ pub struct SpinRewardUpdateToDB {
     pub percentage: f64,
     pub reward_image: String,
     pub updated_at: SystemTime,
+    pub updated_by: String,
 }

@@ -19,6 +19,7 @@ pub trait ContentCompanyEntityAbstract {
     async fn post_contents(
         &self,
         company_code: String,
+        email: String,
         post: &ContentPayload,
     ) -> Result<GenericResponse, Box<dyn Error>>;
 }

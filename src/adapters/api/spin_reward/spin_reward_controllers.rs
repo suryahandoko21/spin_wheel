@@ -37,6 +37,7 @@ use actix_web::{
     web::{self, Json},
     HttpRequest, HttpResponse, Result,
 };
+use log::info;
 
 /*  collection route for spin_rewards */
 pub fn routes(cfg: &mut web::ServiceConfig) {
@@ -97,12 +98,14 @@ async fn post_spin_rewards(
     post: Json<SpinRewardPayload>,
     req: HttpRequest,
 ) -> HttpResponse {
+    let json_string = serde_json::to_string(&post).unwrap();
+    info!("Payload request {:?}", json_string);
     let header_authorization = req.headers().get("Authorization");
     let (validate_max_reward_code, status_max, message_max) = max_reward_active_add(&post);
     if status_max {
         return HttpResponse::build(validate_max_reward_code).json(message_max);
     }
-    let (validate_status_code, company_code, error_request, error_validate) =
+    let (validate_status_code, company_code, error_request, error_validate, email) =
         validate_request(header_authorization);
     if error_request {
         return HttpResponse::build(validate_status_code).json(error_validate);
@@ -124,7 +127,7 @@ async fn post_spin_rewards(
     if error_filter {
         return HttpResponse::build(validate_filter_code).json(error_filter_message);
     }
-    let spin_reward = PostSpinRewardsUseCase::new(&post, &data.connection_repository);
+    let spin_reward = PostSpinRewardsUseCase::new(&email, &post, &data.connection_repository);
     let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
     let result = spin_rewards.unwrap();
 
@@ -145,7 +148,7 @@ async fn post_spin_rewards(
 async fn get_all_spin_rewards(data: web::Data<AppState>, req: HttpRequest) -> HttpResponse {
     let qstring = web::Query::<QstringReward>::from_query(req.query_string()).unwrap();
     let header_authorization = req.headers().get("Authorization");
-    let (validate_status_code, company_code, error_request, error_validate) =
+    let (validate_status_code, company_code, error_request, error_validate, _email) =
         validate_request(header_authorization);
     if error_request {
         return HttpResponse::build(validate_status_code).json(error_validate);
@@ -288,12 +291,14 @@ async fn update_spin_rewards(
     post: Json<SpinRewardUpdatedPayload>,
     req: HttpRequest,
 ) -> HttpResponse {
+    let json_string = serde_json::to_string(&post).unwrap();
+      info!("Payload request {:?}", json_string);
     let (validate_max_reward_code, status_max, message_max) = max_reward_active_update(&post);
     if status_max {
         return HttpResponse::build(validate_max_reward_code).json(message_max);
     }
     let header_authorization = req.headers().get("Authorization");
-    let (validate_status_code, company_code, error_request, error_validate) =
+    let (validate_status_code, company_code, error_request, error_validate, email) =
         validate_request(header_authorization);
     if error_request {
         return HttpResponse::build(validate_status_code).json(error_validate);
@@ -315,7 +320,7 @@ async fn update_spin_rewards(
     if error_filter {
         return HttpResponse::build(validate_filter_code).json(error_filter_message);
     }
-    let spin_reward = UpdateSpinRewardsUseCase::new(&post, &data.connection_repository);
+    let spin_reward = UpdateSpinRewardsUseCase::new(&email, &post, &data.connection_repository);
     let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
     let result = spin_rewards.unwrap();
     let (response_code, error_response, error_response_message) = reponse_status(&result);
@@ -337,7 +342,7 @@ async fn get_all_spin_active_rewards(data: web::Data<AppState>, req: HttpRequest
     let user_uuid = qstring.id.as_ref().unwrap().to_string();
     let company;
     if qstring.company_code.is_none() || !header_authorization.is_none() {
-        let (validate_status_code, company_code, error_request, error_validate) =
+        let (validate_status_code, company_code, error_request, error_validate, _email) =
             validate_request(header_authorization);
         if error_request {
             return HttpResponse::build(validate_status_code).json(error_validate);

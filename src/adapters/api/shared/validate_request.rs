@@ -28,7 +28,9 @@ pub fn validate_uuid(uuid: &Option<String>) -> (StatusCode, bool, ErrorResponse)
     }
     return (StatusCode::OK, false, error_msg);
 }
-pub fn validate_request(header: Option<&HeaderValue>) -> (StatusCode, String, bool, ErrorResponse) {
+pub fn validate_request(
+    header: Option<&HeaderValue>,
+) -> (StatusCode, String, bool, ErrorResponse, String) {
     let mut error_msg = ErrorResponse {
         message: "".to_string(),
         status: "".to_string(),
@@ -41,6 +43,7 @@ pub fn validate_request(header: Option<&HeaderValue>) -> (StatusCode, String, bo
             "null".to_string(),
             true,
             error_msg,
+            "null".to_string(),
         );
     }
     if header.is_none() {
@@ -51,10 +54,11 @@ pub fn validate_request(header: Option<&HeaderValue>) -> (StatusCode, String, bo
             "null".to_string(),
             true,
             error_msg,
+            "null".to_string(),
         );
     }
     let auth = header.unwrap().to_str().ok().unwrap().to_string();
-    let jwt_token_company_code = check_validation(auth);
+    let (jwt_token_company_code, jwt_token_email) = check_validation(auth);
     if jwt_token_company_code.contains("Error") {
         error_msg.message = jwt_token_company_code.to_string();
         error_msg.status = "error".to_string();
@@ -63,11 +67,19 @@ pub fn validate_request(header: Option<&HeaderValue>) -> (StatusCode, String, bo
             "null".to_string(),
             true,
             error_msg,
+            "null".to_string(),
         );
     }
     let company_code = jwt_token_company_code.to_string();
+    let email = jwt_token_email.to_string();
 
-    return (StatusCode::OK, company_code.to_string(), false, error_msg);
+    return (
+        StatusCode::OK,
+        company_code.to_string(),
+        false,
+        error_msg,
+        email,
+    );
 }
 
 pub async fn validate_company(

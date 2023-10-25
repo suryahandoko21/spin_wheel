@@ -10,6 +10,7 @@ use async_trait::async_trait;
 
 pub struct PostContentByCompannyCodeUseCase<'a> {
     company_code: &'a String,
+    email: &'a String,
     post: &'a ContentPayload,
     repository: &'a dyn ContentCompanyEntityAbstract,
 }
@@ -17,12 +18,14 @@ pub struct PostContentByCompannyCodeUseCase<'a> {
 impl<'a> PostContentByCompannyCodeUseCase<'a> {
     pub fn new(
         company_code: &'a String,
+        email: &'a String,
         post: &'a ContentPayload,
         repository: &'a dyn ContentCompanyEntityAbstract,
     ) -> Self {
         PostContentByCompannyCodeUseCase {
             repository,
             company_code,
+            email,
             post,
         }
     }
@@ -33,7 +36,11 @@ impl<'a> AbstractUseCase<GenericResponse> for PostContentByCompannyCodeUseCase<'
     async fn execute(&self) -> Result<GenericResponse, ApiError> {
         let post_content = self
             .repository
-            .post_contents(self.company_code.to_string(), self.post)
+            .post_contents(
+                self.company_code.to_string(),
+                self.email.to_string(),
+                self.post,
+            )
             .await;
         match post_content {
             Ok(facts) => Ok(facts),

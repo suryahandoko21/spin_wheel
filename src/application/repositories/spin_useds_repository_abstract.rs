@@ -13,7 +13,9 @@ pub trait SpinUsedEntityAbstract {
     async fn post_one_spin_useds(
         &self,
         post: &SpinUsedPayload,
+        email: String,
         companies_code: String,
         url_addresses: String,
+        remote_ip: String,
     ) -> Result<SpinResponse, Box<dyn Error>>;
 }

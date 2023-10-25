@@ -24,6 +24,8 @@ pub struct SpinRewardEntity {
     pub reward_status: String,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
+    pub created_by: String,
+    pub updated_by: String,
 }
 
 impl SpinRewardEntity {
@@ -41,6 +43,8 @@ impl SpinRewardEntity {
         reward_status: String,
         created_at: NaiveDateTime,
         updated_at: NaiveDateTime,
+        created_by: String,
+        updated_by: String,
     ) -> Self {
         SpinRewardEntity {
             reward_id,
@@ -56,6 +60,8 @@ impl SpinRewardEntity {
             reward_status,
             created_at,
             updated_at,
+            created_by,
+            updated_by,
         }
     }
 }

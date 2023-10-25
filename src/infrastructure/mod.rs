@@ -42,7 +42,7 @@ struct ApiDoc;
 pub fn server(listener: TcpListener, db_name: &str) -> Result<Server, std::io::Error> {
     println!("{:?}", &listener.local_addr());
     env::set_var("RUST_BACKTRACE", "1");
-    env::set_var("RUST_LOG", "actix_web=debug");
+    env::set_var("RUST_LOG", "info");
     env_logger::Builder::from_env(Env::default().default_filter_or("info"))
         .target(Target::Stdout)
         .init();

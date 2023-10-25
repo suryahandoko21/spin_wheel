@@ -26,6 +26,7 @@ pub trait SpinRewardEntityAbstract {
     ) -> Result<SpinRewardEntity, Box<dyn Error>>;
     async fn post_spin_rewards(
         &self,
+        email: String,
         post: &SpinRewardPayload,
     ) -> Result<GenericResponse, Box<dyn Error>>;
     async fn get_all_spin_reward_by_company_code(
@@ -41,6 +42,7 @@ pub trait SpinRewardEntityAbstract {
     ) -> Result<SpinRewardActiveEntity, Box<dyn Error>>;
     async fn update_spin_rewards(
         &self,
+        email: String,
         post: &SpinRewardUpdatedPayload,
     ) -> Result<GenericResponse, Box<dyn Error>>;
     async fn used_one_spin_by_reward_id(&self, prize_id: i32) -> bool;

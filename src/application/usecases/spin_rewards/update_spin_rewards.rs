@@ -11,23 +11,32 @@ use crate::{
 };
 use async_trait::async_trait;
 pub struct UpdateSpinRewardsUseCase<'a> {
+    email: &'a String,
     post: &'a SpinRewardUpdatedPayload,
     repository: &'a dyn SpinRewardEntityAbstract,
 }
 
 impl<'a> UpdateSpinRewardsUseCase<'a> {
     pub fn new(
+        email: &'a String,
         post: &'a SpinRewardUpdatedPayload,
         repository: &'a dyn SpinRewardEntityAbstract,
     ) -> Self {
-        UpdateSpinRewardsUseCase { post, repository }
+        UpdateSpinRewardsUseCase {
+            email,
+            post,
+            repository,
+        }
     }
 }
 
 #[async_trait(?Send)]
 impl<'a> AbstractUseCase<GenericResponse> for UpdateSpinRewardsUseCase<'a> {
     async fn execute(&self) -> Result<GenericResponse, ApiError> {
-        let spin_rewards = self.repository.update_spin_rewards(self.post).await;
+        let spin_rewards = self
+            .repository
+            .update_spin_rewards(self.email.to_string(), self.post)
+            .await;
         match spin_rewards {
             Ok(facts) => Ok(facts),
             Err(e) => Err(ErrorHandlingUtils::application_error(

@@ -33,7 +33,7 @@ async fn get_content_info(data: web::Data<AppState>, req: HttpRequest) -> HttpRe
     let header_authorization = req.headers().get("Authorization");
     let company;
     if qstring.company_code.is_none() || !header_authorization.is_none() {
-        let (validate_status_code, company_code, error_request, error_validate) =
+        let (validate_status_code, company_code, error_request, error_validate, _email) =
             validate_request(header_authorization);
         if error_request {
             return HttpResponse::build(validate_status_code).json(error_validate);
@@ -60,13 +60,17 @@ async fn post_content(
     req: HttpRequest,
 ) -> HttpResponse {
     let header_authorization = req.headers().get("Authorization");
-    let (validate_status_code, company_code, error_request, error_validate) =
+    let (validate_status_code, company_code, error_request, error_validate, email) =
         validate_request(header_authorization);
     if error_request {
         return HttpResponse::build(validate_status_code).json(error_validate);
     }
-    let data =
-        PostContentByCompannyCodeUseCase::new(&company_code, &post, &data.connection_repository);
+    let data = PostContentByCompannyCodeUseCase::new(
+        &company_code,
+        &email,
+        &post,
+        &data.connection_repository,
+    );
     let result = data.execute().await;
 
     return HttpResponse::Ok().json(result.unwrap());
