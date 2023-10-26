@@ -21,7 +21,7 @@ pub async fn process_for_pending_be() {
                 status: "used".to_string(),
                 rewardType: data.reward_type.to_string(),
                 money: data.money,
-                ipAddress: data.remote_ip.to_string()
+                ipAddress: data.remote_ip.to_string(),
             };
             let (status_post, _status, message, status_code) =
                 post_to_be(request_be, data.url_address.to_string()).await;

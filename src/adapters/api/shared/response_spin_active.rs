@@ -4,5 +4,5 @@ use serde::{Deserialize, Serialize};
 #[allow(non_snake_case)]
 pub struct ResponseActiveSpin {
     pub enableSpinWheelFeature: bool,
-    pub spinWheelLogo: String
+    pub spinWheelLogo: String,
 }

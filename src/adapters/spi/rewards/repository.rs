@@ -6,6 +6,7 @@ use crate::adapters::api::spin_reward::spin_reward_payload::SpinRewardUpdatedPay
 use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::adapters::spi::cfg::schema::tb_spin_rewards::dsl::*;
 use crate::application::mappers::db_mapper::DBMapper;
+use crate::application::repositories::log_reward_repository::LogRewardAbstract;
 use crate::application::repositories::spin_company_repository_abstract::SpinCompanyEntityAbstract;
 use crate::application::repositories::spin_ticket_repository_abstract::SpinTicketEntityAbstract;
 use crate::domain::spin_reward_entity::{
@@ -126,7 +127,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                 .await;
         let mut company_obj = SpinRewardActiveEntity {
             status: false,
-            float_image:"".to_string(),
+            float_image: "".to_string(),
             user_uuid: "".to_string(),
             company_code: "".to_string(),
             reward_list: None,
@@ -134,7 +135,8 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
         };
         if !company.is_err() {
             let url_addresses = company.unwrap().companies_address.to_string();
-            let (status_active,url_image) = status_active_spinwheel(url_addresses.to_string()).await;
+            let (status_active, url_image) =
+                status_active_spinwheel(url_addresses.to_string()).await;
             let c_spin =
                 SpinTicketEntityAbstract::get_spin_ticket_by_uuid(self, user_uuid.to_string())
                     .await;
@@ -274,6 +276,19 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                         );
                     }
                 }
+                let result_query = tb_spin_rewards.load::<SpinRewards>(
+                    &mut CONN.get().unwrap().get().expect("can't connect database"),
+                );
+                let before = serde_json::to_string(&result_query.unwrap())
+                    .expect("Failed to serialize to JSON");
+                let after = serde_json::to_string(&post).expect("Failed to serialize to JSON");
+                let _log_reward = LogRewardAbstract::log_reward_actifity(
+                    self,
+                    (&company_code).to_string(),
+                    email.to_string(),
+                    before,
+                    after,
+                ).await;
             }
         }
         Ok(GenericResponse {

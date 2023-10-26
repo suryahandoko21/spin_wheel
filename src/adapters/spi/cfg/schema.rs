@@ -129,6 +129,18 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    use diesel::sql_types::*;
+    tb_log_rewards (id) {
+        id -> Int4,
+        companies_code -> Varchar,
+        reward_before -> Text,
+        reward_after ->Text,
+        created_at -> Timestamp,
+        created_by -> Varchar,
+    }
+}
+
 diesel::allow_tables_to_appear_in_same_query!(
     tb_companies,
     tb_spin_tickets,
@@ -136,5 +148,6 @@ diesel::allow_tables_to_appear_in_same_query!(
     tb_spin_rewards,
     tb_spin_success_process,
     tb_spin_failed_process,
-    tb_content
+    tb_content,
+    tb_log_rewards
 );

@@ -6,6 +6,7 @@ pub mod companies;
 pub mod content;
 pub mod cron;
 pub mod failed;
+pub mod log_rewards;
 pub mod rewards;
 pub mod spintickets;
 pub mod success;
