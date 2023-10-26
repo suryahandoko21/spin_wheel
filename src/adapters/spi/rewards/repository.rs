@@ -276,7 +276,9 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                         );
                     }
                 }
-                let result_query = tb_spin_rewards.load::<SpinRewards>(
+                let result_query = tb_spin_rewards
+                    .filter(companies_code.eq(&company_code))
+                    .load::<SpinRewards>(
                     &mut CONN.get().unwrap().get().expect("can't connect database"),
                 );
                 let before = serde_json::to_string(&result_query.unwrap())
@@ -288,7 +290,8 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                     email.to_string(),
                     before,
                     after,
-                ).await;
+                )
+                .await;
             }
         }
         Ok(GenericResponse {
