@@ -96,7 +96,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
             rewardDescriptions: reward_description.to_string(),
             rewardType: reward_type.to_string(),
             money: data_reward.reward_money,
-            ipAddress: remoteip.to_string()
+            ipAddress: remoteip.to_string(),
         };
 
         let _ =
@@ -127,7 +127,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                 prize_id: *result_choice,
                 companies_code: company_code,
                 ticket_uuid: ticket_id.to_string(),
-                remote_ip :remoteip.to_string()
+                remote_ip: remoteip.to_string(),
             };
             let to_vector = vec![prepare_data];
             let _ = diesel::insert_into(tb_spin_used)
@@ -162,7 +162,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                 url_address: url_addresses.to_string(),
                 created_at: SystemTime::now(),
                 updated_at: SystemTime::now(),
-                remote_ip :remoteip.to_string()
+                remote_ip: remoteip.to_string(),
             };
             FailedProcessEntityAbstract::post_failed_proccess(self, failed_post).await;
             let prepare_data = SpinUsedsToDb {
@@ -175,7 +175,7 @@ impl SpinUsedEntityAbstract for ConnectionRepository {
                 prize_id: result_zonk.reward_id,
                 companies_code: company_code,
                 ticket_uuid: ticket_id.to_string(),
-                remote_ip :remoteip.to_string()
+                remote_ip: remoteip.to_string(),
             };
             let to_vector = vec![prepare_data];
             let _ = diesel::insert_into(tb_spin_used)

@@ -2,12 +2,12 @@ use crate::adapters::api::shared::{
     init_global::GLOBAL_INIT, response_spin_active::ResponseActiveSpin,
 };
 
-pub async fn status_active_spinwheel(url_address: String) -> (bool,String) {
+pub async fn status_active_spinwheel(url_address: String) -> (bool, String) {
     let global_map = GLOBAL_INIT.get().unwrap();
     let url_prefix = "services/backend/api/spinwheel/callback/get-spinwhere-feature-enable";
     let address = format!("{}/{}", url_address, url_prefix);
     let mut bool = false;
-    let mut url_image= "".to_string();
+    let mut url_image = "".to_string();
     let token_validation_be = &global_map["token_validation_be"];
     let client = awc::Client::default();
     let response = client
@@ -25,5 +25,5 @@ pub async fn status_active_spinwheel(url_address: String) -> (bool,String) {
             url_image = rs.spinWheelLogo;
         }
     }
-    return  (bool,url_image.to_string());
+    return (bool, url_image.to_string());
 }

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SpinRewardActiveEntity {
     pub status: bool,
-    pub float_image : String,
+    pub float_image: String,
     pub user_uuid: String,
     pub company_code: String,
     pub reward_list: Option<Vec<ActiveRewardEntity>>,

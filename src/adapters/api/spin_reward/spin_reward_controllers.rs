@@ -292,7 +292,7 @@ async fn update_spin_rewards(
     req: HttpRequest,
 ) -> HttpResponse {
     let json_string = serde_json::to_string(&post).unwrap();
-      info!("Payload request {:?}", json_string);
+    info!("Payload request {:?}", json_string);
     let (validate_max_reward_code, status_max, message_max) = max_reward_active_update(&post);
     if status_max {
         return HttpResponse::build(validate_max_reward_code).json(message_max);
