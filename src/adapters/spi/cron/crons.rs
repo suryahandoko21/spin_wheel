@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use super::{
     check_expired::check_ticket_expired_be, list_reward::check_list_reward,
-    pending_be::process_for_pending_be,
+    pending_be::process_for_pending_be, send_expire_be::send_ticket_expired_be,
 };
 trait DurationExt {
     fn from_hours(hours: u32) -> Duration;
@@ -24,6 +24,7 @@ pub async fn perseconds() {
         } else {
             process_for_pending_be().await;
             check_ticket_expired_be().await;
+            send_ticket_expired_be().await;
         }
     }
 }

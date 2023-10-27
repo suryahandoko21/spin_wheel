@@ -30,6 +30,7 @@ pub struct SpinTickets {
     pub expired_value: i32,
     pub created_date: String,
     pub is_payment_gateway: bool,
+    pub send_be: bool,
 }
 
 #[derive(
@@ -53,4 +54,5 @@ pub struct SpinTicketsToDb {
     pub expired_value: i32,
     pub created_date: String,
     pub is_payment_gateway: bool,
+    pub send_be: bool,
 }

@@ -283,7 +283,8 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                 );
                 let before = serde_json::to_string(&result_query.unwrap())
                     .expect("Failed to serialize to JSON");
-                let after = serde_json::to_string(&post).expect("Failed to serialize to JSON");
+                let after =
+                    serde_json::to_string(&post.detail).expect("Failed to serialize to JSON");
                 let _log_reward = LogRewardAbstract::log_reward_actifity(
                     self,
                     (&company_code).to_string(),

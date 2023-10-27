@@ -37,3 +37,12 @@ pub struct ResponseBeErrorResult {
     pub path: String,
     pub message: String,
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[allow(non_snake_case)]
+pub struct ResponseBeTicketExpireResult {
+    pub statusCode: i32,
+    pub status: String,
+    pub message: String,
+}
+

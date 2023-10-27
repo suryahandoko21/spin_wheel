@@ -48,6 +48,7 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
                 created_date: spin.ticketCreatedDate.to_string(),
                 is_payment_gateway: spin.isPaymentGateWay,
                 company_code: companies_code.to_string(),
+                send_be: false,
             };
             let to_vector = vec![prepare_data];
             let insert = diesel::insert_into(tb_spin_tickets)
