@@ -3,3 +3,4 @@ pub mod crons;
 pub mod list_reward;
 pub mod pending_be;
 pub mod repository;
+pub mod send_expire_be;

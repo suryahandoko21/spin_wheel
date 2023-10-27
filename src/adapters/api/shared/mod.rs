@@ -2,6 +2,7 @@ pub mod app_state;
 pub mod enum_response;
 pub mod enum_reward;
 pub mod error_presenter;
+pub mod expire_ticket;
 pub mod init_global;
 pub mod max_reward;
 pub mod request_be;

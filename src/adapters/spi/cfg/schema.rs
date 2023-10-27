@@ -77,7 +77,8 @@ diesel::table! {
         expired_type->Varchar,
         expired_value->Int4,
         created_date->Varchar,
-        is_payment_gateway->Bool
+        is_payment_gateway->Bool,
+        send_be->Bool,
         }
 }
 
