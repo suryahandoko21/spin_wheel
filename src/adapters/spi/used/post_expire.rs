@@ -20,7 +20,7 @@ pub async fn post_expire(post_be: RequestExpire, url_address: String) -> bool {
         .insert_header(("spinWheelEngineSecretKey", token_validation_be.to_string()))
         .send_json(&post_be)
         .await;
-    
+
     if !&response.is_err() {
         let mut response_value = response.ok().unwrap();
         let status_response = &response_value.status();
@@ -29,7 +29,6 @@ pub async fn post_expire(post_be: RequestExpire, url_address: String) -> bool {
             error!("Ticket sending Failed error 500 {:?}", &post_be);
         }
         let rs: ResponseBeTicketExpireResult = serde_json::from_slice(&body).unwrap();
-        println!("resultnya !!!{:?}",rs);
         if rs.statusCode == 200 {
             info!("Ticket Expire sending success {:?}", &post_be);
         } else {

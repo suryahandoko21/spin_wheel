@@ -7,6 +7,7 @@ use crate::adapters::spi::used::post_expire::post_expire;
 use local_ip_address::local_ip;
 
 use diesel::prelude::*;
+use log::info;
 pub async fn send_ticket_expired_be() {
     let local_ip = local_ip();
     let ip = local_ip.unwrap().to_string();
@@ -28,6 +29,13 @@ pub async fn send_ticket_expired_be() {
                     &mut CONN.get().unwrap().get().expect("cant connect database"),
                 );
             let addr = url_address.unwrap().to_string();
+            info!(
+                "{}",
+                format!(
+                    "{:?}-{}-{}",
+                    &request_expire, addr, "=> Request Post to BE "
+                )
+            );
             let post_expires = post_expire(request_expire, addr).await;
             if post_expires {
                 let _update_used =

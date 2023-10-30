@@ -1,3 +1,5 @@
+use log::{error, info, warn};
+
 use crate::adapters::api::{
     shared::{
         init_global::GLOBAL_INIT,
@@ -20,6 +22,10 @@ pub async fn post_to_be(
     let mut status_code = 504;
     let token_validation_be = &global_map["token_validation_be"];
     let client = awc::Client::default();
+    info!(
+        "{}",
+        format!("{:?}-{}-{}", &post_be, url_address, "=> Request Post to BE")
+    );
     let response = client
         .post(address)
         .insert_header(("spinWheelEngineSecretKey", token_validation_be.to_string()))
@@ -30,9 +36,23 @@ pub async fn post_to_be(
         let status_response = &response_value.status();
         let body = &response_value.body().await.ok().unwrap();
         if *status_response == 500 {
+            warn!(
+                "{}",
+                format!(
+                    "{}-{}-{}",
+                    &post_be.ticketUuid, url_address, "=> Error REsponse 500 !!"
+                )
+            );
             let rs: ResponseBeErrorResult = serde_json::from_slice(&body).unwrap();
             return (bool, rs.title, rs.detail, rs.status);
         }
+        info!(
+            "{}",
+            format!(
+                "{}-{}-{}",
+                &post_be.ticketUuid, url_address, "=> Success response From BE !!"
+            )
+        );
         let rs: ResponseBeResult = serde_json::from_slice(&body).unwrap();
         if rs.statusCode == 200 {
             bool = true;
@@ -42,6 +62,13 @@ pub async fn post_to_be(
         status_code = rs.statusCode;
     } else {
         let send_error_slack = format!("{}❌{}", url_address, "=> Error BE sending unreachable !!");
+        error!(
+            "{}",
+            format!(
+                "{}-{}-{}",
+                &post_be.ticketUuid, url_address, "=> Error BE sending unreachable !!"
+            )
+        );
         let _x = push_notification(send_error_slack).await;
     }
     return (bool, status, message, status_code);

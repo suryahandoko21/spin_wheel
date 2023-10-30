@@ -45,4 +45,3 @@ pub struct ResponseBeTicketExpireResult {
     pub status: String,
     pub message: String,
 }
-
