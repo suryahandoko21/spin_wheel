@@ -24,7 +24,7 @@ use crate::{
             spin_companies::companies_by_code::CompaniesCodeUseCase,
             spin_rewards::{
                 active_rewards::ActiveSpinRewardsUseCase,
-                list_spin_rewards::ListSpinRewardsUseCase,
+                list_spin_rewards::ListSpinRewardsUseCase, log_rewards::LogRewardsUseCase,
                 post_spin_rewards::PostSpinRewardsUseCase,
                 update_spin_rewards::UpdateSpinRewardsUseCase,
             },
@@ -45,7 +45,8 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
         .service(get_all_spin_rewards)
         .service(get_all_spin_active_rewards)
         .service(get_all_spin_rewards_be)
-        .service(update_spin_rewards);
+        .service(update_spin_rewards)
+        .service(get_log_history);
 }
 
 #[utoipa::path(
@@ -100,6 +101,11 @@ async fn post_spin_rewards(
 ) -> HttpResponse {
     let json_string = serde_json::to_string(&post).unwrap();
     info!("Payload request {:?}", json_string);
+    let remote_ip = req
+        .connection_info()
+        .realip_remote_addr()
+        .unwrap_or("uknown IP Address")
+        .to_string();
     let header_authorization = req.headers().get("Authorization");
     let (validate_max_reward_code, status_max, message_max) = max_reward_active_add(&post);
     if status_max {
@@ -127,7 +133,8 @@ async fn post_spin_rewards(
     if error_filter {
         return HttpResponse::build(validate_filter_code).json(error_filter_message);
     }
-    let spin_reward = PostSpinRewardsUseCase::new(&email, &post, &data.connection_repository);
+    let spin_reward =
+        PostSpinRewardsUseCase::new(&email, &remote_ip, &post, &data.connection_repository);
     let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
     let result = spin_rewards.unwrap();
 
@@ -293,6 +300,11 @@ async fn update_spin_rewards(
 ) -> HttpResponse {
     let json_string = serde_json::to_string(&post).unwrap();
     info!("Payload request {:?}", json_string);
+    let remote_ip = req
+        .connection_info()
+        .realip_remote_addr()
+        .unwrap_or("uknown IP Address")
+        .to_string();
     let (validate_max_reward_code, status_max, message_max) = max_reward_active_update(&post);
     if status_max {
         return HttpResponse::build(validate_max_reward_code).json(message_max);
@@ -320,7 +332,8 @@ async fn update_spin_rewards(
     if error_filter {
         return HttpResponse::build(validate_filter_code).json(error_filter_message);
     }
-    let spin_reward = UpdateSpinRewardsUseCase::new(&email, &post, &data.connection_repository);
+    let spin_reward =
+        UpdateSpinRewardsUseCase::new(&email, &remote_ip, &post, &data.connection_repository);
     let spin_rewards: Result<GenericResponse, ApiError> = spin_reward.execute().await;
     let result = spin_rewards.unwrap();
     let (response_code, error_response, error_response_message) = reponse_status(&result);
@@ -354,6 +367,20 @@ async fn get_all_spin_active_rewards(data: web::Data<AppState>, req: HttpRequest
     }
     let data =
         ActiveSpinRewardsUseCase::new(&company, &user_uuid, &is_login, &data.connection_repository);
+    let values = data.execute().await;
+    return HttpResponse::Ok().json(values.unwrap());
+}
+
+#[get("/log_history")]
+async fn get_log_history(data: web::Data<AppState>, req: HttpRequest) -> HttpResponse {
+    let header_authorization = req.headers().get("Authorization");
+    let (validate_status_code, company_code, error_request, error_validate, _email) =
+        validate_request(header_authorization);
+    if error_request {
+        return HttpResponse::build(validate_status_code).json(error_validate);
+    }
+
+    let data = LogRewardsUseCase::new(&company_code, &data.connection_repository);
     let values = data.execute().await;
     return HttpResponse::Ok().json(values.unwrap());
 }

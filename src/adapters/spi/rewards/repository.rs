@@ -25,8 +25,107 @@ use crate::{
 use async_trait::async_trait;
 use diesel::dsl::*;
 use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
+use serde_json::Value;
+use std::collections::HashMap;
 use std::error::Error;
 use std::time::SystemTime;
+
+/* function to get compare before after change reward  */
+fn compare_update(before: String, after: String) -> String {
+    let parsed_json_after: Value = serde_json::from_str(&after).unwrap();
+    let parsed_json_before: Value = serde_json::from_str(&before).unwrap();
+    let id_x = parsed_json_after.get("id").unwrap();
+    let name_x = parsed_json_after.get("name").unwrap();
+    let note_x = parsed_json_after.get("desc").unwrap();
+    let category_x = parsed_json_after.get("category").unwrap();
+    let amount_x = parsed_json_after.get("amount").unwrap();
+    let money_x = parsed_json_after.get("money").unwrap();
+    let percentage_x = parsed_json_after.get("percentage").unwrap();
+    let image_x = parsed_json_after.get("image").unwrap();
+    let status_x = parsed_json_after.get("status").unwrap();
+    let order_x = parsed_json_after.get("order").unwrap();
+    if let Some(arr) = parsed_json_before.as_array() {
+        let mut map_update = HashMap::new();
+        for obj in arr {
+            let id_o = obj.get("id").unwrap();
+            let name_o = obj.get("reward_name").unwrap();
+            let note_o = obj.get("reward_note").unwrap();
+            let category_o = obj.get("reward_category").unwrap();
+            let amount_o = obj.get("reward_amount").unwrap();
+            let money_o = obj.get("reward_money").unwrap();
+            let percentage_o = obj.get("percentage").unwrap();
+            let image_o = obj.get("reward_image").unwrap();
+            let status_o = obj.get("reward_status").unwrap();
+            let order_o = obj.get("reward_order").unwrap();
+            if id_x == 0 {
+                println!("dddd");
+            }
+            if id_o == id_x {
+                if name_o != name_x {
+                    map_update.insert(
+                        "name".to_string(),
+                        format!("{}=>{}", name_o.to_string(), name_x.to_string()),
+                    );
+                }
+                if note_o != note_x {
+                    map_update.insert(
+                        "description".to_string(),
+                        format!("{}=>{}", note_o.to_string(), note_x.to_string()),
+                    );
+                }
+                if category_o != category_x {
+                    map_update.insert(
+                        "category".to_string(),
+                        format!("{}=>{}", category_o.to_string(), category_x.to_string()),
+                    );
+                }
+                if amount_o != amount_x {
+                    map_update.insert(
+                        "amount".to_string(),
+                        format!("{}=>{}", amount_o.to_string(), amount_x.to_string()),
+                    );
+                }
+                if money_o != money_x {
+                    map_update.insert(
+                        "money".to_string(),
+                        format!("{}=>{}", money_o.to_string(), money_x.to_string()),
+                    );
+                }
+                if percentage_o != percentage_x {
+                    map_update.insert(
+                        "percentage".to_string(),
+                        format!("{}=>{}", percentage_o.to_string(), percentage_x.to_string()),
+                    );
+                }
+                if image_o != image_x {
+                    map_update.insert(
+                        "image".to_string(),
+                        format!("{}=>{}", image_o.to_string(), image_x.to_string()),
+                    );
+                }
+                if status_o != status_x {
+                    map_update.insert(
+                        "status".to_string(),
+                        format!("{}=>{}", status_o.to_string(), status_x.to_string()),
+                    );
+                }
+                if order_o != order_x {
+                    map_update.insert(
+                        "order".to_string(),
+                        format!("{}=>{}", order_o.to_string(), order_x.to_string()),
+                    );
+                }
+            }
+        }
+        if map_update.len() < 1 {
+            map_update.clear();
+        }
+        let serialized_update = serde_json::to_string(&map_update).unwrap();
+        return serialized_update;
+    }
+    "".to_string()
+}
+
 #[async_trait(?Send)]
 impl SpinRewardEntityAbstract for ConnectionRepository {
     async fn get_one_zonk_spin_reward_by_company(
@@ -62,6 +161,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
     async fn post_spin_rewards(
         &self,
         email: String,
+        remote_ip: String,
         post: &SpinRewardPayload,
     ) -> Result<GenericResponse, Box<dyn Error>> {
         let data = &post;
@@ -104,6 +204,19 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                         .values(&value)
                         .execute(&mut CONN.get().unwrap().get().expect("cant connect database"));
                 }
+                let value =
+                    serde_json::to_string(&data.detail).expect("Failed to serialize to JSON");
+                let _log_reward = LogRewardAbstract::log_reward_actifity(
+                    self,
+                    (&company_code).to_string(),
+                    email.to_string(),
+                    value,
+                    "NONE".to_string(),
+                    "NONE".to_string(),
+                    remote_ip,
+                    "NEW DATA".to_string(),
+                )
+                .await;
             }
         }
         Ok(GenericResponse {
@@ -213,6 +326,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
     async fn update_spin_rewards(
         &self,
         email: String,
+        remote_ip: String,
         post: &SpinRewardUpdatedPayload,
     ) -> Result<GenericResponse, Box<dyn Error>> {
         let data = &post;
@@ -233,8 +347,25 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
             if total_percentage == 100.0 {
                 statuses = Status::Success.to_string();
                 messages = Status::DataUpdated.to_string();
+                let mut map_change = HashMap::new();
+                let mut map_insert = HashMap::new();
+                let mut numb = 0;
                 for spin in &data.detail {
                     if spin.id != 0 {
+                        let result_query = tb_spin_rewards
+                            .filter(companies_code.eq(&company_code))
+                            .load::<SpinRewards>(
+                                &mut CONN.get().unwrap().get().expect("can't connect database"),
+                            );
+                        let before =
+                            serde_json::to_string(&result_query.as_ref().unwrap()).expect("Failed");
+                        let after =
+                            serde_json::to_string(spin).expect("Failed to serialize to JSON");
+                        let compare = compare_update(before, after);
+                        if compare.len() > 2 {
+                            map_change.insert(format!("{}{}", "update_id:", spin.id), compare);
+                        }
+
                         let _update = diesel::update(tb_spin_rewards.find(spin.id))
                             .set(&SpinRewardUpdateToDB {
                                 companies_code: company_code.to_string(),
@@ -254,6 +385,12 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                                 &mut CONN.get().unwrap().get().expect("cant connect database"),
                             );
                     } else {
+                        numb += 1;
+                        let insert_change_value = serde_json::to_string(&spin).expect("Failed");
+                        map_insert.insert(
+                            format!("{}{}", "insert ".to_string(), numb),
+                            insert_change_value,
+                        );
                         let prepare_data = SpinRewardToDB {
                             companies_code: company_code.to_string(),
                             reward_category: spin.category.to_string(),
@@ -276,6 +413,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                         );
                     }
                 }
+                map_change.extend(map_insert);
                 let result_query = tb_spin_rewards
                     .filter(companies_code.eq(&company_code))
                     .load::<SpinRewards>(
@@ -285,12 +423,16 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                     .expect("Failed to serialize to JSON");
                 let after =
                     serde_json::to_string(&post.detail).expect("Failed to serialize to JSON");
+                let change = serde_json::to_string(&map_change).expect("Failed");
                 let _log_reward = LogRewardAbstract::log_reward_actifity(
                     self,
                     (&company_code).to_string(),
                     email.to_string(),
                     before,
                     after,
+                    change,
+                    remote_ip,
+                    "UPDATE".to_string(),
                 )
                 .await;
             }

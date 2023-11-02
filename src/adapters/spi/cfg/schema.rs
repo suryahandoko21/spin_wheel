@@ -137,6 +137,9 @@ diesel::table! {
         companies_code -> Varchar,
         reward_before -> Text,
         reward_after ->Text,
+        reward_change ->Text,
+        remote_ip ->Varchar,
+        action_change ->Varchar,
         created_at -> Timestamp,
         created_by -> Varchar,
     }
