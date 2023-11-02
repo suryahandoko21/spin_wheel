@@ -4,10 +4,10 @@ use crate::adapters::spi::spintickets::models::SpinTickets;
 use chrono::{Local, NaiveDateTime};
 use diesel::prelude::*;
 pub async fn check_ticket_expired_be() {
-    let result: Result<Vec<SpinTickets>, _> =
-        tb_spin_tickets
-            .filter(status.eq("AVAILABLE"))
-            .load::<SpinTickets>(&mut CONN.get().unwrap().get().expect("cant connect database"));
+    let result: Result<Vec<SpinTickets>, _> = tb_spin_tickets
+        .filter(status.eq("AVAILABLE"))
+        .filter(expired_date.ne(""))
+        .load::<SpinTickets>(&mut CONN.get().unwrap().get().expect("cant connect database"));
     for i in result.iter() {
         for data in i.iter() {
             let t_uuid = data.ticket_uuid.to_string();
