@@ -39,3 +39,22 @@ impl LogRewardEntity {
         }
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, Queryable)]
+#[allow(non_snake_case)]
+pub struct LogCustomRewardEntity {
+    pub createdByUser: Option<UserEntity>,
+    pub createdDate: String,
+    pub lastModifiedDate: String,
+    pub entityType: String,
+    pub valueBefore: String,
+    pub valueAfter: String,
+    pub value: String,
+    pub user: Option<UserEntity>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Queryable)]
+#[allow(non_snake_case)]
+pub struct UserEntity {
+    pub username: String,
+}
