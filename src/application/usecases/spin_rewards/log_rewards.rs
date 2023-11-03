@@ -3,7 +3,7 @@ use crate::{
         repositories::log_reward_repository::LogRewardAbstract,
         usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils,
     },
-    domain::{error::ApiError, log_reward_entity::LogRewardEntity},
+    domain::{error::ApiError, log_reward_entity::LogCustomRewardEntity},
 };
 use async_trait::async_trait;
 pub struct LogRewardsUseCase<'a> {
@@ -21,8 +21,8 @@ impl<'a> LogRewardsUseCase<'a> {
 }
 
 #[async_trait(?Send)]
-impl<'a> AbstractUseCase<Vec<LogRewardEntity>> for LogRewardsUseCase<'a> {
-    async fn execute(&self) -> Result<Vec<LogRewardEntity>, ApiError> {
+impl<'a> AbstractUseCase<LogCustomRewardEntity> for LogRewardsUseCase<'a> {
+    async fn execute(&self) -> Result<LogCustomRewardEntity, ApiError> {
         let spin_rewards = self
             .repository
             .get_log_reward_by_company_code(self.company_code.to_string())

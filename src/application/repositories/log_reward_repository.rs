@@ -4,7 +4,7 @@ use async_trait::async_trait;
 #[cfg(test)]
 use mockall::{predicate::*, *};
 
-use crate::domain::log_reward_entity::LogRewardEntity;
+use crate::domain::log_reward_entity::LogCustomRewardEntity;
 
 #[cfg_attr(test, automock)]
 #[async_trait(?Send)]
@@ -22,5 +22,5 @@ pub trait LogRewardAbstract {
     async fn get_log_reward_by_company_code(
         &self,
         company_code: String,
-    ) -> Result<Vec<LogRewardEntity>, Box<dyn Error>>;
+    ) -> Result<LogCustomRewardEntity, Box<dyn Error>>;
 }
