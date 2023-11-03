@@ -22,5 +22,5 @@ pub trait LogRewardAbstract {
     async fn get_log_reward_by_company_code(
         &self,
         company_code: String,
-    ) -> Result<LogCustomRewardEntity, Box<dyn Error>>;
+    ) -> Result<Vec<LogCustomRewardEntity>, Box<dyn Error>>;
 }
