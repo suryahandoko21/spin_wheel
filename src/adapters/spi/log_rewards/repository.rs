@@ -54,14 +54,16 @@ impl LogRewardAbstract for ConnectionRepository {
                 &mut CONN.get().unwrap().get().expect("can't connect database"),
             );
         let mut log_custom = LogCustomRewardEntity {
+            id:0,
             createdByUser: None,
             createdDate: "".to_string(),
             lastModifiedDate: "".to_string(),
-            entityType: "".to_string(),
+            entityType: "SpinwheelReward".to_string(),
             valueBefore: "".to_string(),
             valueAfter: "".to_string(),
             value: "".to_string(),
             user: None,
+            action : "".to_string(),
         };
         let mut output_log = Vec::new();
         for data_iter in results.into_iter() {
@@ -71,14 +73,15 @@ impl LogRewardAbstract for ConnectionRepository {
                 let user = UserEntity {
                     username: value.created_by,
                 };
+                log_custom.id = value.id;
                 log_custom.createdByUser = Some(user.to_owned());
                 log_custom.createdDate = created_date_string.to_string();
                 log_custom.lastModifiedDate = created_date_string.to_string();
-                log_custom.entityType = value.action_change;
                 log_custom.valueBefore = value.reward_before;
                 log_custom.valueAfter = value.reward_after;
                 log_custom.value = value.reward_change;
                 log_custom.user = Some(user.to_owned());
+                log_custom.action = value.action_change;
                 output_log.push(log_custom.clone());
             }
         }
