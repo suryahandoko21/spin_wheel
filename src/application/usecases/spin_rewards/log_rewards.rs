@@ -21,8 +21,8 @@ impl<'a> LogRewardsUseCase<'a> {
 }
 
 #[async_trait(?Send)]
-impl<'a> AbstractUseCase<LogCustomRewardEntity> for LogRewardsUseCase<'a> {
-    async fn execute(&self) -> Result<LogCustomRewardEntity, ApiError> {
+impl<'a> AbstractUseCase<Vec<LogCustomRewardEntity>> for LogRewardsUseCase<'a> {
+    async fn execute(&self) -> Result<Vec<LogCustomRewardEntity>, ApiError> {
         let spin_rewards = self
             .repository
             .get_log_reward_by_company_code(self.company_code.to_string())

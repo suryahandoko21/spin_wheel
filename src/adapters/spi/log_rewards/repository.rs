@@ -47,7 +47,7 @@ impl LogRewardAbstract for ConnectionRepository {
     async fn get_log_reward_by_company_code(
         &self,
         company_code: String,
-    ) -> Result<LogCustomRewardEntity, Box<dyn Error>> {
+    ) -> Result<Vec<LogCustomRewardEntity>, Box<dyn Error>> {
         let results: Result<Vec<LogRewardEntity>, diesel::result::Error> = tb_log_rewards
             .filter(companies_code.eq(company_code))
             .load::<LogRewardEntity>(
@@ -63,6 +63,7 @@ impl LogRewardAbstract for ConnectionRepository {
             value: "".to_string(),
             user: None,
         };
+        let mut output_log = Vec::new();
         for data_iter in results.into_iter() {
             for value in data_iter.into_iter() {
                 let created_date_string =
@@ -78,8 +79,9 @@ impl LogRewardAbstract for ConnectionRepository {
                 log_custom.valueAfter = value.reward_after;
                 log_custom.value = value.reward_change;
                 log_custom.user = Some(user.to_owned());
+                output_log.push(log_custom.clone());
             }
         }
-        Ok(log_custom)
+        Ok(output_log)
     }
 }
