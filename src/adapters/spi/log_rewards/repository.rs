@@ -54,7 +54,7 @@ impl LogRewardAbstract for ConnectionRepository {
                 &mut CONN.get().unwrap().get().expect("can't connect database"),
             );
         let mut log_custom = LogCustomRewardEntity {
-            id:0,
+            id: 0,
             createdByUser: None,
             createdDate: "".to_string(),
             lastModifiedDate: "".to_string(),
@@ -63,7 +63,7 @@ impl LogRewardAbstract for ConnectionRepository {
             valueAfter: "".to_string(),
             value: "".to_string(),
             user: None,
-            action : "".to_string(),
+            action: "".to_string(),
         };
         let mut output_log = Vec::new();
         for data_iter in results.into_iter() {
