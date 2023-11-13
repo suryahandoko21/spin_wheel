@@ -20,6 +20,7 @@ pub trait ContentCompanyEntityAbstract {
         &self,
         company_code: String,
         email: String,
+        remote_ip: String,
         post: &ContentPayload,
     ) -> Result<GenericResponse, Box<dyn Error>>;
 }

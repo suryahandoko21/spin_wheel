@@ -379,8 +379,8 @@ async fn get_log_history(data: web::Data<AppState>, req: HttpRequest) -> HttpRes
     if error_request {
         return HttpResponse::build(validate_status_code).json(error_validate);
     }
-
-    let data = LogRewardsUseCase::new(&company_code, &data.connection_repository);
+    let etype = "SpinwheelReward".to_string();
+    let data = LogRewardsUseCase::new(&company_code, &etype, &data.connection_repository);
     let values = data.execute().await;
     return HttpResponse::Ok().json(values.unwrap());
 }

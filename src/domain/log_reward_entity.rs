@@ -10,6 +10,7 @@ pub struct LogRewardEntity {
     pub reward_change: String,
     pub remote_ip: String,
     pub action_change: String,
+    pub entity_type: String,
     pub created_at: NaiveDateTime,
     pub created_by: String,
 }
@@ -23,6 +24,7 @@ impl LogRewardEntity {
         reward_change: String,
         remote_ip: String,
         action_change: String,
+        entity_type: String,
         created_at: NaiveDateTime,
         created_by: String,
     ) -> Self {
@@ -34,6 +36,7 @@ impl LogRewardEntity {
             reward_change,
             remote_ip,
             action_change,
+            entity_type,
             created_at,
             created_by,
         }
@@ -42,7 +45,7 @@ impl LogRewardEntity {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Queryable)]
 #[allow(non_snake_case)]
-pub struct LogCustomRewardEntity {
+pub struct LogCustomEntity {
     pub id: i32,
     pub createdByUser: Option<UserEntity>,
     pub createdDate: String,

@@ -11,6 +11,7 @@ use async_trait::async_trait;
 pub struct PostContentByCompannyCodeUseCase<'a> {
     company_code: &'a String,
     email: &'a String,
+    remote_ip: &'a String,
     post: &'a ContentPayload,
     repository: &'a dyn ContentCompanyEntityAbstract,
 }
@@ -19,6 +20,7 @@ impl<'a> PostContentByCompannyCodeUseCase<'a> {
     pub fn new(
         company_code: &'a String,
         email: &'a String,
+        remote_ip: &'a String,
         post: &'a ContentPayload,
         repository: &'a dyn ContentCompanyEntityAbstract,
     ) -> Self {
@@ -26,6 +28,7 @@ impl<'a> PostContentByCompannyCodeUseCase<'a> {
             repository,
             company_code,
             email,
+            remote_ip,
             post,
         }
     }
@@ -39,6 +42,7 @@ impl<'a> AbstractUseCase<GenericResponse> for PostContentByCompannyCodeUseCase<'
             .post_contents(
                 self.company_code.to_string(),
                 self.email.to_string(),
+                self.remote_ip.to_string(),
                 self.post,
             )
             .await;

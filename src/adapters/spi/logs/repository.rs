@@ -1,9 +1,9 @@
-use super::models::LogRewardsToDb;
+use super::models::LogsToDb;
 use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::spi::cfg::pg_connection::CONN;
-use crate::adapters::spi::cfg::schema::tb_log_rewards::dsl::*;
-use crate::application::repositories::log_reward_repository::LogRewardAbstract;
-use crate::domain::log_reward_entity::{LogCustomRewardEntity, LogRewardEntity, UserEntity};
+use crate::adapters::spi::cfg::schema::tb_spin_logs::dsl::*;
+use crate::application::repositories::log_repository::LogAbstract;
+use crate::domain::log_reward_entity::{LogCustomEntity, LogRewardEntity, UserEntity};
 use async_trait::async_trait;
 use chrono::format::StrftimeItems;
 use chrono::NaiveDateTime;
@@ -17,48 +17,53 @@ fn format_naive_datetime(naive_datetime: &NaiveDateTime, format: &str) -> String
 }
 
 #[async_trait(?Send)]
-impl LogRewardAbstract for ConnectionRepository {
-    async fn log_reward_actifity(
+impl LogAbstract for ConnectionRepository {
+    async fn log_actifity(
         &self,
         companies: String,
         created: String,
         before: String,
         after: String,
         change: String,
+        entitytype: String,
         ip: String,
         action: String,
     ) {
-        let prepare_data = LogRewardsToDb {
+        let prepare_data = LogsToDb {
             companies_code: companies,
             reward_before: before,
             reward_after: after,
             reward_change: change,
             remote_ip: ip,
             action_change: action,
+            entity_type: entitytype,
             created_at: SystemTime::now(),
             created_by: created,
         };
         let to_vector = vec![prepare_data];
-        let _res = diesel::insert_into(tb_log_rewards)
+        let res = diesel::insert_into(tb_spin_logs)
             .values(&to_vector)
             .execute(&mut CONN.get().unwrap().get().expect("Failed connect database"));
+        println!("ssssres{:?}", res);
     }
 
-    async fn get_log_reward_by_company_code(
+    async fn get_log_by_company_code(
         &self,
         company_code: String,
-    ) -> Result<Vec<LogCustomRewardEntity>, Box<dyn Error>> {
-        let results: Result<Vec<LogRewardEntity>, diesel::result::Error> = tb_log_rewards
+        etype: String,
+    ) -> Result<Vec<LogCustomEntity>, Box<dyn Error>> {
+        let results: Result<Vec<LogRewardEntity>, diesel::result::Error> = tb_spin_logs
             .filter(companies_code.eq(company_code))
+            .filter(entity_type.eq(etype))
             .load::<LogRewardEntity>(
                 &mut CONN.get().unwrap().get().expect("can't connect database"),
             );
-        let mut log_custom = LogCustomRewardEntity {
+        let mut log_custom = LogCustomEntity {
             id: 0,
             createdByUser: None,
             createdDate: "".to_string(),
             lastModifiedDate: "".to_string(),
-            entityType: "SpinwheelReward".to_string(),
+            entityType: "".to_string(),
             valueBefore: "".to_string(),
             valueAfter: "".to_string(),
             value: "".to_string(),
@@ -80,6 +85,7 @@ impl LogRewardAbstract for ConnectionRepository {
                 log_custom.valueBefore = value.reward_before;
                 log_custom.valueAfter = value.reward_after;
                 log_custom.value = value.reward_change;
+                log_custom.entityType = value.entity_type;
                 log_custom.user = Some(user.to_owned());
                 log_custom.action = value.action_change;
                 output_log.push(log_custom.clone());
