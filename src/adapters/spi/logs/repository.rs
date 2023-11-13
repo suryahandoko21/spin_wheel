@@ -3,7 +3,7 @@ use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::adapters::spi::cfg::schema::tb_spin_logs::dsl::*;
 use crate::application::repositories::log_repository::LogAbstract;
-use crate::domain::log_reward_entity::{LogCustomEntity, LogRewardEntity, UserEntity};
+use crate::domain::log_entity::{LogCustomEntity, UserEntity, LogEntity};
 use async_trait::async_trait;
 use chrono::format::StrftimeItems;
 use chrono::NaiveDateTime;
@@ -22,18 +22,18 @@ impl LogAbstract for ConnectionRepository {
         &self,
         companies: String,
         created: String,
-        before: String,
-        after: String,
-        change: String,
+        lbefore: String,
+        lafter: String,
+        lchange: String,
         entitytype: String,
         ip: String,
         action: String,
     ) {
         let prepare_data = LogsToDb {
             companies_code: companies,
-            reward_before: before,
-            reward_after: after,
-            reward_change: change,
+            before: lbefore,
+            after: lafter,
+            change: lchange,
             remote_ip: ip,
             action_change: action,
             entity_type: entitytype,
@@ -52,10 +52,10 @@ impl LogAbstract for ConnectionRepository {
         company_code: String,
         etype: String,
     ) -> Result<Vec<LogCustomEntity>, Box<dyn Error>> {
-        let results: Result<Vec<LogRewardEntity>, diesel::result::Error> = tb_spin_logs
+        let results: Result<Vec<LogEntity>, diesel::result::Error> = tb_spin_logs
             .filter(companies_code.eq(company_code))
             .filter(entity_type.eq(etype))
-            .load::<LogRewardEntity>(
+            .load::<LogEntity>(
                 &mut CONN.get().unwrap().get().expect("can't connect database"),
             );
         let mut log_custom = LogCustomEntity {
@@ -82,9 +82,9 @@ impl LogAbstract for ConnectionRepository {
                 log_custom.createdByUser = Some(user.to_owned());
                 log_custom.createdDate = created_date_string.to_string();
                 log_custom.lastModifiedDate = created_date_string.to_string();
-                log_custom.valueBefore = value.reward_before;
-                log_custom.valueAfter = value.reward_after;
-                log_custom.value = value.reward_change;
+                log_custom.valueBefore = value.before;
+                log_custom.valueAfter = value.after;
+                log_custom.value = value.change;
                 log_custom.entityType = value.entity_type;
                 log_custom.user = Some(user.to_owned());
                 log_custom.action = value.action_change;
