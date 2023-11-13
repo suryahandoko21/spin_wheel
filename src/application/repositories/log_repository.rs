@@ -4,7 +4,7 @@ use async_trait::async_trait;
 #[cfg(test)]
 use mockall::{predicate::*, *};
 
-use crate::domain::log_reward_entity::LogCustomEntity;
+use crate::domain::log_entity::LogCustomEntity;
 
 #[cfg_attr(test, automock)]
 #[async_trait(?Send)]

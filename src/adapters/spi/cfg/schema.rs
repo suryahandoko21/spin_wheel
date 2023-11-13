@@ -135,9 +135,9 @@ diesel::table! {
     tb_spin_logs (id) {
         id -> Int4,
         companies_code -> Varchar,
-        reward_before -> Text,
-        reward_after ->Text,
-        reward_change ->Text,
+        before -> Text,
+        after ->Text,
+        change ->Text,
         remote_ip ->Varchar,
         action_change ->Varchar,
         entity_type->Varchar,

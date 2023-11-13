@@ -3,7 +3,7 @@ use crate::{
         repositories::log_repository::LogAbstract, usecases::interfaces::AbstractUseCase,
         utils::error_handling_utils::ErrorHandlingUtils,
     },
-    domain::{error::ApiError, log_reward_entity::LogCustomEntity},
+    domain::{error::ApiError, log_entity::LogCustomEntity},
 };
 use async_trait::async_trait;
 pub struct LogRewardsUseCase<'a> {

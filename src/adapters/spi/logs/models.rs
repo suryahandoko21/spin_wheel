@@ -18,9 +18,9 @@ use std::time::SystemTime;
 pub struct LogRewards {
     pub id: i32,
     pub companies_code: String,
-    pub reward_before: String,
-    pub reward_after: String,
-    pub reward_change: String,
+    pub before: String,
+    pub after: String,
+    pub change: String,
     pub remote_ip: String,
     pub action_change: String,
     pub entity_type: String,
@@ -35,9 +35,9 @@ pub struct LogRewards {
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct LogsToDb {
     pub companies_code: String,
-    pub reward_before: String,
-    pub reward_after: String,
-    pub reward_change: String,
+    pub before: String,
+    pub after: String,
+    pub change: String,
     pub remote_ip: String,
     pub action_change: String,
     pub entity_type: String,
