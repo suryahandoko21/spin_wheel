@@ -6,7 +6,7 @@ use crate::adapters::api::spin_reward::spin_reward_payload::SpinRewardUpdatedPay
 use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::adapters::spi::cfg::schema::tb_spin_rewards::dsl::*;
 use crate::application::mappers::db_mapper::DBMapper;
-use crate::application::repositories::log_reward_repository::LogRewardAbstract;
+use crate::application::repositories::log_repository::LogAbstract;
 use crate::application::repositories::spin_company_repository_abstract::SpinCompanyEntityAbstract;
 use crate::application::repositories::spin_ticket_repository_abstract::SpinTicketEntityAbstract;
 use crate::domain::spin_reward_entity::{
@@ -57,9 +57,6 @@ fn compare_update(before: String, after: String) -> String {
             let image_o = obj.get("reward_image").unwrap();
             let status_o = obj.get("reward_status").unwrap();
             let order_o = obj.get("reward_order").unwrap();
-            if id_x == 0 {
-                println!("dddd");
-            }
             if id_o == id_x {
                 if name_o != name_x {
                     map_update.insert(
@@ -206,13 +203,14 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                 }
                 let value =
                     serde_json::to_string(&data.detail).expect("Failed to serialize to JSON");
-                let _log_reward = LogRewardAbstract::log_reward_actifity(
+                let _log_reward = LogAbstract::log_actifity(
                     self,
                     (&company_code).to_string(),
                     email.to_string(),
                     "NONE".to_string(),
                     value,
                     "NONE".to_string(),
+                    "SpinwheelReward".to_string(),
                     remote_ip,
                     "NEW DATA".to_string(),
                 )
@@ -424,13 +422,14 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
                 let after =
                     serde_json::to_string(&post.detail).expect("Failed to serialize to JSON");
                 let change = serde_json::to_string(&map_change).expect("Failed");
-                let _log_reward = LogRewardAbstract::log_reward_actifity(
+                let _log_reward = LogAbstract::log_actifity(
                     self,
                     (&company_code).to_string(),
                     email.to_string(),
                     before,
                     after,
                     change,
+                    "SpinwheelReward".to_string(),
                     remote_ip,
                     "UPDATE".to_string(),
                 )

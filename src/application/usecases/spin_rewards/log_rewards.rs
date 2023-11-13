@@ -1,31 +1,37 @@
 use crate::{
     application::{
-        repositories::log_reward_repository::LogRewardAbstract,
-        usecases::interfaces::AbstractUseCase, utils::error_handling_utils::ErrorHandlingUtils,
+        repositories::log_repository::LogAbstract, usecases::interfaces::AbstractUseCase,
+        utils::error_handling_utils::ErrorHandlingUtils,
     },
-    domain::{error::ApiError, log_reward_entity::LogCustomRewardEntity},
+    domain::{error::ApiError, log_reward_entity::LogCustomEntity},
 };
 use async_trait::async_trait;
 pub struct LogRewardsUseCase<'a> {
     company_code: &'a String,
-    repository: &'a dyn LogRewardAbstract,
+    etype: &'a String,
+    repository: &'a dyn LogAbstract,
 }
 
 impl<'a> LogRewardsUseCase<'a> {
-    pub fn new(company_code: &'a String, repository: &'a dyn LogRewardAbstract) -> Self {
+    pub fn new(
+        company_code: &'a String,
+        etype: &'a String,
+        repository: &'a dyn LogAbstract,
+    ) -> Self {
         LogRewardsUseCase {
             repository,
             company_code,
+            etype,
         }
     }
 }
 
 #[async_trait(?Send)]
-impl<'a> AbstractUseCase<Vec<LogCustomRewardEntity>> for LogRewardsUseCase<'a> {
-    async fn execute(&self) -> Result<Vec<LogCustomRewardEntity>, ApiError> {
+impl<'a> AbstractUseCase<Vec<LogCustomEntity>> for LogRewardsUseCase<'a> {
+    async fn execute(&self) -> Result<Vec<LogCustomEntity>, ApiError> {
         let spin_rewards = self
             .repository
-            .get_log_reward_by_company_code(self.company_code.to_string())
+            .get_log_by_company_code(self.company_code.to_string(), self.etype.to_string())
             .await;
         match spin_rewards {
             Ok(facts) => Ok(facts),

@@ -13,7 +13,7 @@ use std::time::SystemTime;
     QueryableByName,
     Serialize,
 )]
-#[diesel(table_name = crate::adapters::spi::cfg::schema::tb_log_rewards)]
+#[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_logs)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct LogRewards {
     pub id: i32,
@@ -23,6 +23,7 @@ pub struct LogRewards {
     pub reward_change: String,
     pub remote_ip: String,
     pub action_change: String,
+    pub entity_type: String,
     pub created_at: NaiveDateTime,
     pub created_by: String,
 }
@@ -30,15 +31,16 @@ pub struct LogRewards {
 #[derive(
     Queryable, Selectable, Insertable, AsChangeset, Debug, Deserialize, QueryableByName, Serialize,
 )]
-#[diesel(table_name = crate::adapters::spi::cfg::schema::tb_log_rewards)]
+#[diesel(table_name = crate::adapters::spi::cfg::schema::tb_spin_logs)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
-pub struct LogRewardsToDb {
+pub struct LogsToDb {
     pub companies_code: String,
     pub reward_before: String,
     pub reward_after: String,
     pub reward_change: String,
     pub remote_ip: String,
     pub action_change: String,
+    pub entity_type: String,
     pub created_at: SystemTime,
     pub created_by: String,
 }

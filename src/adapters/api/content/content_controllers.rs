@@ -13,6 +13,7 @@ use crate::{
                 post_content_by_company_code::PostContentByCompannyCodeUseCase,
             },
             interfaces::AbstractUseCase,
+            spin_rewards::log_rewards::LogRewardsUseCase,
         },
     },
 };
@@ -24,7 +25,9 @@ use actix_web::{
 
 /*  collection route for spin_rewards */
 pub fn routes(cfg: &mut web::ServiceConfig) {
-    cfg.service(get_content_info).service(post_content);
+    cfg.service(get_content_info)
+        .service(post_content)
+        .service(get_log_history);
 }
 
 #[get("/info")]
@@ -59,6 +62,11 @@ async fn post_content(
     post: Json<ContentPayload>,
     req: HttpRequest,
 ) -> HttpResponse {
+    let remote_ip = req
+        .connection_info()
+        .realip_remote_addr()
+        .unwrap_or("uknown IP Address")
+        .to_string();
     let header_authorization = req.headers().get("Authorization");
     let (validate_status_code, company_code, error_request, error_validate, email) =
         validate_request(header_authorization);
@@ -68,10 +76,25 @@ async fn post_content(
     let data = PostContentByCompannyCodeUseCase::new(
         &company_code,
         &email,
+        &remote_ip,
         &post,
         &data.connection_repository,
     );
     let result = data.execute().await;
 
     return HttpResponse::Ok().json(result.unwrap());
+}
+
+#[get("/log_history")]
+async fn get_log_history(data: web::Data<AppState>, req: HttpRequest) -> HttpResponse {
+    let header_authorization = req.headers().get("Authorization");
+    let (validate_status_code, company_code, error_request, error_validate, _email) =
+        validate_request(header_authorization);
+    if error_request {
+        return HttpResponse::build(validate_status_code).json(error_validate);
+    }
+    let etype = "SpinwheelContent".to_string();
+    let data = LogRewardsUseCase::new(&company_code, &etype, &data.connection_repository);
+    let values = data.execute().await;
+    return HttpResponse::Ok().json(values.unwrap());
 }

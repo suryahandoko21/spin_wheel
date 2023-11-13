@@ -132,7 +132,7 @@ diesel::table! {
 
 diesel::table! {
     use diesel::sql_types::*;
-    tb_log_rewards (id) {
+    tb_spin_logs (id) {
         id -> Int4,
         companies_code -> Varchar,
         reward_before -> Text,
@@ -140,6 +140,7 @@ diesel::table! {
         reward_change ->Text,
         remote_ip ->Varchar,
         action_change ->Varchar,
+        entity_type->Varchar,
         created_at -> Timestamp,
         created_by -> Varchar,
     }
@@ -153,5 +154,5 @@ diesel::allow_tables_to_appear_in_same_query!(
     tb_spin_success_process,
     tb_spin_failed_process,
     tb_content,
-    tb_log_rewards
+    tb_spin_logs
 );
