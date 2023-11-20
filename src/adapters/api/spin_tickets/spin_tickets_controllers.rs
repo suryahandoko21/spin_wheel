@@ -3,6 +3,7 @@ use actix_web::{
     web::{self, Json},
     HttpRequest, HttpResponse,
 };
+use log::info;
 
 use crate::{
     adapters::api::{
@@ -67,6 +68,9 @@ async fn post_spin_tickets(
     post: Json<SpinTicketPayload>,
     req: HttpRequest,
 ) -> HttpResponse {
+    let json_string = serde_json::to_string(&post).unwrap();
+    info!("Payload request {:?}", json_string);
+    info!("Http Request {:?}",&req);
     let header_authorization = req.headers().get("spinWheelEngineSecretKey");
     let company_req = req.headers().get("companyCode");
     let global_init = GLOBAL_INIT.get().unwrap();
