@@ -11,7 +11,7 @@ pub async fn check_ticket_expired_be() {
     for i in result.iter() {
         for data in i.iter() {
             let t_uuid = data.ticket_uuid.to_string();
-            let utc_now = Utc::now() + Duration::hours(7);
+            let utc_now = Utc::now();
             let naive_now: NaiveDateTime = utc_now.naive_utc();
             let expired = data.expired_date.to_string();
             let format_str = "%Y-%m-%d %H:%M:%S";
