@@ -1,7 +1,7 @@
 use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::adapters::spi::cfg::schema::tb_spin_tickets::dsl::*;
 use crate::adapters::spi::spintickets::models::SpinTickets;
-use chrono::{Duration, NaiveDateTime, Utc};
+use chrono::{NaiveDateTime, Utc};
 use diesel::prelude::*;
 pub async fn check_ticket_expired_be() {
     let result: Result<Vec<SpinTickets>, _> = tb_spin_tickets
