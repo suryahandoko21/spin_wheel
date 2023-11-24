@@ -114,6 +114,7 @@ async fn post_spin_tickets(
     let post_one_spin_ticket =
         PostSpinTicketUseCase::new(&company_code, &post, &data.connection_repository);
     let spin_ticket: Result<TicketResponse, ApiError> = post_one_spin_ticket.execute().await;
+    info!("Result create ticket -- {:?}",&spin_ticket.as_ref().unwrap());
     return HttpResponse::Ok().json(spin_ticket.unwrap());
 }
 
