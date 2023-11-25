@@ -120,7 +120,11 @@ async fn post_spin_rewards(
     /* Fetch company for get max credit */
     let check_company = CompaniesCodeUseCase::new(&company_code, &data.connection_repository);
     let company = check_company.execute().await;
-
+    if !company.is_ok() {
+        return HttpResponse::NotAcceptable().json(serde_json::json!({
+            "message": "Company not listed !!"
+        }));
+    }
     let max_credit = &company.ok().unwrap().max_credit;
 
     let (validate_max_credit_code, error_max_credit, error_max_credit_message) =

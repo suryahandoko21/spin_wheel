@@ -70,7 +70,7 @@ async fn post_spin_tickets(
 ) -> HttpResponse {
     let json_string = serde_json::to_string(&post).unwrap();
     info!("Payload request {:?}", json_string);
-    info!("Http Request {:?}",&req);
+    info!("Http Request {:?}", &req);
     let header_authorization = req.headers().get("spinWheelEngineSecretKey");
     let company_req = req.headers().get("companyCode");
     let global_init = GLOBAL_INIT.get().unwrap();
@@ -114,7 +114,10 @@ async fn post_spin_tickets(
     let post_one_spin_ticket =
         PostSpinTicketUseCase::new(&company_code, &post, &data.connection_repository);
     let spin_ticket: Result<TicketResponse, ApiError> = post_one_spin_ticket.execute().await;
-    info!("Result create ticket -- {:?}",&spin_ticket.as_ref().unwrap());
+    info!(
+        "Result create ticket -- {:?}",
+        &spin_ticket.as_ref().unwrap()
+    );
     return HttpResponse::Ok().json(spin_ticket.unwrap());
 }
 
