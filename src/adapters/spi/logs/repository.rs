@@ -3,7 +3,7 @@ use crate::adapters::spi::cfg::db_connection::ConnectionRepository;
 use crate::adapters::spi::cfg::pg_connection::CONN;
 use crate::adapters::spi::cfg::schema::tb_spin_logs::dsl::*;
 use crate::application::repositories::log_repository::LogAbstract;
-use crate::domain::log_entity::{LogCustomEntity, UserEntity, LogEntity};
+use crate::domain::log_entity::{LogCustomEntity, LogEntity, UserEntity};
 use async_trait::async_trait;
 use chrono::format::StrftimeItems;
 use chrono::NaiveDateTime;
@@ -55,9 +55,7 @@ impl LogAbstract for ConnectionRepository {
         let results: Result<Vec<LogEntity>, diesel::result::Error> = tb_spin_logs
             .filter(companies_code.eq(company_code))
             .filter(entity_type.eq(etype))
-            .load::<LogEntity>(
-                &mut CONN.get().unwrap().get().expect("can't connect database"),
-            );
+            .load::<LogEntity>(&mut CONN.get().unwrap().get().expect("can't connect database"));
         let mut log_custom = LogCustomEntity {
             id: 0,
             createdByUser: None,
