@@ -216,7 +216,7 @@ async fn get_all_spin_rewards_be(data: web::Data<AppState>, req: HttpRequest) ->
     }
     if company_req.is_none() {
         let error = ErrorResponse {
-            message: "company_code is Null!!".to_string(),
+            message: "company_code is Not set!!".to_string(),
             status: "error".to_string(),
         };
         return HttpResponse::Ok().json(error);
