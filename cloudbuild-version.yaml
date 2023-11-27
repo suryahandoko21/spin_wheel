@@ -1,0 +1,16 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "asia.gcr.io/$PROJECT_ID/spin-wheel-rust:$BRANCH_NAME",
+        "-t",
+        "asia.gcr.io/$PROJECT_ID/spin-wheel-rust:$TAG_NAME",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "asia.gcr.io/$PROJECT_ID/spin-wheel-rust:$TAG_NAME"]
+options:
+  machineType: 'E2_HIGHCPU_8'
+
