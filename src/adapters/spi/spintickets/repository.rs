@@ -40,7 +40,7 @@ impl SpinTicketEntityAbstract for ConnectionRepository {
                 ticket_uuid: uuid.to_string(),
                 status: spin.status.to_string(),
                 pointrule_id: spin.pointRuleId,
-                expired_date: spin.ticketExpiredDate.to_string(),
+                expired_date: spin.ticketExpiredDate.as_ref().unwrap_or(&"".to_string()).to_string(),
                 pointrule_name: spin.pointRuleName.to_string(),
                 ticket_number: spin.ticketNumber.to_string(),
                 expired_type: spin.expiredType.to_string(),
