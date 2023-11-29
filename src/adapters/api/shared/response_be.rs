@@ -12,19 +12,20 @@ pub struct ResponseBeResult {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[allow(non_snake_case)]
 pub struct Data {
-    pub id: i32,
-    pub ticketId: i32,
-    pub ticketUuid: String,
-    pub ticketExpired: String,
-    pub userId: i32,
-    pub userName: String,
-    pub claimStatus: String,
-    pub rewardName: String,
-    pub rewardType: String,
-    pub rewardValue: f64,
-    pub walletBefore: f64,
-    pub walletAfter: f64,
-    pub rewardDescriptions: String,
+    pub id: Option<i32>,
+    pub ticketId: Option<i32>,
+    pub ticketUuid: Option<String>,
+    pub ticketExpired: Option<String>,
+    pub userId: Option<i32>,
+    pub userName: Option<String>,
+    pub claimStatus: Option<String>,
+    pub rewardName: Option<String>,
+    pub rewardType: Option<String>,
+    pub rewardValue: Option<f64>,
+    pub walletBefore: Option<f64>,
+    pub walletAfter: Option<f64>,
+    pub rewardDescriptions: Option<String>,
+    
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
