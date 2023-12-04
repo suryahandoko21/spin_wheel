@@ -100,7 +100,7 @@ async fn post_spin_rewards(
     req: HttpRequest,
 ) -> HttpResponse {
     let json_string = serde_json::to_string(&post).unwrap();
-    info!("Payload request {:?}", json_string);
+    info!("Payload request store reward{:?}", json_string);
     let remote_ip = req
         .connection_info()
         .realip_remote_addr()
@@ -144,7 +144,8 @@ async fn post_spin_rewards(
 
     let (response_code, error_response, error_response_message) = reponse_status(&result);
     if error_response {
-        return HttpResponse::build(response_code).json(error_response_message);
+        info!("Error info insert {:?}", &error_response_message);
+        return HttpResponse::build(response_code).json(&error_response_message);
     }
     return HttpResponse::Ok().json(result);
 }
@@ -303,7 +304,7 @@ async fn update_spin_rewards(
     req: HttpRequest,
 ) -> HttpResponse {
     let json_string = serde_json::to_string(&post).unwrap();
-    info!("Payload request {:?}", json_string);
+    info!("Payload request update reward{:?}", json_string);
     let remote_ip = req
         .connection_info()
         .realip_remote_addr()
@@ -342,7 +343,8 @@ async fn update_spin_rewards(
     let result = spin_rewards.unwrap();
     let (response_code, error_response, error_response_message) = reponse_status(&result);
     if error_response {
-        return HttpResponse::build(response_code).json(error_response_message);
+        info!("Error info update {:?}", &error_response_message);
+        return HttpResponse::build(response_code).json(&error_response_message);
     }
     return HttpResponse::Ok().json(result);
 }

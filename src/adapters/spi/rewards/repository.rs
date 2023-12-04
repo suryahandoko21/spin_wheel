@@ -169,7 +169,7 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
         for spin in &data.detail {
             total_percentage += spin.percentage;
         }
-        let result_format = format!("{:.7}",total_percentage);
+        let result_format = format!("{:.7}", total_percentage);
         if result_format == "100.0000000" {
             let reward_exist = select(exists(
                 tb_spin_rewards.filter(companies_code.eq(company_code)),
@@ -343,8 +343,8 @@ impl SpinRewardEntityAbstract for ConnectionRepository {
         if !reward_exist.unwrap() {
             messages = Status::DataNotExist.to_string();
         } else {
-            let result_format = format!("{:.7}",total_percentage);
-            if result_format == "100.0000000"{
+            let result_format = format!("{:.7}", total_percentage);
+            if result_format == "100.0000000" {
                 statuses = Status::Success.to_string();
                 messages = Status::DataUpdated.to_string();
                 let mut map_change = HashMap::new();

@@ -25,7 +25,6 @@ pub struct Data {
     pub walletBefore: Option<f64>,
     pub walletAfter: Option<f64>,
     pub rewardDescriptions: Option<String>,
-    
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

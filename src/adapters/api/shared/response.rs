@@ -61,7 +61,7 @@ impl SpinAvailableResponse {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ErrorResponse {
     pub status: String,
     pub message: String,
