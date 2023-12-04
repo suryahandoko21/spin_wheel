@@ -5,10 +5,12 @@ use crate::{
             response::SpinResponse,
             validate_request::{validate_company, validate_request},
         },
+        spin_reward::query_string::QstringReward,
         spin_useds::spin_tickets_payloads::SpinUsedPayload,
     },
     application::usecases::{
-        interfaces::AbstractUseCase, spin_useds::post_one_spin_useds::PostSpinUsedUseCase,
+        interfaces::AbstractUseCase, spin_rewards::list_spin_rewards::ListSpinRewardsUseCase,
+        spin_useds::post_one_spin_useds::PostSpinUsedUseCase,
     },
     domain::error::ApiError,
 };
@@ -72,6 +74,18 @@ async fn post_spin_used(
         .await;
     if errors_company {
         return HttpResponse::build(validate_status_company).json(error_company_response);
+    }
+    let qstring = web::Query::<QstringReward>::from_query(req.query_string()).unwrap();
+    let spin_reward =
+        ListSpinRewardsUseCase::new(&company_code, &qstring, &data.connection_repository);
+    let spin_reward: std::result::Result<
+        Vec<crate::domain::spin_reward_entity::SpinRewardEntity>,
+        ApiError,
+    > = spin_reward.execute().await;
+    if spin_reward.unwrap().is_empty() {
+        return HttpResponse::NotAcceptable().json(serde_json::json!({
+            "message": "Reward not set in company !!"
+        }));
     }
     let post_one_spin_used = PostSpinUsedUseCase::new(
         &post,
