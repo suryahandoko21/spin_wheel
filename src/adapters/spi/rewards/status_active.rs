@@ -1,3 +1,5 @@
+use log::info;
+
 use crate::adapters::api::shared::{
     init_global::GLOBAL_INIT, response_spin_active::ResponseActiveSpin,
 };
@@ -23,6 +25,9 @@ pub async fn status_active_spinwheel(url_address: String) -> (bool, String) {
             let rs: ResponseActiveSpin = serde_json::from_slice(&body.unwrap()).unwrap();
             bool = rs.enableSpinWheelFeature;
             url_image = rs.spinWheelLogo;
+        }
+        else{
+            info!("Failed to fetch active {:?}",&response.ok().unwrap().body().await.ok());
         }
     }
     return (bool, url_image.to_string());
